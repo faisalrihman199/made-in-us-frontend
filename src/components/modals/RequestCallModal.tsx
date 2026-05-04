@@ -104,7 +104,7 @@ const RequestCallModal = ({ isOpen, onOpenChange, listingId, listingUrl }: Reque
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px] p-0 overflow-hidden rounded-[32px] border-none shadow-2xl bg-white">
+      <DialogContent className="sm:max-w-[480px] p-0 overflow-y-auto max-h-[calc(100vh-4rem)] my-8 rounded-[32px] border-none shadow-2xl bg-white scrollbar-hide">
         <div className="p-8 sm:p-10 space-y-8">
           <DialogHeader className="space-y-2">
             <div className="flex items-center justify-between">
