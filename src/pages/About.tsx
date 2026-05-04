@@ -70,7 +70,7 @@ const About = () => {
               { step: "1", title: "Browse the Marketplace", desc: "Explore our selection of vehicles available across the United States. Each listing includes photos, detailed specifications, and vehicle history when available." },
               { step: "2", title: "Request Information", desc: "If a vehicle interests you, simply submit an inquiry through the platform. Our team will provide additional details, answer your questions, and confirm availability." },
               { step: "3", title: "Price Negotiation", desc: "We negotiate directly with the seller to obtain the best possible price for you. When a price reduction is achieved, 20% of the negotiated savings is returned to the client, while the remaining portion covers the work performed and the operation of the platform." },
-              { step: "4", title: "Secure the Vehicle", desc: "Once you approve the deal, a $2,000 deposit may be required to reserve the vehicle and prevent it from being sold to another buyer." },
+              { step: "4", title: "Secure the Vehicle", desc: "Once you approve the deal, a $1,000 deposit may be required to reserve the vehicle and prevent it from being sold to another buyer." },
               { step: "5", title: "Payment", desc: "The remaining balance is paid via secure bank transfer. All transaction details and documentation are provided for your records." },
               { step: "6", title: "Transportation (National or Export)", desc: "We organize transportation from the seller's location either to your address within the United States or to the nearest export port." },
               { step: "7", title: "Worldwide Shipping", desc: "Your vehicle is shipped to your country via container or RoRo shipping. All export documents are provided to facilitate customs clearance." },
@@ -154,11 +154,11 @@ const About = () => {
             },
             { 
               t: "7. Secure Escrow and Payment", 
-              c: "We provide a secure escrow service for transactions. Buyers send funds to our designated company account, and we hold them until the purchase is confirmed. A non-refundable escrow fee of $350 and a 3.5% service fee on the total vehicle price apply to each transaction." 
+              c: "We provide a secure escrow service for all transactions. Buyers send funds to our designated company account, and we hold them safely until the purchase is fully confirmed." 
             },
             { 
               t: "8. Vehicle Deposits", 
-              c: "To reserve a vehicle, a deposit of $2,000 may be required. This deposit is generally non-refundable if the buyer chooses not to proceed with the transaction, as it compensates the seller for removing the vehicle from the market." 
+              c: "To reserve a vehicle, a deposit of $1,000 may be required. This deposit is generally non-refundable if the buyer chooses not to proceed with the transaction, as it compensates the seller for removing the vehicle from the market." 
             },
             { 
               t: "9. Vehicle Inspections", 
