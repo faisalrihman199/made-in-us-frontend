@@ -148,17 +148,17 @@ const SecurePay = () => {
                         </div>
                       </div>
 
-                      <div className="flex flex-col sm:flex-row items-center gap-4 bg-emerald-600 text-white p-6 rounded-xl shadow-lg shadow-emerald-900/10">
-                        <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Info className="w-6 h-6 text-white" />
+                      <div className="flex flex-col sm:flex-row items-center gap-5 bg-emerald-600 text-white p-6 rounded-2xl shadow-lg shadow-emerald-900/10 border border-white/10">
+                        <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0 backdrop-blur-sm">
+                          <Info className="w-7 h-7 text-white" />
                         </div>
-                        <div className="text-center sm:text-left">
-                          <p className="text-emerald-100 text-sm font-medium uppercase tracking-wider">Our Flat Fee</p>
-                          <p className="text-2xl font-bold">Only $350 per transaction</p>
+                        <div className="text-center sm:text-left flex-1">
+                          <p className="text-emerald-100 text-xs font-bold uppercase tracking-[0.1em] mb-1">Our Flat Fee</p>
+                          <p className="text-2xl md:text-3xl font-black">Only $350 per transaction</p>
                         </div>
-                        <div className="sm:ml-auto">
-                          <p className="text-emerald-50/80 text-sm leading-tight max-w-[180px]">
-                            Includes escrow setup, title verification, and export coordination.
+                        <div className="sm:ml-auto bg-emerald-700/50 px-4 py-2 rounded-lg border border-emerald-500/30 hidden lg:block">
+                          <p className="text-emerald-50/90 text-[13px] leading-tight max-w-[160px] font-medium">
+                            Includes escrow, title verification, and export setup.
                           </p>
                         </div>
                       </div>
@@ -219,11 +219,18 @@ const SecurePay = () => {
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?q=80&w=2000')] bg-cover bg-center opacity-25 group-hover:scale-105 transition-transform duration-700" />
         {/* Contrast overlay to keep text readable */}
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/85 via-emerald-900/55 to-emerald-950/85" />
-        <div className="relative z-10 flex justify-center items-center">
-          <p className="text-2xl md:text-3xl font-medium tracking-wide flex items-center gap-2 group-hover:text-emerald-400 transition-colors">
-            Make the U.S. a better experience with <span className="font-bold">SecurePay</span>
-            <ChevronRight className="w-6 h-6 mt-1 group-hover:translate-x-2 transition-transform" />
+        <div className="relative z-10 flex flex-col items-center gap-6">
+          <p className="text-2xl md:text-4xl font-bold tracking-tight text-center flex flex-col md:flex-row items-center gap-3 group-hover:text-emerald-300 transition-colors">
+            <span>Make the U.S. a better experience with</span>
+            <span className="bg-white/10 px-4 py-1 rounded-lg backdrop-blur-sm flex items-center gap-2 border border-white/20">
+              <ShieldCheck className="w-8 h-8 text-emerald-400" />
+              SecurePay
+            </span>
           </p>
+          <div className="flex items-center gap-2 text-emerald-400 font-bold uppercase tracking-widest text-sm bg-emerald-950/50 px-6 py-2 rounded-full border border-emerald-800/50 group-hover:bg-emerald-800 transition-all">
+            Get Started Now
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+          </div>
         </div>
       </div>
     </div>

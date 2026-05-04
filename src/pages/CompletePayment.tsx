@@ -20,7 +20,8 @@ import {
   Car, 
   Calendar, 
   DollarSign,
-  Globe
+  Globe,
+  ShieldCheck
 } from 'lucide-react';
 
 const CompletePayment = () => {
@@ -281,15 +282,25 @@ const CompletePayment = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6">
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-8">
                 <button 
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="w-full md:w-auto px-8 py-3.5 bg-[#107050] hover:bg-[#0c5940] text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2.5 transition-all shadow-lg shadow-emerald-900/20 active:scale-[0.98]"
+                  className="w-full md:w-[280px] h-14 bg-[#107050] hover:bg-[#0c5940] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-900/20 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed group"
                 >
-                  {isSubmitting ? "Processing..." : "Confirm Payment"}
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span className="animate-pulse">Processing...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                      <span>Confirm Payment</span>
+                    </>
+                  )}
                 </button>
-                <button className="w-full md:w-auto px-8 py-3.5 border-2 border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-bold text-lg flex items-center justify-center gap-2.5 transition-all">
+                <button className="w-full md:w-auto px-8 h-14 border-2 border-slate-200 hover:bg-slate-50 text-slate-700 rounded-2xl font-bold text-lg flex items-center justify-center gap-2.5 transition-all">
                   <Download className="w-5 h-5" />
                   Download Invoice
                 </button>
