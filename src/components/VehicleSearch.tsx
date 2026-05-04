@@ -15,7 +15,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Search, ChevronDown, SlidersHorizontal, ChevronUp } from "lucide-react";
 
-const YEAR_MIN = 1910;
+const YEAR_MIN = 1810;
 const YEAR_MAX = 2026;
 const PRICE_MIN = 15000;
 const PRICE_MAX = 1000000;
@@ -217,6 +217,7 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     {[
+                      { label: "Before 1990", range: [1810, 1990] as const },
                       { label: "1990 – 2000", range: [1990, 2000] as const },
                       { label: "2000 – 2010", range: [2000, 2010] as const },
                       { label: "2010 – 2020", range: [2010, 2020] as const },
