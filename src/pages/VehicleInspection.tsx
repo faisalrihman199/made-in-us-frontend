@@ -491,36 +491,42 @@ const VehicleInspection = () => {
                   <div className="w-24 h-32 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-sm rotate-[-2deg] transition-transform hover:rotate-0">
                     <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=400" alt="Car" className="w-full h-full object-cover grayscale-[0.2]" />
                   </div>
-                  <div className="w-24 h-32 bg-white rounded-lg p-2 border border-gray-200 shadow-sm flex flex-col gap-1.5 transition-transform hover:translate-y-[-4px]">
-                    <div className="h-1.5 w-3/4 bg-gray-200 rounded" />
-                    <div className="space-y-1 mt-1">
-                      <div className="h-0.5 w-full bg-gray-100 rounded" />
-                      <div className="h-0.5 w-full bg-gray-100 rounded" />
-                      <div className="h-0.5 w-5/6 bg-gray-100 rounded" />
-                    </div>
-                    <div className="h-1.5 w-2/3 bg-gray-200 rounded mt-1" />
+                  <div className="w-24 h-32 bg-white rounded-lg p-2 border border-gray-200 shadow-sm flex flex-col gap-1 transition-transform hover:translate-y-[-4px]">
+                    <div className="h-2 w-3/4 bg-gray-300 rounded mb-1" />
                     <div className="space-y-1">
-                      <div className="h-0.5 w-full bg-gray-100 rounded" />
-                      <div className="h-0.5 w-full bg-gray-100 rounded" />
+                      {[1, 2, 3, 4].map((i) => (
+                        <div key={i} className="flex items-center gap-1">
+                          <div className="w-1.5 h-1.5 rounded-sm bg-[#2f884d]/40" />
+                          <div className={`h-1 bg-gray-100 rounded ${i % 2 === 0 ? "w-full" : "w-2/3"}`} />
+                        </div>
+                      ))}
                     </div>
-                    <div className="mt-auto h-8 w-full bg-blue-50/50 rounded flex flex-col items-center justify-center gap-1">
-                      <div className="w-3 h-3 bg-[#2f884d]/20 rounded-full border border-[#2f884d]/30" />
-                      <div className="h-0.5 w-8 bg-gray-200 rounded" />
-                    </div>
-                  </div>
-                  <div className="w-24 h-32 bg-white rounded-lg p-2 border border-gray-200 shadow-sm flex flex-col gap-1.5 translate-y-1 rotate-[2deg] transition-transform hover:rotate-0">
-                    <div className="h-1.5 w-1/2 bg-gray-200 rounded" />
-                    <div className="space-y-1 mt-1">
-                      <div className="h-0.5 w-full bg-gray-100 rounded" />
-                      <div className="h-0.5 w-full bg-gray-100 rounded" />
+                    <div className="h-1.5 w-1/2 bg-gray-200 rounded mt-2" />
+                    <div className="space-y-1">
                       <div className="h-0.5 w-full bg-gray-100 rounded" />
                       <div className="h-0.5 w-full bg-gray-100 rounded" />
                       <div className="h-0.5 w-3/4 bg-gray-100 rounded" />
                     </div>
-                    <div className="h-1.5 w-5/6 bg-gray-200 rounded mt-1" />
+                    <div className="mt-auto h-8 w-full bg-[#f0f9f3] rounded-md flex flex-col items-center justify-center gap-0.5 border border-[#2f884d]/10">
+                      <div className="w-2.5 h-2.5 bg-[#2f884d] rounded-full flex items-center justify-center">
+                        <Check className="w-1.5 h-1.5 text-white" />
+                      </div>
+                      <div className="h-0.5 w-8 bg-[#2f884d]/20 rounded" />
+                    </div>
+                  </div>
+                  <div className="w-24 h-32 bg-white rounded-lg p-2 border border-gray-200 shadow-sm flex flex-col gap-1 translate-y-1 rotate-[2deg] transition-transform hover:rotate-0">
+                    <div className="h-2 w-2/3 bg-gray-300 rounded mb-1" />
+                    <div className="space-y-1">
+                      {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className={`h-1 bg-gray-100 rounded ${i % 3 === 0 ? "w-full" : "w-4/5"}`} />
+                      ))}
+                    </div>
+                    <div className="mt-2 h-2 w-3/4 bg-gray-200 rounded" />
                     <div className="space-y-1">
                       <div className="h-0.5 w-full bg-gray-100 rounded" />
+                      <div className="h-0.5 w-5/6 bg-gray-100 rounded" />
                       <div className="h-0.5 w-full bg-gray-100 rounded" />
+                      <div className="h-0.5 w-2/3 bg-gray-100 rounded" />
                     </div>
                   </div>
                 </div>
