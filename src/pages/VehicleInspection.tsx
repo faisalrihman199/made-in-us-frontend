@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, User, Car, ChevronDown, Mail, FileText, CreditCard, Landmark, Check } from "lucide-react";
+import { Search, User, Car, ChevronDown, Mail, FileText, CreditCard, Landmark, Check, ShieldCheck, Clock, Upload } from "lucide-react";
 import { submitVehicleInspection, getPaymentDetails } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -237,135 +237,264 @@ const VehicleInspection = () => {
             </div>
           </section>
 
-          {/* Payment Method */}
-          <section className="bg-[#fcfdfd] border border-[#f0f0f0] rounded-[20px] p-6 shadow-sm">
-            <div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
-              <CreditCard className="w-5 h-5 text-[#4a6458]" strokeWidth={2.5} />
-              <h2 className="text-[17px] font-medium text-gray-800">Select Payment Method *</h2>
+          {/* New Inspection Payment Design */}
+          <div className="bg-[#fcfdfd] border border-[#f0f0f0] rounded-[24px] p-8 shadow-sm overflow-hidden">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pb-8 border-b border-gray-100">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-[#2f884d]/10 rounded-2xl flex items-center justify-center">
+                  <CreditCard className="w-7 h-7 text-[#2f884d]" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-[#1b2533]">Inspection Payment</h2>
+                  <p className="text-gray-500 text-sm">Choose your payment method to complete your inspection request of $500.</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl">
+                <ShieldCheck className="w-5 h-5 text-[#2f884d]" />
+                <div>
+                  <p className="text-[13px] font-bold text-gray-800">Secure Payment</p>
+                  <p className="text-[11px] text-gray-500">Your data is encrypted and protected.</p>
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <h3 className="text-lg font-bold text-[#1b2533] mb-6">Choose your payment method</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
               <button
                 type="button"
                 onClick={() => setPaymentMethod("card")}
-                className={`p-5 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 relative overflow-hidden group ${
+                className={`p-6 rounded-2xl border-2 transition-all text-left flex flex-col gap-4 relative ${
                   paymentMethod === "card"
-                    ? "border-[#2f884d] bg-[#f0f9f3]"
+                    ? "border-[#2f884d] bg-[#f0f9f3]/50"
                     : "border-gray-100 bg-white hover:border-gray-200"
                 }`}
               >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
-                  paymentMethod === "card" ? "bg-[#2f884d] text-white" : "bg-gray-100 text-gray-500"
-                }`}>
-                  <CreditCard className="w-6 h-6" />
-                </div>
-                <div className="text-center">
-                  <p className={`font-bold text-[15px] mb-0.5 ${paymentMethod === "card" ? "text-[#1b2533]" : "text-gray-600"}`}>Credit Card</p>
-                  <p className="text-[11px] text-gray-500 font-medium">Stripe Payment</p>
-                </div>
-                {paymentMethod === "card" && (
-                  <div className="absolute top-2 right-2">
-                    <Check className="w-4 h-4 text-[#2f884d]" />
+                <div className="flex justify-between items-start">
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                    paymentMethod === "card" ? "border-[#2f884d]" : "border-gray-200"
+                  }`}>
+                    {paymentMethod === "card" && <div className="w-3 h-3 rounded-full bg-[#2f884d]" />}
                   </div>
-                )}
+                  <CreditCard className={`w-8 h-8 ${paymentMethod === "card" ? "text-[#2f884d]" : "text-gray-300"}`} />
+                </div>
+                <div>
+                  <p className="font-bold text-[#1b2533] text-base mb-1">Credit / Debit Card (Stripe)</p>
+                  <p className="text-[12px] text-gray-500 leading-relaxed mb-4">Secure payment by credit or debit card via Stripe.</p>
+                  <div className="flex gap-2">
+                    <div className="h-6 w-9 bg-gray-100 rounded flex items-center justify-center text-[10px] font-bold text-blue-800">VISA</div>
+                    <div className="h-6 w-9 bg-gray-100 rounded flex items-center justify-center text-[10px] font-bold text-orange-600">MC</div>
+                    <div className="h-6 w-9 bg-gray-100 rounded flex items-center justify-center text-[10px] font-bold text-blue-500">AMEX</div>
+                    <div className="h-6 w-9 bg-gray-100 rounded flex items-center justify-center text-[10px] font-bold text-black">Pay</div>
+                  </div>
+                </div>
               </button>
 
               <button
                 type="button"
                 onClick={() => setPaymentMethod("transfer")}
-                className={`p-5 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 relative overflow-hidden group ${
+                className={`p-6 rounded-2xl border-2 transition-all text-left flex flex-col gap-4 relative ${
                   paymentMethod === "transfer"
-                    ? "border-[#2f884d] bg-[#f0f9f3]"
+                    ? "border-[#2f884d] bg-[#f0f9f3]/50"
                     : "border-gray-100 bg-white hover:border-gray-200"
                 }`}
               >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
-                  paymentMethod === "transfer" ? "bg-[#2f884d] text-white" : "bg-gray-100 text-gray-500"
-                }`}>
-                  <Landmark className="w-6 h-6" />
-                </div>
-                <div className="text-center">
-                  <p className={`font-bold text-[15px] mb-0.5 ${paymentMethod === "transfer" ? "text-[#1b2533]" : "text-gray-600"}`}>Bank Transfer</p>
-                  <p className="text-[11px] text-gray-500 font-medium">Traditional Wire</p>
-                </div>
-                {paymentMethod === "transfer" && (
-                  <div className="absolute top-2 right-2">
-                    <Check className="w-4 h-4 text-[#2f884d]" />
+                <div className="flex justify-between items-start">
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                    paymentMethod === "transfer" ? "border-[#2f884d]" : "border-gray-200"
+                  }`}>
+                    {paymentMethod === "transfer" && <div className="w-3 h-3 rounded-full bg-[#2f884d]" />}
                   </div>
-                )}
-              </button>
-            </div>
-            
-            {paymentMethod === "card" ? (
-              <div className="p-10 bg-gray-50/50 border border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center text-center space-y-4">
-                <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center">
-                  <CreditCard className="w-8 h-8 text-gray-200" />
+                  <Landmark className={`w-8 h-8 ${paymentMethod === "transfer" ? "text-[#2f884d]" : "text-gray-300"}`} />
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-gray-900">Stripe Integration Coming Soon</p>
-                  <p className="text-gray-500 text-[13px] max-w-[280px] mx-auto leading-relaxed">
-                    Card payments via Stripe are being finalized. Please select **Bank Transfer** to proceed with your inspection today.
-                  </p>
+                  <p className="font-bold text-[#1b2533] text-base mb-1">Bank Transfer</p>
+                  <p className="text-[12px] text-gray-500 leading-relaxed">Make a bank transfer directly from your bank account.</p>
                 </div>
-              </div>
-            ) : (
-              <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                {paymentDetails && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-3">
-                      <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Bank Details</p>
-                      <div className="text-[14px] space-y-2">
-                        <div className="flex justify-between border-b border-gray-50 pb-1.5">
-                          <span className="text-gray-400">Bank</span>
-                          <span className="font-bold text-gray-800">{paymentDetails.bank.bankName}</span>
-                        </div>
-                        <div className="flex justify-between border-b border-gray-50 pb-1.5">
-                          <span className="text-gray-400">Account</span>
-                          <span className="font-bold text-gray-800">{paymentDetails.bank.accountName}</span>
-                        </div>
-                        <div className="flex justify-between border-b border-gray-50 pb-1.5">
-                          <span className="text-gray-400">Account #</span>
-                          <span className="font-bold text-gray-800">{paymentDetails.bank.accountNumber}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">SWIFT</span>
-                          <span className="font-bold text-gray-800">{paymentDetails.bank.swiftCode || paymentDetails.bank.routingNumber}</span>
-                        </div>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column: Payment Details */}
+              <div className="lg:col-span-2 space-y-6">
+                {paymentMethod === "card" ? (
+                  <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-bold text-[#1b2533]">Pay with credit or debit card</h4>
+                      <div className="flex items-center gap-1 text-[11px] text-gray-400 font-medium ml-auto">
+                        <ShieldCheck className="w-3 h-3" /> Secured by Stripe
                       </div>
                     </div>
-                    <div className="p-5 bg-blue-50/30 rounded-2xl border border-blue-100/50 space-y-3">
-                      <p className="text-[11px] font-black text-blue-500/70 uppercase tracking-widest">Alternative</p>
-                      <div className="space-y-2">
-                        <p className="text-[13px] text-gray-600 font-medium">Send $500 via PayPal to:</p>
-                        <div className="bg-white p-3 rounded-xl border border-blue-100 shadow-sm">
-                          <p className="font-black text-blue-700 text-[14px] truncate">{paymentDetails.paypal.email}</p>
+                    
+                    <div className="space-y-4">
+                      <div className="space-y-1.5">
+                        <Label className="text-[13px] font-bold text-gray-700">Card information</Label>
+                        <div className="relative">
+                          <Input placeholder="Card number" className="h-12 pr-24 rounded-xl border-gray-200" />
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1.5 opacity-60">
+                            <div className="h-5 w-8 bg-gray-50 rounded border border-gray-100 text-[8px] font-black flex items-center justify-center">VISA</div>
+                            <div className="h-5 w-8 bg-gray-50 rounded border border-gray-100 text-[8px] font-black flex items-center justify-center">MC</div>
+                            <div className="h-5 w-8 bg-gray-50 rounded border border-gray-100 text-[8px] font-black flex items-center justify-center">AMEX</div>
+                          </div>
                         </div>
-                        <p className="text-[11px] text-blue-600/70 font-bold">* Reference: Vehicle VIN</p>
                       </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <Label className="text-[13px] font-bold text-gray-700">Expiration date</Label>
+                          <Input placeholder="MM / YY" className="h-12 rounded-xl border-gray-200" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label className="text-[13px] font-bold text-gray-700">CVC</Label>
+                          <div className="relative">
+                            <Input placeholder="CVC" className="h-12 rounded-xl border-gray-200" />
+                            <CreditCard className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label className="text-[13px] font-bold text-gray-700">Name on card</Label>
+                        <Input placeholder="Full name" className="h-12 rounded-xl border-gray-200" />
+                      </div>
+
+                      <Button 
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className="w-full h-14 bg-[#1b2d1d] hover:bg-[#1b2d1d]/90 text-white rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                      >
+                        {isSubmitting ? "Processing..." : (
+                          <>
+                            <ShieldCheck className="w-5 h-5" /> Pay $500
+                          </>
+                        )}
+                      </Button>
+                      
+                      <p className="text-center text-[12px] text-gray-500 font-medium">
+                        <ShieldCheck className="w-3 h-3 inline mr-1 text-[#2f884d]" /> Your payment is 100% secure. No card information is stored.
+                      </p>
                     </div>
+                  </div>
+                ) : (
+                  <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
+                    <h4 className="font-bold text-[#1b2533] mb-4">Transfer details</h4>
+                    {paymentDetails && (
+                      <div className="grid grid-cols-1 gap-4">
+                        <div className="p-6 bg-[#f8f9fc] rounded-2xl border border-gray-100 space-y-4">
+                          <div className="flex justify-between items-center border-b border-gray-200/50 pb-3">
+                            <span className="text-sm text-gray-500 font-medium">Bank Name</span>
+                            <span className="font-bold text-gray-900">{paymentDetails.bank.bankName}</span>
+                          </div>
+                          <div className="flex justify-between items-center border-b border-gray-200/50 pb-3">
+                            <span className="text-sm text-gray-500 font-medium">Account Name</span>
+                            <span className="font-bold text-gray-900">{paymentDetails.bank.accountName}</span>
+                          </div>
+                          <div className="flex justify-between items-center border-b border-gray-200/50 pb-3">
+                            <span className="text-sm text-gray-500 font-medium">Account Number</span>
+                            <span className="font-bold text-gray-900">{paymentDetails.bank.accountNumber}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-500 font-medium">SWIFT / Routing</span>
+                            <span className="font-bold text-gray-900">{paymentDetails.bank.swiftCode || paymentDetails.bank.routingNumber}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
+                      <Label className="text-[13px] font-bold text-gray-700">Upload Transfer Proof</Label>
+                      <div className="relative group">
+                        <Input 
+                          type="file"
+                          onChange={(e) => setPaymentProof(e.target.files?.[0] || null)}
+                          className="h-16 bg-white border-gray-200 rounded-2xl py-4 pl-12 cursor-pointer hover:border-[#2f884d] transition-all"
+                        />
+                        <FileText className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-[#2f884d]" />
+                      </div>
+                      <p className="text-[11px] text-gray-500 font-medium">Please upload a screenshot of your bank transfer.</p>
+                    </div>
+
+                    <Button 
+                      onClick={handleSubmit}
+                      disabled={isSubmitting}
+                      className="w-full h-14 bg-[#2f884d] hover:bg-[#25733f] text-white rounded-xl font-bold text-lg"
+                    >
+                      {isSubmitting ? "Scheduling..." : "Submit Inspection Request"}
+                    </Button>
                   </div>
                 )}
+              </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="paymentProof" className="text-[13px] font-bold text-gray-700 ml-1">Upload Payment Proof *</Label>
-                  <div className="relative group">
-                    <Input 
-                      id="paymentProof"
-                      type="file"
-                      onChange={(e) => setPaymentProof(e.target.files?.[0] || null)}
-                      className="h-16 bg-white border-gray-200 rounded-2xl py-4 pl-12 cursor-pointer transition-all hover:border-[#2f884d] hover:bg-[#f0f9f3]/30"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                    />
-                    <FileText className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-[#2f884d] transition-colors" />
+              {/* Right Column: Sidebar */}
+              <div className="space-y-4">
+                <div className="bg-[#f8f9fc] rounded-2xl p-6 border border-gray-100">
+                  <h4 className="font-bold text-[#1b2533] mb-6">Order Summary</h4>
+                  <div className="space-y-4 mb-6">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Vehicle inspection</span>
+                      <span className="font-bold text-gray-900">$500.00</span>
+                    </div>
                   </div>
-                  <p className="text-[12px] text-gray-500 font-medium ml-1 pt-1 flex items-center gap-1.5">
-                    <span className="w-1 h-1 rounded-full bg-gray-400" />
-                    PDF, JPG, or PNG of your $500 transfer confirmation.
-                  </p>
+                  <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
+                    <span className="text-lg font-bold text-[#1b2533]">Total</span>
+                    <span className="text-2xl font-black text-[#2f884d]">$500.00</span>
+                  </div>
+                </div>
+
+                <div className="bg-[#f0f9f3]/50 rounded-2xl p-6 border border-[#2f884d]/10 space-y-4">
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <Clock className="w-5 h-5 text-[#2f884d]" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-[#1b2533] text-sm mb-2">Estimated delivery time</h4>
+                    <p className="text-[12px] text-gray-600 leading-relaxed mb-4">
+                      You will receive the complete inspection report and vehicle photos within 3 to 5 business days, depending on the inspector's availability.
+                    </p>
+                    <div className="flex items-center gap-2 text-[12px] font-bold text-[#2f884d]">
+                      <FileText className="w-4 h-4" /> Estimated time: 3 to 5 days
+                    </div>
+                  </div>
                 </div>
               </div>
-            )}
-          </section>
+            </div>
+
+            {/* Footer Receive Section */}
+            <div className="mt-12 pt-8 border-t border-gray-100">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="flex-1 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#f8f9fc] rounded-xl flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-[#2f884d]" />
+                    </div>
+                    <h4 className="font-bold text-[#1b2533]">What you receive</h4>
+                  </div>
+                  <p className="text-[13px] text-gray-600 leading-relaxed max-w-[400px]">
+                    A detailed inspection report including the vehicle condition, HD photos, and all important information for your purchase.
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <div className="w-24 h-32 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-sm rotate-[-2deg]">
+                    <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=400" alt="Car" className="w-full h-full object-cover grayscale-[0.5]" />
+                  </div>
+                  <div className="w-24 h-32 bg-white rounded-lg p-2 border border-gray-200 shadow-sm flex flex-col gap-1">
+                    <div className="h-2 w-full bg-gray-100 rounded" />
+                    <div className="h-1 w-3/4 bg-gray-50 rounded" />
+                    <div className="h-1 w-full bg-gray-50 rounded" />
+                    <div className="mt-auto h-8 w-full bg-blue-50/50 rounded flex items-center justify-center">
+                      <div className="w-4 h-4 bg-blue-100 rounded-full" />
+                    </div>
+                  </div>
+                  <div className="w-24 h-32 bg-white rounded-lg p-2 border border-gray-200 shadow-sm flex flex-col gap-1 translate-y-1 rotate-[2deg]">
+                    <div className="h-2 w-1/2 bg-gray-100 rounded" />
+                    <div className="h-1 w-full bg-gray-50 rounded" />
+                    <div className="h-1 w-full bg-gray-50 rounded" />
+                    <div className="h-1 w-2/3 bg-gray-50 rounded" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div className="flex flex-col items-center pt-6">
             <Button 
