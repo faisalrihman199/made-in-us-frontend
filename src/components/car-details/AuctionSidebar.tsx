@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { submitInquiry, type CarDetailsResponse } from "@/lib/api";
 import { usePrice } from "@/hooks/usePrice";
+import RequestCallModal from "../modals/RequestCallModal";
 
 const CheckCircleSolid = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -269,59 +270,12 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
       </Dialog>
 
       {/* Request a Call Modal */}
-      <Dialog open={isCallModalOpen} onOpenChange={setIsCallModalOpen}>
-        <DialogContent className="sm:max-w-[450px] p-0 overflow-y-auto max-h-[calc(100vh-4rem)] rounded-3xl border-none shadow-2xl bg-white scrollbar-hide">
-          <div className="p-8 space-y-6">
-            <DialogHeader className="space-y-2 text-center">
-              <DialogTitle className="text-2xl font-bold tracking-tight text-gray-900 flex items-center justify-center gap-2">
-                <Phone className="w-5 h-5 text-[#2f884d]" />
-                Request a Call
-              </DialogTitle>
-              <DialogDescription className="text-gray-500">
-                Enter your details below and an expert will get back to you shortly.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">First Name</Label>
-                <Input id="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="John" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Last Name</Label>
-                <Input id="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Doe" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-[1fr,2fr] gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="countryCode" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Code</Label>
-                <Input id="countryCode" value={formData.countryCode} onChange={handleInputChange} placeholder="+1" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Phone Number</Label>
-                <Input id="phone" value={formData.phone} onChange={handleInputChange} placeholder=" (555) 000-0000" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="country" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Country</Label>
-              <div className="relative">
-                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input id="country" value={formData.country} onChange={handleInputChange} placeholder="United States" className="pl-11 h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-              </div>
-            </div>
-
-            <Button
-              disabled={isSubmitting}
-              onClick={() => handleInquirySubmit('CALL')}
-              className="w-full h-12 text-base font-bold rounded-xl bg-[#2f884d] hover:bg-[#25733f] text-white shadow-lg shadow-green-100/50 transition-all active:scale-[0.98] mt-2"
-            >
-              {isSubmitting ? "Sending..." : "Request Call Back"}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <RequestCallModal 
+        isOpen={isCallModalOpen} 
+        onOpenChange={setIsCallModalOpen}
+        listingId={car?.id}
+        listingUrl={window.location.href}
+      />
 
       {/* Email Modal */}
       <Dialog open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen}>

@@ -20,6 +20,7 @@ import { submitSubscription, getPaymentDetails, submitInquiry } from "@/lib/api"
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import RequestCallModal from "@/components/modals/RequestCallModal";
 
 const Membership = () => {
   const navigate = useNavigate();
@@ -571,49 +572,12 @@ const Membership = () => {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isCallModalOpen} onOpenChange={setIsCallModalOpen}>
-        <DialogContent className="sm:max-w-[450px] p-0 overflow-y-auto max-h-[calc(100vh-4rem)] rounded-3xl border-none shadow-2xl bg-white scrollbar-hide">
-          <div className="p-8 space-y-6">
-            <DialogHeader className="space-y-2 text-center">
-              <DialogTitle className="text-2xl font-bold tracking-tight text-gray-900 flex items-center justify-center gap-2">
-                <Phone className="w-5 h-5 text-[#2f884d]" />
-                Request a Call
-              </DialogTitle>
-              <DialogDescription className="text-gray-500">
-                Enter your details below and an expert will get back to you shortly.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-2">
-              <Label htmlFor="call-fullName" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Full Name</Label>
-              <Input id="call-fullName" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="John Doe" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-            </div>
-
-            <div className="grid grid-cols-1 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="call-phone" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Phone Number</Label>
-                <Input id="call-phone" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="+1 (555) 000-0000" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="call-country" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Country</Label>
-              <div className="relative">
-                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input id="call-country" name="country" value={formData.country} onChange={handleInputChange} placeholder="United States" className="pl-11 h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-              </div>
-            </div>
-
-            <Button
-              disabled={isSubmitting}
-              onClick={() => handleInquirySubmit('CALL')}
-              className="w-full h-12 text-base font-bold rounded-xl bg-[#2f884d] hover:bg-[#25733f] text-white shadow-lg shadow-green-100/50 transition-all active:scale-[0.98] mt-2"
-            >
-              {isSubmitting ? "Sending..." : "Request Call Back"}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Request a Call Modal */}
+      <RequestCallModal 
+        isOpen={isCallModalOpen} 
+        onOpenChange={setIsCallModalOpen}
+        listingUrl={window.location.href}
+      />
 
       <Footer />
     </div>
