@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, User, Car, ChevronDown, Mail, FileText, CreditCard, Landmark, Check, ShieldCheck, Clock, Upload } from "lucide-react";
+import { Search, User, Car, ChevronDown, Mail, FileText, CreditCard, Landmark, Check, ShieldCheck, Clock, HandCoins } from "lucide-react";
 import { submitVehicleInspection, getPaymentDetails } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -242,16 +242,16 @@ const VehicleInspection = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pb-8 border-b border-gray-100">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-[#2f884d]/10 rounded-2xl flex items-center justify-center">
-                  <CreditCard className="w-7 h-7 text-[#2f884d]" />
+                <div className="w-14 h-14 bg-[#2f884d] rounded-full flex items-center justify-center text-white shadow-lg shadow-[#2f884d]/20">
+                  <HandCoins className="w-7 h-7" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-[#1b2533]">Inspection Payment</h2>
                   <p className="text-gray-500 text-sm">Choose your payment method to complete your inspection request of $500.</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl">
-                <ShieldCheck className="w-5 h-5 text-[#2f884d]" />
+              <div className="flex items-center gap-3 px-5 py-2.5 bg-gray-50 rounded-2xl border border-gray-100">
+                <ShieldCheck className="w-6 h-6 text-[#2f884d]" />
                 <div>
                   <p className="text-[13px] font-bold text-gray-800">Secure Payment</p>
                   <p className="text-[11px] text-gray-500">Your data is encrypted and protected.</p>
@@ -464,8 +464,8 @@ const VehicleInspection = () => {
               <div className="flex flex-col md:flex-row items-center gap-8">
                 <div className="flex-1 space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#f8f9fc] rounded-xl flex items-center justify-center">
-                      <FileText className="w-5 h-5 text-[#2f884d]" />
+                    <div className="w-10 h-10 bg-[#2f884d] rounded-full flex items-center justify-center text-white">
+                      <FileText className="w-5 h-5" />
                     </div>
                     <h4 className="font-bold text-[#1b2533]">What you receive</h4>
                   </div>
