@@ -232,7 +232,7 @@ export async function voteComment(id: string, direction: "up" | "down"): Promise
 
 export type InquiryData = {
   listingId?: string | null;
-  type: "AVAILABILITY" | "CALL" | "EMAIL" | "GENERAL";
+  type: "AVAILABILITY" | "CALL" | "EMAIL" | "GENERAL" | "DETAILS";
   firstName: string;
   lastName: string;
   email?: string | null;

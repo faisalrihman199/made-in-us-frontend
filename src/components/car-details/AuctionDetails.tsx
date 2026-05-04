@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, FileText, Camera, Tag, Ship, Lock, ArrowRight, ClipboardList } from "lucide-react";
 import SafePay from './SafePay';
 import ShippingBanner from './ShippingBanner';
 import MembershipBanner from './MembershipBanner';
 import QandA from './QandA';
 import VehicleComments from './CommentsAndBids';
+import RequestDetailsModal from "../modals/RequestDetailsModal";
 import type { CarDetailsResponse } from "@/lib/api";
 import { usePrice } from "@/hooks/usePrice";
 
@@ -207,6 +208,7 @@ const AuctionDetails = ({ car }: AuctionDetailsProps) => {
   }, [car]);
 
   const [playingVideo, setPlayingVideo] = useState<number | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const hasCar = Boolean(car);
 
   const hasValue = (v: unknown) => {
@@ -244,199 +246,106 @@ const AuctionDetails = ({ car }: AuctionDetailsProps) => {
   return (
     <div className="max-w-screen-xl ">
       {/* Car specifications grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-6">
-          <div className="border rounded-lg overflow-hidden shadow-sm">
-            <table className="w-full">
-              <tbody className="divide-y">
-                {leftRows.map(([label, value]) => (
-                  <tr key={label}>
-                    <td className="py-3 px-4 font-medium bg-gray-100">{label}</td>
-                    <td className="py-3 px-4">{String(value)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="border border-gray-100 rounded-xl overflow-hidden shadow-sm bg-white">
+          <table className="w-full text-[15px]">
+            <tbody className="divide-y divide-gray-50">
+              {leftRows.map(([label, value]) => (
+                <tr key={label}>
+                  <td className="py-4 px-6 font-semibold text-[#1b2533] bg-gray-50/30 w-1/2">{label}</td>
+                  <td className="py-4 px-6 text-gray-600 font-medium">{String(value)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="border border-gray-100 rounded-xl overflow-hidden shadow-sm bg-white">
+          <table className="w-full text-[15px]">
+            <tbody className="divide-y divide-gray-50">
+              {rightRows.map(([label, value]) => (
+                <tr key={label}>
+                  <td className="py-4 px-6 font-semibold text-[#1b2533] bg-gray-50/30 w-1/2">{label}</td>
+                  <td className="py-4 px-6 text-gray-600 font-medium">{String(value)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* New Request Details Section */}
+      <div className="mt-12 bg-white border border-gray-100 rounded-[32px] p-8 sm:p-12 shadow-sm text-center">
+        <h3 className="text-[22px] font-bold text-[#1b2533] mb-10">Contact our team to receive:</h3>
+        
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <div className="flex flex-col items-center gap-4 group">
+            <div className="w-16 h-16 rounded-full bg-[#f8faf9] flex items-center justify-center transition-transform group-hover:scale-105">
+              <ClipboardList className="w-8 h-8 text-[#2f884d]" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="font-bold text-[#2f884d] text-[17px]">Full vehicle history</h4>
+              <p className="text-[13px] text-gray-500 leading-snug max-w-[140px] mx-auto">Get a detailed report and all the facts.</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-4 group">
+            <div className="w-16 h-16 rounded-full bg-[#f8faf9] flex items-center justify-center transition-transform group-hover:scale-105">
+              <Camera className="w-8 h-8 text-[#2f884d]" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="font-bold text-[#2f884d] text-[17px]">Additional photos & videos</h4>
+              <p className="text-[13px] text-gray-500 leading-snug max-w-[140px] mx-auto">See every detail with high-quality media.</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-4 group">
+            <div className="w-16 h-16 rounded-full bg-[#f8faf9] flex items-center justify-center transition-transform group-hover:scale-105">
+              <Tag className="w-8 h-8 text-[#2f884d]" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="font-bold text-[#2f884d] text-[17px]">Export price in EUR / USD</h4>
+              <p className="text-[13px] text-gray-500 leading-snug max-w-[140px] mx-auto">Transparent pricing with no hidden fees.</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-4 group">
+            <div className="w-16 h-16 rounded-full bg-[#f8faf9] flex items-center justify-center transition-transform group-hover:scale-105">
+              <Ship className="w-8 h-8 text-[#2f884d]" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="font-bold text-[#2f884d] text-[17px]">Shipping options to your country</h4>
+              <p className="text-[13px] text-gray-500 leading-snug max-w-[140px] mx-auto">Fast and reliable worldwide delivery.</p>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="border rounded-lg overflow-hidden">
-            <table className="w-full">
-              <tbody className="divide-y">
-                {rightRows.map(([label, value]) => (
-                  <tr key={label}>
-                    <td className="py-3 px-4 font-medium bg-gray-100">{label}</td>
-                    <td className="py-3 px-4">{String(value)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="max-w-[800px] mx-auto space-y-5">
+          <button 
+            onClick={() => setIsDetailsModalOpen(true)}
+            className="w-full bg-[#376b3f] hover:bg-[#2d5733] text-white h-16 rounded-2xl flex items-center justify-center gap-3 text-[20px] font-bold shadow-lg shadow-green-900/10 transition-all active:scale-[0.98]"
+          >
+            <FileText className="w-6 h-6" />
+            Request Vehicle Details
+            <ArrowRight className="w-6 h-6 ml-1" />
+          </button>
+          
+          <div className="flex items-center justify-center gap-2 text-gray-400">
+            <Lock className="w-3.5 h-3.5" />
+            <span className="text-[13px] font-medium">Get full vehicle information, export price, shipping options and more.</span>
           </div>
         </div>
       </div>
 
-      {/* Additional Details Sections */}
-      <div className="space-y-8 mt-8">
-        {hasCar && description ? (
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Description</h2>
-            <p className="text-gray-700 leading-relaxed whitespace-pre-line">{description}</p>
-          </section>
-        ) : null}
+      <RequestDetailsModal 
+        isOpen={isDetailsModalOpen} 
+        onOpenChange={setIsDetailsModalOpen}
+        listingId={car?.id || ""}
+        listingUrl={window.location.href}
+        vehicleTitle={car?.title}
+      />
 
-        {/* Highlights */}
-        {data.highlights.length ? (
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Highlights</h2>
-            <ul className="list-disc pl-5 space-y-2">
-              {data.highlights.map((highlight, index) => (
-                <li key={index} className="text-gray-700 leading-relaxed">
-                  {highlight}
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {/* Equipment */}
-        {data.equipment.length ? (
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Equipment</h2>
-            <p className="text-gray-700 mb-2">A partial list of notable equipment includes:</p>
-            <ul className="list-disc pl-5 space-y-2">
-              {data.equipment.map((item, index) => (
-                <li key={index} className="text-gray-700">{item}</li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {/* Modifications */}
-        {data.modifications.length ? (
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Modifications</h2>
-            <p className="text-gray-700 mb-2">Notable modifications include:</p>
-            <ul className="list-disc pl-5 space-y-2">
-              {data.modifications.map((mod, index) => (
-                <li key={index} className="text-gray-700">{mod}</li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {/* Known Flaws */}
-        {data.knownFlaws.length ? (
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Known Flaws</h2>
-            <ul className="list-disc pl-5 space-y-2">
-              {data.knownFlaws.map((flaw, index) => (
-                <li key={index} className="text-gray-700">{flaw}</li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {/* Recent Service History */}
-        {data.recentService?.work?.length ? (
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Recent Service History</h2>
-            <p className="text-gray-700 mb-2">
-              The attached <span className="text-emerald-600 hover:underline cursor-pointer">Carfax</span> history report shows that the following services have been performed:
-            </p>
-            <ul className="list-disc pl-5 space-y-2">
-              <li className="text-gray-700">
-                {data.recentService.date} ({data.recentService.mileage.toLocaleString()} miles): {data.recentService.work.join(", ")}
-              </li>
-            </ul>
-            {data.recentService.note ? (
-              <p className="text-gray-700 italic mt-2">
-                {data.recentService.note}
-              </p>
-            ) : null}
-          </section>
-        ) : null}
-
-        {/* Other Items Included */}
-        {data.includedItems.length ? (
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Other Items Included in Sale</h2>
-            <ul className="list-disc pl-5 space-y-2">
-              {data.includedItems.map((item, index) => (
-                <li key={index} className="text-gray-700">{item}</li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {/* Ownership History */}
-        {data.ownershipHistory ? (
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Ownership History</h2>
-            <p className="text-gray-700">
-              {data.ownershipHistory}
-            </p>
-          </section>
-        ) : null}
-
-        {/* Video Section */}
-        {data.videos.length ? (
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Video</h2>
-            <div className="relative">
-              <div className="flex gap-4 w-full overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4">
-                {data.videos.map((video) => (
-                <div 
-                  key={video.id}
-                  className="flex-none relative w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.75rem)] rounded-lg overflow-hidden bg-black cursor-pointer group"
-                  onClick={() => setPlayingVideo(playingVideo === video.id ? null : video.id)}
-                >
-                  {playingVideo === video.id ? (
-                    <div className="aspect-video">
-                      <iframe
-                        src={`${video.url.replace('watch?v=', 'embed/')}?autoplay=1`}
-                        className="w-full h-full"
-                        title={video.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    </div>
-                  ) : (
-                    <>
-                      {/* Video Thumbnail */}
-                      <div className="relative aspect-video">
-                        <img
-                          src={video.thumbnail}
-                          alt={video.title}
-                          className="absolute inset-0 w-full h-full object-cover"
-                        />
-                        {/* Play Button Overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-                          <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center">
-                            <div className="w-0 h-0 border-t-8 border-t-transparent border-l-[16px] border-l-zinc-900 border-b-8 border-b-transparent ml-1">
-                            </div>
-                          </div>
-                        </div>
-                        {/* Duration */}
-                        <div className="absolute bottom-2 right-2 px-2 py-1 rounded bg-black/70 text-white text-sm">
-                          {video.duration}
-                        </div>
-                      </div>
-
-                      {/* Video Title */}
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                        <h3 className="text-white font-medium">{video.title}</h3>
-                      </div>
-                    </>
-                  )}
-                </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        ) : null}
-
-
+      <div className="space-y-8 mt-12">
         {/* SafePay Section */}
         <SafePay />
 
@@ -450,8 +359,6 @@ const AuctionDetails = ({ car }: AuctionDetailsProps) => {
 
         {/* Comments Section */}
         <VehicleComments carId={car?.id} carModel={car?.title || "Vehicle"} />
-
-
       </div>
     </div>
   );
