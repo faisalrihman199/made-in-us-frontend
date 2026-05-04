@@ -93,7 +93,6 @@ out/
 
 # Nuxt.js build / generate output
 .nuxt/
-dist/
 
 # Gatsby files
 .cache/
@@ -101,7 +100,6 @@ dist/
 # public
 
 # vue-cli build objects
-dist/
 
 # Serverless directories
 .serverless/
