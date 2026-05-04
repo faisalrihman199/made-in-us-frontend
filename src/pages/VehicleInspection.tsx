@@ -21,6 +21,7 @@ const VehicleInspection = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"stripe" | "bank">("stripe");
+  const [paymentProof, setPaymentProof] = useState<File | null>(null);
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
 
   useEffect(() => {
@@ -82,7 +83,7 @@ const VehicleInspection = () => {
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Header />
-
+      <main className="max-w-[1200px] mx-auto px-4 pt-10 pb-20">
         <div className="flex items-center justify-between bg-white border border-[#f0f0f0] rounded-[20px] p-6 shadow-sm mb-8">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-[#e9ecef] rounded-[14px] flex items-center justify-center flex-shrink-0">
