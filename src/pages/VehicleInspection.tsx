@@ -283,10 +283,24 @@ const VehicleInspection = () => {
                   <p className="font-bold text-[#1b2533] text-base mb-1">Credit / Debit Card (Stripe)</p>
                   <p className="text-[12px] text-gray-500 leading-relaxed mb-4">Secure payment by credit or debit card via Stripe.</p>
                   <div className="flex gap-2">
-                    <div className="h-6 w-9 bg-gray-100 rounded flex items-center justify-center text-[10px] font-bold text-blue-800">VISA</div>
-                    <div className="h-6 w-9 bg-gray-100 rounded flex items-center justify-center text-[10px] font-bold text-orange-600">MC</div>
-                    <div className="h-6 w-9 bg-gray-100 rounded flex items-center justify-center text-[10px] font-bold text-blue-500">AMEX</div>
-                    <div className="h-6 w-9 bg-gray-100 rounded flex items-center justify-center text-[10px] font-bold text-black">Pay</div>
+                    <div className="h-6 w-10 bg-white border border-gray-100 rounded flex items-center justify-center shadow-sm">
+                      <span className="text-[9px] font-black italic text-blue-800 tracking-tighter">VISA</span>
+                    </div>
+                    <div className="h-6 w-10 bg-white border border-gray-100 rounded flex items-center justify-center shadow-sm">
+                      <div className="flex -space-x-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full bg-red-500 opacity-90" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500 opacity-90" />
+                      </div>
+                    </div>
+                    <div className="h-6 w-10 bg-white border border-gray-100 rounded flex items-center justify-center shadow-sm">
+                      <div className="bg-[#0070d1] text-white text-[7px] font-bold px-1 rounded-sm">AMEX</div>
+                    </div>
+                    <div className="h-6 w-10 bg-black rounded flex items-center justify-center shadow-sm">
+                      <div className="flex items-center gap-0.5">
+                        <div className="w-2 h-2.5 bg-white" style={{ clipPath: "path('M4.42 1.63a1.44 1.44 0 0 0-.32.96 1.34 1.34 0 0 0 .34.92 1.25 1.25 0 0 0 .91-.45 1.5 1.5 0 0 0 .33-.94 1.15 1.15 0 0 0-.32-.93 1.4 1.4 0 0 0-.94-.44 1.3 1.3 0 0 0-.00 1.88zM4.14 3.7c-.52 0-.97.32-1.22.32-.26 0-.64-.28-1.04-.28a1.53 1.53 0 0 0-1.29.78 3.1 3.1 0 0 0-.4 1.56c0 .87.33 1.67.66 2.14.23.33.5.7.86.7.35 0 .48-.22.9-.22s.54.22.91.22c.36 0 .6-.33.83-.67a2.8 2.8 0 0 0 .38-.78 1.46 1.46 0 0 1-.87-1.33c0-1 .82-1.48 1.08-1.63a1.53 1.53 0 0 0-1.2-0.62')" }} />
+                        <span className="text-white text-[9px] font-bold">Pay</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </button>
