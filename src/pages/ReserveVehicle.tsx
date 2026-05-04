@@ -4,11 +4,19 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Lock, Car, FileText, Mail, Phone, User } from "lucide-react";
 import { submitVehicleReservation, getPaymentDetails } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { countryCodes } from "@/lib/countries";
 
 const ReserveVehicle = () => {
   const navigate = useNavigate();
@@ -24,6 +32,7 @@ const ReserveVehicle = () => {
     firstName: "",
     lastName: "",
     email: "",
+    phonePrefix: "+1",
     phone: "",
     vehicleMake: "",
     vehicleModel: "",
@@ -105,9 +114,24 @@ const ReserveVehicle = () => {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-[13px] font-medium text-gray-600 ml-1">Phone Number *</Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <Input name="phone" value={formData.phone} onChange={handleInputChange} placeholder="+1 (555) 000-0000" className="h-11 pl-10 rounded-lg border-gray-200" />
+                <div className="flex gap-2">
+                  <Select value={formData.phonePrefix} onValueChange={(val) => setFormData(prev => ({ ...prev, phonePrefix: val }))}>
+                    <SelectTrigger className="w-[100px] h-11 rounded-lg border-gray-200">
+                      <SelectValue placeholder="+1" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countryCodes.map((c) => (
+                        <SelectItem key={c.code} value={c.code}>{c.code}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input 
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="(555) 000-0000" 
+                    className="flex-1 h-11 rounded-lg border-gray-200" 
+                  />
                 </div>
               </div>
             </div>

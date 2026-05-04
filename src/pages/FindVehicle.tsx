@@ -4,10 +4,18 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Lock, Car, User, Mail, Phone, Hash, Palette } from "lucide-react";
 import { submitVehicleFindRequest } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { countryCodes } from "@/lib/countries";
 
 const FindVehicle = () => {
   const navigate = useNavigate();
@@ -21,6 +29,7 @@ const FindVehicle = () => {
     listingUrl: "",
     name: "",
     email: "",
+    phonePrefix: "+1",
     phone: ""
   });
 
@@ -162,11 +171,26 @@ const FindVehicle = () => {
                    <Input name="email" value={formData.email} onChange={handleInputChange} type="email" placeholder="john@example.com" className="h-11 pl-10 rounded-lg border-gray-200" required />
                 </div>
               </div>
-              <div className="space-y-1.5">
+               <div className="space-y-1.5">
                 <Label className="text-[13px] font-medium text-gray-600 ml-1">Phone Number</Label>
-                <div className="relative">
-                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                   <Input name="phone" value={formData.phone} onChange={handleInputChange} placeholder="+1 (555) 000-0000" className="h-11 pl-10 rounded-lg border-gray-200" />
+                <div className="flex gap-2">
+                  <Select value={formData.phonePrefix} onValueChange={(val) => setFormData(prev => ({ ...prev, phonePrefix: val }))}>
+                    <SelectTrigger className="w-[100px] h-11 rounded-lg border-gray-200 bg-white">
+                      <SelectValue placeholder="+1" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countryCodes.map((c) => (
+                        <SelectItem key={c.code} value={c.code}>{c.code}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input 
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="(555) 000-0000" 
+                    className="flex-1 h-11 rounded-lg border-gray-200" 
+                  />
                 </div>
               </div>
             </div>

@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
+import { countries, countryCodes } from '@/lib/countries';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   ShieldCheck, 
   ChevronDown, 
@@ -20,6 +29,7 @@ const CompletePayment = () => {
     firstName: '',
     address: '',
     country: 'United States',
+    phonePrefix: '+1',
     phone: '',
     email: '',
     make: '',
@@ -35,8 +45,12 @@ const CompletePayment = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -133,35 +147,34 @@ const CompletePayment = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[13px] font-semibold text-slate-600 ml-1">Country</label>
-                  <div className="relative">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 flex items-center justify-center">
-                      <Globe className="w-4 h-4 text-slate-400" />
-                    </div>
-                    <select 
-                      name="country"
-                      value={formData.country}
-                      onChange={handleInputChange}
-                      className="w-full h-11 pl-11 pr-10 rounded-lg border border-slate-200 bg-slate-50/50 focus:border-[#107050] focus:ring-4 focus:ring-[#107050]/5 transition-all outline-none text-base font-medium appearance-none cursor-pointer"
-                    >
-                      <option value="United States">United States</option>
-                      <option value="Canada">Canada</option>
-                      <option value="United Kingdom">United Kingdom</option>
-                    </select>
-                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                  </div>
+                  <Select value={formData.country} onValueChange={(val) => handleSelectChange('country', val)}>
+                    <SelectTrigger className="w-full h-11 px-4 rounded-lg border border-slate-200 bg-slate-50/50 focus:border-[#107050] focus:ring-4 focus:ring-[#107050]/5 font-medium text-left">
+                      <div className="flex items-center gap-3">
+                        <Globe className="w-4 h-4 text-slate-400" />
+                        <SelectValue placeholder="Select Country" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                      {countries.map((c) => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-1.5">
                   <label className="text-[13px] font-semibold text-slate-600 ml-1">Phone</label>
                   <div className="flex gap-2">
-                    <div className="relative w-24">
-                      <select className="w-full h-11 pl-2 pr-6 rounded-lg border border-slate-200 bg-slate-50/50 focus:border-[#107050] focus:ring-4 focus:ring-[#107050]/5 transition-all outline-none text-base font-medium appearance-none cursor-pointer">
-                        <option>🇺🇸 +1</option>
-                        <option>🇬🇧 +44</option>
-                        <option>🇨🇦 +1</option>
-                      </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
-                    </div>
+                    <Select value={formData.phonePrefix} onValueChange={(val) => handleSelectChange('phonePrefix', val)}>
+                      <SelectTrigger className="w-24 h-11 px-3 rounded-lg border border-slate-200 bg-slate-50/50 focus:border-[#107050] focus:ring-4 focus:ring-[#107050]/5 font-bold">
+                        <SelectValue placeholder="+1" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countryCodes.map((c) => (
+                          <SelectItem key={c.code} value={c.code}>{c.code}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <div className="relative flex-1">
                       <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <input 

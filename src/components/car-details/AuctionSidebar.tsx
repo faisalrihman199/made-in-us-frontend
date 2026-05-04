@@ -10,12 +10,19 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { submitInquiry, type CarDetailsResponse } from "@/lib/api";
 import { usePrice } from "@/hooks/usePrice";
 import RequestCallModal from "../modals/RequestCallModal";
+import { countries, countryCodes } from "@/lib/countries";
 
 const CheckCircleSolid = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -41,14 +48,17 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
     phone: '',
     zipCode: '',
     message: '',
-    countryCode: '',
+    countryCode: '+1',
     country: ''
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
-    // Map IDs like 'email-firstName' or 'avail-firstName' to 'firstName'
     const field = id.includes('-') ? id.split('-')[1] : id;
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSelectChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -231,20 +241,50 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-[1fr,2fr] gap-4">
+              <div className="space-y-2">
+                <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Code</Label>
+                <Select value={formData.countryCode} onValueChange={(val) => handleSelectChange('countryCode', val)}>
+                  <SelectTrigger className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-bold">
+                    <SelectValue placeholder="+1" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {countryCodes.map((c) => (
+                      <SelectItem key={c.code} value={c.code} className="font-bold">{c.code}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="avail-phone" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Phone (Optional)</Label>
-                <div className="relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <Input id="avail-phone" value={formData.phone} onChange={handleInputChange} placeholder="(555) 000-0000" className="pl-11 h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-                </div>
+                <Input id="avail-phone" value={formData.phone} onChange={handleInputChange} placeholder="(555) 000-0000" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="avail-zip" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Zip Code</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <Input id="avail-zip" value={formData.zipCode} onChange={handleInputChange} placeholder="12345" className="pl-11 h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-                </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Country</Label>
+              <Select value={formData.country} onValueChange={(val) => handleSelectChange('country', val)}>
+                <SelectTrigger className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium">
+                  <div className="flex items-center gap-3">
+                    <Globe className="w-4 h-4 text-gray-400" />
+                    <SelectValue placeholder="Select country" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px]">
+                  {countries.map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="avail-zip" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Zip Code</Label>
+              <div className="relative">
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input id="avail-zip" value={formData.zipCode} onChange={handleInputChange} placeholder="12345" className="pl-11 h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
               </div>
+            </div>
             </div>
 
             <div className="space-y-2">
@@ -312,21 +352,39 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
 
             <div className="grid grid-cols-[1fr,2fr] gap-4">
               <div className="space-y-2">
-                <Label htmlFor="email-countryCode" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Code</Label>
-                <Input id="email-countryCode" value={formData.countryCode} onChange={handleInputChange} placeholder="+1" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
+                <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Code</Label>
+                <Select value={formData.countryCode} onValueChange={(val) => handleSelectChange('countryCode', val)}>
+                  <SelectTrigger className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-bold">
+                    <SelectValue placeholder="+1" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {countryCodes.map((c) => (
+                      <SelectItem key={c.code} value={c.code} className="font-bold">{c.code}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email-phone" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Phone Number</Label>
-                <Input id="email-phone" value={formData.phone} onChange={handleInputChange} placeholder=" (555) 000-0000" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
+                <Input id="email-phone" value={formData.phone} onChange={handleInputChange} placeholder="(555) 000-0000" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email-country" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Country</Label>
-              <div className="relative">
-                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input id="email-country" value={formData.country} onChange={handleInputChange} placeholder="United States" className="pl-11 h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-              </div>
+              <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Country</Label>
+              <Select value={formData.country} onValueChange={(val) => handleSelectChange('country', val)}>
+                <SelectTrigger className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium">
+                  <div className="flex items-center gap-3">
+                    <Globe className="w-4 h-4 text-gray-400" />
+                    <SelectValue placeholder="Select country" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px]">
+                  {countries.map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <Button

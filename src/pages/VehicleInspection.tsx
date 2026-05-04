@@ -16,6 +16,7 @@ import { submitVehicleInspection, getPaymentDetails } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { countries, countryCodes } from "@/lib/countries";
 
 const VehicleInspection = () => {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const VehicleInspection = () => {
   const [formData, setFormData] = useState({
     sellerName: "",
     listingUrl: "",
+    sellerPhonePrefix: "+1",
     sellerPhone: "",
     vin: "",
     make: "",
@@ -38,6 +40,7 @@ const VehicleInspection = () => {
     email: "",
     address: "",
     country: "United States",
+    phonePrefix: "+1",
     phone: "",
   });
 
@@ -46,8 +49,8 @@ const VehicleInspection = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, country: value }));
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async () => {
@@ -141,13 +144,25 @@ const VehicleInspection = () => {
 
               <div className="space-y-1.5">
                 <Label className="text-[13px] font-medium text-gray-600 ml-1">Seller's Phone *</Label>
-                <Input 
-                  name="sellerPhone"
-                  value={formData.sellerPhone}
-                  onChange={handleInputChange}
-                  placeholder="+1 (555) 000-0000" 
-                  className="h-11 rounded-lg border-gray-200" 
-                />
+                <div className="flex gap-2">
+                  <Select value={formData.sellerPhonePrefix} onValueChange={(val) => handleSelectChange("sellerPhonePrefix", val)}>
+                    <SelectTrigger className="w-[100px] h-11 rounded-lg border-gray-200">
+                      <SelectValue placeholder="+1" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countryCodes.map((c) => (
+                        <SelectItem key={c.code} value={c.code}>{c.code}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input 
+                    name="sellerPhone"
+                    value={formData.sellerPhone}
+                    onChange={handleInputChange}
+                    placeholder="(555) 000-0000" 
+                    className="flex-1 h-11 rounded-lg border-gray-200" 
+                  />
+                </div>
               </div>
             </div>
           </section>
@@ -212,7 +227,25 @@ const VehicleInspection = () => {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-[13px] font-medium text-gray-600 ml-1">Phone Number *</Label>
-                <Input name="phone" value={formData.phone} onChange={handleInputChange} placeholder="+1 (555) 000-0000" className="h-11 rounded-lg border-gray-200" />
+                <div className="flex gap-2">
+                  <Select value={formData.phonePrefix} onValueChange={(val) => handleSelectChange("phonePrefix", val)}>
+                    <SelectTrigger className="w-[100px] h-11 rounded-lg border-gray-200">
+                      <SelectValue placeholder="+1" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countryCodes.map((c) => (
+                        <SelectItem key={c.code} value={c.code}>{c.code}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input 
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="(555) 000-0000" 
+                    className="flex-1 h-11 rounded-lg border-gray-200" 
+                  />
+                </div>
               </div>
             </div>
 
@@ -223,15 +256,14 @@ const VehicleInspection = () => {
 
             <div className="space-y-1.5">
               <Label className="text-[13px] font-medium text-gray-600 ml-1">Country *</Label>
-              <Select value={formData.country} onValueChange={handleSelectChange}>
+              <Select value={formData.country} onValueChange={(val) => handleSelectChange("country", val)}>
                 <SelectTrigger className="h-11 rounded-lg border-gray-200">
                   <SelectValue placeholder="Select Country" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="United States">United States</SelectItem>
-                  <SelectItem value="Canada">Canada</SelectItem>
-                  <SelectItem value="United Kingdom">United Kingdom</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                <SelectContent className="max-h-[300px]">
+                  {countries.map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

@@ -4,11 +4,19 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { MapPin } from "lucide-react";
 import { submitInquiry } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { countryCodes } from "@/lib/countries";
 
 const Contact = () => {
   const navigate = useNavigate();
@@ -17,23 +25,18 @@ const Contact = () => {
     firstName: "",
     lastName: "",
     email: "",
+    phonePrefix: "+1",
     phone: "",
     message: ""
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { placeholder, value } = e.target;
-    const keyMap: Record<string, string> = {
-      "First Name": "firstName",
-      "Last Name": "lastName",
-      "Email Address": "email",
-      "Phone Number": "phone",
-      "Message": "message"
-    };
-    const key = keyMap[placeholder];
-    if (key) {
-      setFormData(prev => ({ ...prev, [key]: value }));
-    }
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async () => {
@@ -122,6 +125,7 @@ const Contact = () => {
                 <div className="space-y-1.5">
                   <Label className="text-[13px] font-medium text-[#2d3a34] ml-1">First Name *</Label>
                   <Input 
+                    name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
                     placeholder="First Name" 
@@ -131,6 +135,7 @@ const Contact = () => {
                 <div className="space-y-1.5">
                   <Label className="text-[13px] font-medium text-[#2d3a34] ml-1">Last Name *</Label>
                   <Input 
+                    name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
                     placeholder="Last Name" 
@@ -141,27 +146,42 @@ const Contact = () => {
 
               <div className="space-y-1.5">
                 <Label className="text-[13px] font-medium text-[#2d3a34] ml-1">Email Address</Label>
-                <Input 
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Email Address" 
-                  className="h-11 rounded-lg border-gray-200 bg-transparent focus:border-[#4a6458] focus:ring-1 focus:ring-[#4a6458] transition-all text-[14px] placeholder:text-gray-400 placeholder:font-light" 
-                />
-              </div>
+                  <Input 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Email Address" 
+                    className="h-11 rounded-lg border-gray-200 bg-transparent focus:border-[#4a6458] focus:ring-1 focus:ring-[#4a6458] transition-all text-[14px] placeholder:text-gray-400 placeholder:font-light" 
+                  />
+                </div>
 
               <div className="space-y-1.5">
                 <Label className="text-[13px] font-medium text-[#2d3a34] ml-1">Phone Number</Label>
-                <Input 
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="Phone Number" 
-                  className="h-11 rounded-lg border-gray-200 bg-transparent focus:border-[#4a6458] focus:ring-1 focus:ring-[#4a6458] transition-all text-[14px] placeholder:text-gray-400 placeholder:font-light" 
-                />
+                <div className="flex gap-2">
+                  <Select value={formData.phonePrefix} onValueChange={(val) => handleSelectChange("phonePrefix", val)}>
+                    <SelectTrigger className="w-[100px] h-11 rounded-lg border-gray-200 bg-transparent focus:border-[#4a6458] focus:ring-1 focus:ring-[#4a6458] transition-all text-[14px]">
+                      <SelectValue placeholder="+1" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countryCodes.map((c) => (
+                        <SelectItem key={c.code} value={c.code}>{c.code}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input 
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="Phone Number" 
+                    className="flex-1 h-11 rounded-lg border-gray-200 bg-transparent focus:border-[#4a6458] focus:ring-1 focus:ring-[#4a6458] transition-all text-[14px] placeholder:text-gray-400 placeholder:font-light" 
+                  />
+                </div>
               </div>
 
               <div className="space-y-1.5 pb-2">
                 <Label className="text-[13px] font-medium text-[#2d3a34] ml-1">Message</Label>
                 <Textarea
+                  name="message"
                   value={formData.message}
                   onChange={handleInputChange}
                   placeholder="Message"

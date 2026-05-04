@@ -19,26 +19,8 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { submitInquiry } from "@/lib/api";
+import { countries, countryCodes } from "@/lib/countries";
 
-const countryCodes = [
-  { code: "+1", country: "US/CA" },
-  { code: "+44", country: "UK" },
-  { code: "+33", country: "FR" },
-  { code: "+49", country: "DE" },
-  { code: "+971", country: "UAE" },
-  { code: "+966", country: "KSA" },
-  { code: "+92", country: "PK" },
-  { code: "+91", country: "IN" },
-  { code: "+61", country: "AU" },
-  { code: "+81", country: "JP" },
-  { code: "+86", country: "CN" },
-];
-
-const countries = [
-  "United States", "United Kingdom", "France", "Germany", "United Arab Emirates", 
-  "Saudi Arabia", "Canada", "Australia", "Japan", "China", "Pakistan", "India",
-  "Netherlands", "Belgium", "Switzerland", "Spain", "Italy", "Portugal"
-];
 
 interface RequestCallModalProps {
   isOpen: boolean;
