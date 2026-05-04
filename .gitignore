@@ -130,8 +130,6 @@ dist/
 *.vsix
 
 # Vite build output
-dist/
-dist-ssr/
 *.local
 
 # Editor directories and files
