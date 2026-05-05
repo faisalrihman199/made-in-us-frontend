@@ -97,6 +97,7 @@ const ManageData = () => {
       
       const response = await fetch(url, {
         method: 'GET',
+        credentials: 'include',
         headers: {
           'Accept': 'text/csv'
         }
