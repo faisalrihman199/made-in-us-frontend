@@ -13,7 +13,7 @@ const Footer = () => {
     { name: "Our Mission", id: "our-mission" },
     { name: "How It Works", id: "how-it-works" },
     { name: "Buying Guide", id: "buying-a-car" },
-    { name: "Abonnement", path: "/membership" },
+    { name: "Subscription", path: "/membership" },
     { name: "Watchlist", path: "/watchlist" },
   ];
 
