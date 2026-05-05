@@ -105,21 +105,28 @@ const ManageData = () => {
 
       if (!response.ok) throw new Error("Export failed");
 
+      const totalRecords = parseInt(response.headers.get('X-Total-Count') || "0");
       const reader = response.body?.getReader();
-      const contentLength = +(response.headers.get('Content-Length') ?? 0);
       
-      let receivedLength = 0;
+      let receivedRecords = 0;
       let chunks = [];
+      const decoder = new TextDecoder();
       
       while(true) {
         const {done, value} = await reader!.read();
         if (done) break;
         chunks.push(value);
-        receivedLength += value.length;
-        if (contentLength) {
-          setExportProgress(10 + (receivedLength / contentLength) * 90);
+        
+        if (totalRecords > 0) {
+          const text = decoder.decode(value, { stream: true });
+          // Count newlines as a proxy for records
+          const newLines = (text.match(/\n/g) || []).length;
+          receivedRecords += newLines;
+          
+          const progress = Math.min(98, (receivedRecords / totalRecords) * 100);
+          setExportProgress(10 + (progress * 0.9)); // Scale to leave room for finalization
         } else {
-          setExportProgress(prev => Math.min(prev + 5, 95));
+          setExportProgress(prev => Math.min(prev + 2, 95));
         }
       }
 
