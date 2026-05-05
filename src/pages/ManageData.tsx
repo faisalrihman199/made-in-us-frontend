@@ -18,6 +18,7 @@ const ManageData = () => {
   const [exportFilter, setExportFilter] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [exportProgress, setExportProgress] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
   
   const [importFile, setImportFile] = useState<File | null>(null);
@@ -34,6 +35,7 @@ const ManageData = () => {
   }
 
   const handleExportSample = () => {
+    // ... (rest of handleExportSample remains same)
     const headers = [
       "source", "url", "title", "subtitle", "year", "make", "model", "mileage", "vin", "transmission", "bodyType", "color", "engine", "location", "priceText", "priceNumeric", "description", "sellerName", "sellerAddress", "firstImage", "images", "specifications"
     ];
@@ -79,6 +81,7 @@ const ManageData = () => {
 
   const handleExportData = async () => {
     setIsExporting(true);
+    setExportProgress(10);
     try {
       let url = `${API_BASE}/api/data/export`;
       if (exportFilter === "custom") {
@@ -92,12 +95,50 @@ const ManageData = () => {
         url += `?filter=all`;
       }
       
-      window.open(url, '_blank');
-      toast.success("Export started");
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/csv'
+        }
+      });
+
+      if (!response.ok) throw new Error("Export failed");
+
+      const reader = response.body?.getReader();
+      const contentLength = +(response.headers.get('Content-Length') ?? 0);
+      
+      let receivedLength = 0;
+      let chunks = [];
+      
+      while(true) {
+        const {done, value} = await reader!.read();
+        if (done) break;
+        chunks.push(value);
+        receivedLength += value.length;
+        if (contentLength) {
+          setExportProgress(10 + (receivedLength / contentLength) * 90);
+        } else {
+          setExportProgress(prev => Math.min(prev + 5, 95));
+        }
+      }
+
+      const blob = new Blob(chunks, { type: 'text/csv' });
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `cars_export_${new Date().getTime()}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      setExportProgress(100);
+      toast.success("Export completed");
     } catch (error) {
+      console.error(error);
       toast.error("Failed to export data");
     } finally {
       setIsExporting(false);
+      setTimeout(() => setExportProgress(0), 1000);
     }
   };
 
@@ -238,6 +279,21 @@ const ManageData = () => {
                       onChange={(e) => setEndDate(e.target.value)}
                       className="h-12 bg-white rounded-xl border-gray-200" 
                     />
+                  </div>
+                </div>
+              )}
+
+              {exportProgress > 0 && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs font-bold text-[#6A7870]">
+                    <span>Preparing & Downloading</span>
+                    <span>{Math.round(exportProgress)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                    <div 
+                      className="bg-emerald-600 h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${exportProgress}%` }}
+                    ></div>
                   </div>
                 </div>
               )}

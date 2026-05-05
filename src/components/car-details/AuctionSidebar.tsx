@@ -220,70 +220,70 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="avail-firstName" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">First Name</Label>
-                <Input id="avail-firstName" value={formData.firstName} onChange={handleInputChange} placeholder="John" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-semibold" />
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="avail-firstName" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">First Name</Label>
+                  <Input id="avail-firstName" value={formData.firstName} onChange={handleInputChange} placeholder="John" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-semibold focus:ring-[#2f884d]/20 transition-all" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="avail-lastName" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Last Name</Label>
+                  <Input id="avail-lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Doe" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-semibold focus:ring-[#2f884d]/20 transition-all" />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="avail-lastName" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Last Name</Label>
-                <Input id="avail-lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Doe" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-semibold" />
-              </div>
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="avail-email" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Email Address</Label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input id="avail-email" type="email" value={formData.email} onChange={handleInputChange} placeholder="name@example.com" className="pl-11 h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-            <div className="grid grid-cols-[1fr,2fr] gap-4">
               <div className="space-y-2">
-                <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Code</Label>
-                <Select value={formData.countryCode} onValueChange={(val) => handleSelectChange('countryCode', val)}>
-                  <SelectTrigger className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-bold">
-                    <SelectValue placeholder="+1" />
+                <Label htmlFor="avail-email" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Email Address</Label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input id="avail-email" type="email" value={formData.email} onChange={handleInputChange} placeholder="name@example.com" className="pl-11 h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium focus:ring-[#2f884d]/20 transition-all" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Country</Label>
+                <Select value={formData.country} onValueChange={(val) => handleSelectChange('country', val)}>
+                  <SelectTrigger className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium">
+                    <div className="flex items-center gap-3">
+                      <Globe className="w-4 h-4 text-gray-400" />
+                      <SelectValue placeholder="Select country" />
+                    </div>
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
-                    {countryCodes.map((c) => (
-                      <SelectItem key={c.code} value={c.code} className="font-bold">{c.code}</SelectItem>
+                    {countries.map((c) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
+
+              <div className="grid grid-cols-[100px,1fr] gap-3">
+                <div className="space-y-2">
+                  <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Code</Label>
+                  <Select value={formData.countryCode} onValueChange={(val) => handleSelectChange('countryCode', val)}>
+                    <SelectTrigger className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-bold">
+                      <SelectValue placeholder="+1" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[300px]">
+                      {countryCodes.map((c) => (
+                        <SelectItem key={c.code} value={c.code} className="font-bold">{c.code}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="avail-phone" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Phone (Optional)</Label>
+                  <Input id="avail-phone" value={formData.phone} onChange={handleInputChange} placeholder="(555) 000-0000" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium focus:ring-[#2f884d]/20 transition-all" />
+                </div>
+              </div>
+
               <div className="space-y-2">
-                <Label htmlFor="avail-phone" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Phone (Optional)</Label>
-                <Input id="avail-phone" value={formData.phone} onChange={handleInputChange} placeholder="(555) 000-0000" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
+                <Label htmlFor="avail-zipCode" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Zip Code</Label>
+                <div className="relative">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input id="avail-zipCode" value={formData.zipCode} onChange={handleInputChange} placeholder="12345" className="pl-11 h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium focus:ring-[#2f884d]/20 transition-all" />
+                </div>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Country</Label>
-              <Select value={formData.country} onValueChange={(val) => handleSelectChange('country', val)}>
-                <SelectTrigger className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium">
-                  <div className="flex items-center gap-3">
-                    <Globe className="w-4 h-4 text-gray-400" />
-                    <SelectValue placeholder="Select country" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="max-h-[300px]">
-                  {countries.map((c) => (
-                    <SelectItem key={c} value={c}>{c}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="avail-zip" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Zip Code</Label>
-              <div className="relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input id="avail-zip" value={formData.zipCode} onChange={handleInputChange} placeholder="12345" className="pl-11 h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
-              </div>
-            </div>
             </div>
 
             <div className="space-y-2">
