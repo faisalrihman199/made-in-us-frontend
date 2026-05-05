@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Header from '@/components/Header';
-import { Check, Shield, Ship, FileSearch, ChevronRight, Lock, ChevronDown, Info } from 'lucide-react';
+import { Check, Shield, Ship, FileSearch, ChevronRight, Lock, ChevronDown, Info, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const SecurePay = () => {
@@ -210,27 +210,20 @@ const SecurePay = () => {
         </div>
       </main>
 
-      {/* Bottom Banner */}
+      {/* Simplified Bottom Banner matching User Image */}
       <div 
         onClick={() => navigate('/complete-payment')}
-        className="text-white py-12 px-4 shadow-inner relative overflow-hidden bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 cursor-pointer group"
+        className="text-white py-14 px-4 relative overflow-hidden bg-[#0a2e1f] cursor-pointer group border-t border-white/5"
       >
-        {/* Background image (more visible) */}
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?q=80&w=2000')] bg-cover bg-center opacity-25 group-hover:scale-105 transition-transform duration-700" />
-        {/* Contrast overlay to keep text readable */}
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/85 via-emerald-900/55 to-emerald-950/85" />
-        <div className="relative z-10 flex flex-col items-center gap-6">
-          <p className="text-2xl md:text-4xl font-bold tracking-tight text-center flex flex-col md:flex-row items-center gap-3 group-hover:text-emerald-300 transition-colors">
-            <span>Make the U.S. a better experience with</span>
-            <span className="bg-white/10 px-4 py-1 rounded-lg backdrop-blur-sm flex items-center gap-2 border border-white/20">
-              <ShieldCheck className="w-8 h-8 text-emerald-400" />
-              SecurePay
-            </span>
+        {/* Background image with dark green overlay */}
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?q=80&w=2000')] bg-cover bg-center opacity-30 grayscale-[0.2]" />
+        <div className="absolute inset-0 bg-[#0a2e1f]/80" />
+        
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <p className="text-xl md:text-[28px] font-medium tracking-tight text-center flex items-center gap-2 group-hover:text-emerald-300 transition-colors">
+            Make the U.S. a better experience with <span className="font-bold">SecurePay</span>
+            <ChevronRight className="w-6 h-6 ml-1 group-hover:translate-x-1 transition-transform" />
           </p>
-          <div className="flex items-center gap-2 text-emerald-400 font-bold uppercase tracking-widest text-sm bg-emerald-950/50 px-6 py-2 rounded-full border border-emerald-800/50 group-hover:bg-emerald-800 transition-all">
-            Get Started Now
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
-          </div>
         </div>
       </div>
     </div>

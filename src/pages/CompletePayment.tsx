@@ -20,8 +20,7 @@ import {
   Car, 
   Calendar, 
   DollarSign,
-  Globe,
-  ShieldCheck
+  Globe
 } from 'lucide-react';
 
 const CompletePayment = () => {

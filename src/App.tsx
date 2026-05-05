@@ -24,6 +24,7 @@ import AdminSubscription from "./pages/AdminSubscription";
 import Confirmation from "./pages/Confirmation";
 import PaymentResubmit from "./pages/PaymentResubmit";
 import Watchlist from "./pages/Watchlist";
+import ManageData from "./pages/ManageData";
 import { ScrollToTop } from "./components/ScrollToTop";
 import ShippingModal from "./components/car-details/ShippingModal";
 import CookiesBanner from "./components/CookiesBanner";
@@ -42,7 +43,6 @@ const GlobalModals = () => {
     </>
   );
 };
-
 const AppContent = () => (
   <BrowserRouter>
     <ScrollToTop />
@@ -64,6 +64,7 @@ const AppContent = () => (
       <Route path="/admin/reservation/:id" element={<AdminReservation />} />
       <Route path="/admin/find-vehicle/:id" element={<AdminFindVehicle />} />
       <Route path="/admin/subscription/:id" element={<AdminSubscription />} />
+      <Route path="/manage-data" element={<ManageData />} />
       <Route path="/confirmation" element={<Confirmation />} />
       <Route path="/resubmit-payment/:type/:id" element={<PaymentResubmit />} />
       <Route path="/watchlist" element={<Watchlist />} />

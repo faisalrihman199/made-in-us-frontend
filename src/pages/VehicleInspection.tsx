@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -15,13 +15,13 @@ import { Search, User, Car, ChevronDown, Mail, FileText, CreditCard, Landmark, C
 import { submitVehicleInspection, getPaymentDetails } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useEffect } from "react";
 import { countries, countryCodes } from "@/lib/countries";
 
 const VehicleInspection = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "transfer">("transfer");
+  const [paymentProof, setPaymentProof] = useState<File | null>(null);
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
 
   useEffect(() => {
@@ -78,7 +78,13 @@ const VehicleInspection = () => {
 
     setIsSubmitting(true);
     try {
-      await submitVehicleInspection(formData, paymentProof);
+      const dataToSend = {
+        ...formData,
+        sellerPhone: `${formData.sellerPhonePrefix}${formData.sellerPhone}`,
+        phone: `${formData.phonePrefix}${formData.phone}`
+      };
+      // @ts-ignore
+      await submitVehicleInspection(dataToSend, paymentProof!);
       navigate("/confirmation");
     } catch (error) {
       toast.error("Failed to schedule inspection", {

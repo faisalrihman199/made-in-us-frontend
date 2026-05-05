@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Check, Globe, User } from 'lucide-react';
+import { Mail, Phone, MapPin, Check, Globe, User, Tag, Clock, ShieldCheck, ChevronRight } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -8,6 +8,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -78,7 +79,7 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email || null,
-        phone: formData.phone || null,
+        phone: formData.phone ? `${formData.countryCode}${formData.phone}` : null,
         zipCode: formData.zipCode || null,
         country: formData.country || null,
         countryCode: formData.countryCode || null,
@@ -106,104 +107,102 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
     <div className="rounded-[20px] bg-white border border-[#E5ECE7] shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] p-6 md:p-8 w-full max-w-[420px] mx-auto font-sans">
 
       {/* Price Section */}
-      <div className="text-center mb-6 mt-2">
-        <h2 className="text-[44px] tracking-tight font-semibold text-[#255639] leading-none mb-3">
+      <div className="text-center mb-5">
+        <h2 className="text-[32px] sm:text-[36px] tracking-tight font-black text-[#0a2e1f] leading-none mb-1.5">
           {formattedPrice}
         </h2>
-        <p className="text-[#6A7870] text-[15px]">
+        <p className="text-[#6A7870] text-[12px] sm:text-[13px] font-medium leading-tight">
           Available for export & U.S. delivery
         </p>
       </div>
 
-      {/* Main Buttons */}
-      <div className="space-y-3.5 mb-8 text-[16px] font-medium">
+      {/* Main Buttons Section */}
+      <div className="space-y-3 mb-7">
+        {/* Check Availability Button */}
         <button 
           type="button"
           onClick={() => setIsAvailabilityModalOpen(true)}
-          className="w-full bg-gradient-to-r from-[#215E41] via-[#488251] to-[#80B66E] hover:opacity-95 transition-all text-white border-0 h-14 rounded-xl flex items-center justify-center shadow-sm cursor-pointer active:scale-[0.98]"
+          className="w-full h-[54px] bg-gradient-to-r from-[#1a4d2e] via-[#2d6a3e] to-[#40916c] hover:opacity-95 transition-all text-white border-0 rounded-[16px] flex items-center px-4 gap-3 shadow-lg shadow-green-900/5 cursor-pointer active:scale-[0.98] group"
         >
-          Check Availability
-        </button>
-        <button
-          type="button"
-          onClick={() => setIsEmailModalOpen(true)}
-          className="w-full h-14 rounded-xl border border-[#E5ECE7] text-[#255639] hover:bg-[#F8FAF9] flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer active:scale-[0.98]"
-        >
-          <Mail className="w-[18px] h-[18px] stroke-[2]" />
-          Contact Us
-        </button>
-      </div>
-
-      <div className="h-px bg-[#E5ECE7] w-full mb-6"></div>
-
-      {/* Checklist */}
-      <div className="space-y-4 mb-7 text-[16px] text-[#334138]">
-        <div className="flex items-center gap-3.5">
-          <CheckCircleSolid className="w-[22px] h-[22px] text-[#4DA45A] shrink-0" />
-          <span>Verified Listing</span>
-        </div>
-        <div className="flex items-center gap-3.5">
-          <CheckCircleSolid className="w-[22px] h-[22px] text-[#4DA45A] shrink-0" />
-          <span>SecurePay Protection</span>
-        </div>
-        <div className="flex items-center gap-3.5">
-          <CheckCircleSolid className="w-[22px] h-[22px] text-[#4DA45A] shrink-0" />
-          <span>Worldwide Shipping</span>
-        </div>
-        <div className="flex items-center gap-3.5">
-          <CheckCircleSolid className="w-[22px] h-[22px] text-[#4DA45A] shrink-0" />
-          <span>National Transport</span>
-        </div>
-      </div>
-
-      <div className="h-px bg-[#E5ECE7] w-full mb-6"></div>
-
-      {/* Location */}
-      <div className="mb-7">
-        <div className="flex items-center gap-3.5 mb-3.5">
-          <MapPin className="w-[22px] h-[22px] text-[#255639] shrink-0 stroke-[2]" />
-          <span className="text-[17px] text-[#334138]">{location}</span>
-        </div>
-        <div className="pl-9 space-y-2.5">
-          <div className="flex items-center gap-2.5">
-            <Check className="w-[18px] h-[18px] text-[#4DA45A] shrink-0 stroke-[3]" />
-            <span className="text-[14px] text-[#6A7870]">Worldwide shipping available</span>
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
           </div>
-          <div className="flex items-center gap-2.5">
-            <Check className="w-[18px] h-[18px] text-[#4DA45A] shrink-0 stroke-[3]" />
-            <span className="text-[14px] text-[#6A7870]">Inspection welcome</span>
+          <span className="text-[14px] sm:text-[15px] font-bold tracking-tight flex-1 text-left whitespace-nowrap">Check Availability</span>
+          <ChevronRight className="w-4 h-4 opacity-70 group-hover:translate-x-1 transition-transform shrink-0" />
+        </button>
+
+        {/* Request a Call Box */}
+        <div 
+          onClick={() => setIsCallModalOpen(true)}
+          className="w-full border border-gray-100 rounded-[16px] p-3.5 flex flex-col gap-3 cursor-pointer hover:bg-gray-50 transition-all group bg-white shadow-sm"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-[#1a4d2e] shrink-0">
+                <Phone className="w-4 h-4 fill-current" />
+              </div>
+              <div className="text-left">
+                <h4 className="text-[14px] font-bold text-[#1b2533] leading-tight">Request a Call</h4>
+                <p className="text-[12px] text-gray-400 font-medium">Contact our team</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-gray-300 group-hover:translate-x-1 transition-transform" />
+          </div>
+          
+          <div className="flex items-center gap-1.5 bg-[#f0fdf4] border border-[#dcfce7] px-2.5 py-1.5 rounded-lg self-start">
+            <Clock className="w-3 h-3 text-[#16a34a]" />
+            <span className="text-[10px] font-bold text-[#16a34a] whitespace-nowrap uppercase tracking-wide">Response within 24h</span>
           </div>
         </div>
       </div>
 
-      <div className="h-px bg-[#E5ECE7] w-full mb-6"></div>
+      {/* Features Grid */}
+      <div className="grid grid-cols-3 gap-0.5 mb-7 border-t border-gray-50 pt-6">
+        <div className="flex flex-col items-center text-center px-0.5">
+          <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center mb-2">
+            <ShieldCheck className="w-4 h-4 text-[#1b2533] opacity-70" />
+          </div>
+          <h5 className="text-[10px] font-bold text-[#1b2533] leading-tight mb-0.5">Secure & Trusted</h5>
+          <p className="text-[9px] text-gray-400 font-medium leading-tight">Secure process end-to-end</p>
+        </div>
+        <div className="flex flex-col items-center text-center border-x border-gray-50 px-0.5">
+          <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center mb-2">
+            <Globe className="w-4 h-4 text-[#1b2533] opacity-70" />
+          </div>
+          <h5 className="text-[10px] font-bold text-[#1b2533] leading-tight mb-0.5">Export & Delivery</h5>
+          <p className="text-[9px] text-gray-400 font-medium leading-tight">Handling all shipping</p>
+        </div>
+        <div className="flex flex-col items-center text-center px-0.5">
+          <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center mb-2">
+            <Tag className="w-4 h-4 text-[#1b2533] opacity-70" />
+          </div>
+          <h5 className="text-[10px] font-bold text-[#1b2533] leading-tight mb-0.5">Clear Pricing</h5>
+          <p className="text-[9px] text-gray-400 font-medium leading-tight">No hidden upfront fees</p>
+        </div>
+      </div>
 
-      {/* Expert Section */}
-      <div>
-        <div className="flex items-center gap-3.5 mb-5">
-          <CheckCircleSolid className="w-[22px] h-[22px] text-[#4DA45A] shrink-0" />
-          <span className="text-[17px] text-[#334138]">Speak with an expert</span>
+      {/* Location Card */}
+      <div className="bg-[#f8fafc] rounded-xl p-4 border border-gray-100">
+        <div className="flex items-center gap-2.5 mb-3.5">
+          <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shadow-sm">
+            <MapPin className="w-3.5 h-3.5 text-[#1b2533] opacity-70" />
+          </div>
+          <span className="text-[14px] font-bold text-[#1b2533] truncate">{location}</span>
         </div>
-        <div className="grid grid-cols-1 gap-3 mb-4">
-          <button
-            type="button"
-            onClick={() => setIsCallModalOpen(true)}
-            className="w-full h-[46px] rounded-xl border border-[#E5ECE7] text-[#255639] hover:bg-[#F8FAF9] flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer active:scale-[0.98] text-[14px] font-medium"
-          >
-            <Phone className="w-[16px] h-[16px] stroke-[2]" />
-            Request a Call
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsEmailModalOpen(true)}
-            className="w-full h-[46px] rounded-xl border border-[#E5ECE7] text-[#255639] hover:bg-[#F8FAF9] flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer active:scale-[0.98] text-[14px] font-medium"
-          >
-            <Mail className="w-[16px] h-[16px] stroke-[2]" />
-            Email
-          </button>
-        </div>
-        <div className="text-center text-[#6A7870] text-[13px] mb-2">
-          Response within 24h
+        <div className="h-px bg-gray-200/40 w-full mb-3.5"></div>
+        <div className="space-y-2.5">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+              <Check className="w-2.5 h-2.5 text-emerald-700 stroke-[4]" />
+            </div>
+            <span className="text-[12px] text-gray-600 font-bold">Worldwide shipping</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+              <Check className="w-2.5 h-2.5 text-emerald-700 stroke-[4]" />
+            </div>
+            <span className="text-[12px] text-gray-600 font-bold">Inspection welcome</span>
+          </div>
         </div>
       </div>
 
@@ -224,11 +223,11 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="avail-firstName" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">First Name</Label>
-                <Input id="avail-firstName" value={formData.firstName} onChange={handleInputChange} placeholder="John" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
+                <Input id="avail-firstName" value={formData.firstName} onChange={handleInputChange} placeholder="John" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-semibold" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="avail-lastName" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Last Name</Label>
-                <Input id="avail-lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Doe" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-medium" />
+                <Input id="avail-lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Doe" className="h-11 bg-gray-50/50 border-gray-100 rounded-xl font-semibold" />
               </div>
             </div>
 

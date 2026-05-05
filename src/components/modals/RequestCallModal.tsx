@@ -101,38 +101,40 @@ const RequestCallModal = ({ isOpen, onOpenChange, listingId, listingUrl }: Reque
 
           <div className="space-y-6">
             <div className="space-y-5">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-[14px] font-bold text-[#1b2533] ml-0.5">First name</Label>
+                <Label className="text-[13px] font-bold text-[#1b2533] ml-0.5 uppercase tracking-wider opacity-60">First name</Label>
                 <Input 
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  placeholder="Enter your first name" 
-                  className="h-13 bg-white border-gray-200 rounded-2xl font-medium focus:ring-2 focus:ring-[#2f884d]/10 focus:border-[#2f884d] transition-all placeholder:text-gray-400" 
+                  placeholder="John" 
+                  className="h-12 bg-gray-50/30 border-gray-100 rounded-xl font-semibold focus:ring-2 focus:ring-[#2f884d]/10 focus:border-[#2f884d] transition-all placeholder:text-gray-300" 
                 />
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[14px] font-bold text-[#1b2533] ml-0.5">Last name</Label>
+                <Label className="text-[13px] font-bold text-[#1b2533] ml-0.5 uppercase tracking-wider opacity-60">Last name</Label>
                 <Input 
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  placeholder="Enter your last name" 
-                  className="h-13 bg-white border-gray-200 rounded-2xl font-medium focus:ring-2 focus:ring-[#2f884d]/10 focus:border-[#2f884d] transition-all placeholder:text-gray-400" 
+                  placeholder="Doe" 
+                  className="h-12 bg-gray-50/30 border-gray-100 rounded-xl font-semibold focus:ring-2 focus:ring-[#2f884d]/10 focus:border-[#2f884d] transition-all placeholder:text-gray-300" 
                 />
               </div>
+            </div>
 
               <div className="space-y-2">
-                <Label className="text-[14px] font-bold text-[#1b2533] ml-0.5">Phone number</Label>
+                <Label className="text-[13px] font-bold text-[#1b2533] ml-0.5 uppercase tracking-wider opacity-60">Phone number</Label>
                 <div className="flex gap-2">
                   <Select 
                     value={formData.countryCode} 
                     onValueChange={(val) => setFormData(prev => ({ ...prev, countryCode: val }))}
                   >
-                    <SelectTrigger className="w-[110px] h-13 bg-white border-gray-200 rounded-2xl font-bold text-[#1b2533] focus:ring-2 focus:ring-[#2f884d]/10 transition-all">
+                    <SelectTrigger className="w-[100px] h-12 bg-gray-50/30 border-gray-100 rounded-xl font-bold text-[#1b2533] focus:ring-2 focus:ring-[#2f884d]/10 transition-all">
                       <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-[#2f884d] shrink-0" />
+                        <Phone className="w-3.5 h-3.5 text-[#2f884d] shrink-0" />
                         <SelectValue placeholder="+1" />
                       </div>
                     </SelectTrigger>
@@ -149,21 +151,21 @@ const RequestCallModal = ({ isOpen, onOpenChange, listingId, listingUrl }: Reque
                     type="tel"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="Enter your phone number" 
-                    className="flex-1 h-13 bg-white border-gray-200 rounded-2xl font-medium focus:ring-2 focus:ring-[#2f884d]/10 focus:border-[#2f884d] transition-all placeholder:text-gray-400" 
+                    placeholder="Enter phone number" 
+                    className="flex-1 h-12 bg-gray-50/30 border-gray-100 rounded-xl font-semibold focus:ring-2 focus:ring-[#2f884d]/10 focus:border-[#2f884d] transition-all placeholder:text-gray-300" 
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[14px] font-bold text-[#1b2533] ml-0.5">Country</Label>
+                <Label className="text-[13px] font-bold text-[#1b2533] ml-0.5 uppercase tracking-wider opacity-60">Country</Label>
                 <Select 
                   value={formData.country} 
                   onValueChange={(val) => setFormData(prev => ({ ...prev, country: val }))}
                 >
-                  <SelectTrigger className="h-13 bg-white border-gray-200 rounded-2xl font-medium text-[#1b2533] focus:ring-2 focus:ring-[#2f884d]/10 transition-all">
+                  <SelectTrigger className="h-12 bg-gray-50/30 border-gray-100 rounded-xl font-semibold text-[#1b2533] focus:ring-2 focus:ring-[#2f884d]/10 transition-all">
                     <div className="flex items-center gap-3">
-                      <Globe className="w-5 h-5 text-[#2f884d] shrink-0" />
+                      <Globe className="w-4 h-4 text-[#2f884d] shrink-0" />
                       <SelectValue placeholder="Select your country" />
                     </div>
                   </SelectTrigger>

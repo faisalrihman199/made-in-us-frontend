@@ -122,8 +122,12 @@ const Membership = () => {
 
     setIsSubmitting(true);
     try {
-      await submitSubscription({
+      const dataToSend = {
         ...formData,
+        phone: `${formData.countryCode}${formData.phone}`
+      };
+      await submitSubscription({
+        ...dataToSend,
         planId: plan.id,
         planName: plan.name,
         price: plan.price,
@@ -151,7 +155,7 @@ const Membership = () => {
         firstName: formData.fullName.split(' ')[0] || "",
         lastName: formData.fullName.split(' ').slice(1).join(' ') || "User",
         email: formData.email || null,
-        phone: formData.phone || null,
+        phone: formData.phone ? `${formData.countryCode}${formData.phone}` : null,
         country: formData.country || null,
         message: "Request a call from Membership page",
         listingUrl: window.location.href

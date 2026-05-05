@@ -49,7 +49,12 @@ const FindVehicle = () => {
 
     setIsSubmitting(true);
     try {
-      await submitVehicleFindRequest(formData);
+      const dataToSend = {
+        ...formData,
+        phone: `${formData.phonePrefix}${formData.phone}`
+      };
+      // @ts-ignore
+      await submitVehicleFindRequest(dataToSend);
       navigate("/confirmation");
     } catch (error) {
       toast.error("Failed to submit inquiry", {

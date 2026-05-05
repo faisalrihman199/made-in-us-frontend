@@ -130,6 +130,7 @@ const Header = () => {
         { name: "Our Mission", href: "/about#our-mission", icon: Target },
         { name: "SecurePay", href: "/secure-pay", icon: ShieldCheck },
         { name: "Watchlist", href: "/watchlist", icon: Star },
+        ...((user as any)?.role === "admin" ? [{ name: "Manage Data", href: "/manage-data", icon: LayoutGrid }] : []),
       ]
     },
     {

@@ -47,8 +47,12 @@ const Contact = () => {
 
     setIsSubmitting(true);
     try {
-      await submitInquiry({
+      const dataToSend = {
         ...formData,
+        phone: `${formData.phonePrefix}${formData.phone}`
+      };
+      await submitInquiry({
+        ...dataToSend,
         type: "GENERAL",
         listingId: null
       });

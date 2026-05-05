@@ -56,7 +56,12 @@ const ReserveVehicle = () => {
 
     setIsSubmitting(true);
     try {
-      await submitVehicleReservation(formData, paymentProof);
+      const dataToSend = {
+        ...formData,
+        phone: `${formData.phonePrefix}${formData.phone}`
+      };
+      // @ts-ignore
+      await submitVehicleReservation(dataToSend, paymentProof!);
       navigate("/confirmation");
     } catch (error) {
       toast.error("Failed to submit reservation", {
