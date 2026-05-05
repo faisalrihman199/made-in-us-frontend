@@ -106,9 +106,10 @@ const ManageData = () => {
       if (!response.ok) throw new Error("Export failed");
 
       const totalRecords = parseInt(response.headers.get('X-Total-Count') || "0");
+      const totalRows = totalRecords + 1; // Include header row
       const reader = response.body?.getReader();
       
-      let receivedRecords = 0;
+      let receivedRows = 0;
       let chunks = [];
       const decoder = new TextDecoder();
       
@@ -117,19 +118,19 @@ const ManageData = () => {
         if (done) break;
         chunks.push(value);
         
-        if (totalRecords > 0) {
+        if (totalRows > 0) {
           const text = decoder.decode(value, { stream: true });
-          // Count newlines as a proxy for records
           const newLines = (text.match(/\n/g) || []).length;
-          receivedRecords += newLines;
+          receivedRows += newLines;
           
-          const progress = Math.min(98, (receivedRecords / totalRecords) * 100);
-          setExportProgress(10 + (progress * 0.9)); // Scale to leave room for finalization
+          const progress = (receivedRows / totalRows) * 100;
+          setExportProgress(Math.min(99, progress)); 
         } else {
-          setExportProgress(prev => Math.min(prev + 2, 95));
+          setExportProgress(prev => Math.min(prev + 1, 99));
         }
       }
 
+      setExportProgress(100);
       const blob = new Blob(chunks, { type: 'text/csv' });
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
