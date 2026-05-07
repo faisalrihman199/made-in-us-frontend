@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Phone, Globe, Lock, Check, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
@@ -30,6 +31,7 @@ interface RequestCallModalProps {
 }
 
 const RequestCallModal = ({ isOpen, onOpenChange, listingId, listingUrl }: RequestCallModalProps) => {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -64,10 +66,8 @@ const RequestCallModal = ({ isOpen, onOpenChange, listingId, listingUrl }: Reque
         listingUrl: listingUrl || window.location.href
       });
       
-      toast.success("Request sent!", {
-        description: "We'll call you back shortly."
-      });
       onOpenChange(false);
+      navigate("/confirmation");
       // Reset form
       setFormData({
         firstName: '',

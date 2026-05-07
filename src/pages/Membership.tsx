@@ -162,7 +162,7 @@ const Membership = () => {
       });
       
       setIsCallModalOpen(false);
-      toast.success("Call request sent!", { description: "An expert will contact you shortly." });
+      navigate("/confirmation");
     } catch (error) {
       console.error(error);
       toast.error("Failed to send request. Please try again.");

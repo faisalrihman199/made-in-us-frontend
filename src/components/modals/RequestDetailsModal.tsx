@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FileText, Globe, Lock, Loader2, Mail, Phone } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
@@ -31,6 +32,7 @@ interface RequestDetailsModalProps {
 }
 
 const RequestDetailsModal = ({ isOpen, onOpenChange, listingId, listingUrl, vehicleTitle }: RequestDetailsModalProps) => {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -67,10 +69,8 @@ const RequestDetailsModal = ({ isOpen, onOpenChange, listingId, listingUrl, vehi
         listingUrl: listingUrl
       });
       
-      toast.success("Request sent!", {
-        description: "Our team will send you the vehicle details shortly."
-      });
       onOpenChange(false);
+      navigate("/confirmation");
       setFormData({
         firstName: '',
         lastName: '',
