@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import Header from '@/components/Header';
+import InvoiceTemplate from '@/components/InvoiceTemplate';
 import { countries, countryCodes } from '@/lib/countries';
 import {
   Select,
@@ -34,8 +37,11 @@ const CompletePayment = () => {
     email: '',
     make: '',
     year: '2022',
-    price: '20000'
+    price: '20000',
+    vin: ''
   });
+
+  const invoiceRef = React.useRef<HTMLDivElement>(null);
 
   const processingFee = 350;
   const priceNum = parseFloat(formData.price) || 0;
@@ -55,15 +61,39 @@ const CompletePayment = () => {
   };
 
   const handleSubmit = async () => {
-    if (!formData.firstName || !formData.lastName || !formData.email) {
-      return;
-    }
+    // This is no longer used as per user request
+  };
+
+  const handleDownloadInvoice = async () => {
+    if (!invoiceRef.current) return;
+    
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const canvas = await html2canvas(invoiceRef.current, {
+        scale: 2, // Higher quality
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Invoice_${formData.firstName}_${formData.lastName}.pdf`);
+    } catch (error) {
+      console.error('Failed to generate PDF:', error);
+    } finally {
       setIsSubmitting(false);
-      navigate("/confirmation");
-    }, 1000);
+    }
   };
 
   return (
@@ -257,6 +287,17 @@ const CompletePayment = () => {
                     />
                   </div>
                 </div>
+                <div className="space-y-1.5">
+                  <label className="text-[13px] font-semibold text-slate-600 ml-1">VIN / Serial Number</label>
+                  <input 
+                    type="text" 
+                    name="vin"
+                    placeholder="VIN Number"
+                    value={formData.vin}
+                    onChange={handleInputChange}
+                    className="w-full h-11 px-4 rounded-lg border border-slate-200 bg-slate-50/50 focus:border-[#107050] focus:ring-4 focus:ring-[#107050]/5 transition-all outline-none text-base font-medium"
+                  />
+                </div>
               </div>
             </div>
 
@@ -283,28 +324,51 @@ const CompletePayment = () => {
 
               <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-8">
                 <button 
-                  onClick={handleSubmit}
+                  onClick={handleDownloadInvoice}
                   disabled={isSubmitting}
-                  className="w-full md:w-[280px] h-14 bg-[#107050] hover:bg-[#0c5940] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-900/20 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed group"
+                  className="w-full md:w-[320px] h-14 bg-[#107050] hover:bg-[#0c5940] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-900/20 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed group"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-3">
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span className="animate-pulse">Processing...</span>
+                      <span className="animate-pulse">Generating PDF...</span>
                     </div>
                   ) : (
                     <>
-                      <ShieldCheck className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                      <span>Confirm Payment</span>
+                      <Download className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                      <span>Download Invoice</span>
                     </>
                   )}
                 </button>
-                <button className="w-full md:w-auto px-8 h-14 border-2 border-slate-200 hover:bg-slate-50 text-slate-700 rounded-2xl font-bold text-lg flex items-center justify-center gap-2.5 transition-all">
-                  <Download className="w-5 h-5" />
-                  Download Invoice
-                </button>
               </div>
             </div>
+
+            {/* Hidden Invoice for Export */}
+            <InvoiceTemplate 
+              ref={invoiceRef}
+              invoiceNo="MIUS-SP-0001"
+              date={new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              clientInfo={{
+                firstName: formData.firstName || 'Client',
+                lastName: formData.lastName || 'Name',
+                address: formData.address || 'Address not provided',
+                country: formData.country,
+                phone: `${formData.phonePrefix}${formData.phone}` || 'Phone not provided',
+                email: formData.email || 'Email not provided'
+              }}
+              vehicleInfo={{
+                make: formData.make || 'Vehicle Make',
+                model: '', // Optional in image
+                year: formData.year,
+                vin: formData.vin || 'VIN not provided',
+                price: priceNum
+              }}
+              pricing={{
+                processingFee,
+                serviceFee: percentageFee,
+                totalAmount
+              }}
+            />
 
           </div>
         </div>
