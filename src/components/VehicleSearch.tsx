@@ -366,10 +366,11 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="hover:bg-transparent text-[#1b2533] font-semibold px-2 h-8">
-                      {filters.sortBy || "Newest"} <ChevronDown className="ml-1 h-4 w-4 opacity-50" />
+                      {filters.sortBy || "Featured"} <ChevronDown className="ml-1 h-4 w-4 opacity-50" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    <DropdownMenuItem onSelect={() => setSortBy("Featured")}>Featured</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => setSortBy("Newest")}>Newest</DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => setSortBy("Lowest mileage")}>
                       Lowest mileage

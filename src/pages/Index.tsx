@@ -18,11 +18,11 @@ const Index = () => {
     engine: null as string | null,
     minMileage: null as number | null,
     maxMileage: null as number | null,
-    minPrice: null as number | null,
     maxPrice: null as number | null,
     transmission: null as string | null,
     search: "" as string,
-    sortBy: "Lowest mileage",
+    sortBy: "Featured",
+    seed: useMemo(() => Math.random().toString(36).substring(7), [])
   });
   const handleFilterChange = (newFilters: any) => {
     setFilters(newFilters);

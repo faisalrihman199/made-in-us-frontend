@@ -70,6 +70,7 @@ export type CarsQuery = {
   maxPrice?: number | null;
   search?: string | null;
   sortBy?: string | null;
+  seed?: string | null;
 };
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
@@ -102,6 +103,7 @@ export async function fetchCars(q: CarsQuery): Promise<CarsResponse> {
   setIfDefined(params, "color", q.color);
   setIfDefined(params, "engine", q.engine);
   setIfDefined(params, "sortBy", q.sortBy);
+  setIfDefined(params, "seed", q.seed);
 
   const res = await fetch(`${API_BASE}/api/cars?${params.toString()}`, {
     headers: { Accept: "application/json" },
