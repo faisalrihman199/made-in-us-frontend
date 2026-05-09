@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,6 +29,7 @@ import { LogOut } from "lucide-react";
 import { CurrencySwitcher } from "@/components/CurrencySwitcher";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<"signup" | "login">("signup");
@@ -73,7 +74,12 @@ const Header = () => {
       });
       
       // Refresh auth state
-      await checkAuth();
+      const userResult = await checkAuth();
+      
+      // If user is admin, redirect to admin panel
+      if ((userResult as any)?.role === "admin" || (user as any)?.role === "admin") {
+        navigate("/admin");
+      }
       
       // Clear form fields
       setName("");
@@ -109,7 +115,12 @@ const Header = () => {
         throw new Error(body?.error || "google_login_failed");
       }
       toast({ title: "Signed in", description: "Welcome back!" });
-      await checkAuth();
+      const userResult = await checkAuth();
+      
+      // If user is admin, redirect to admin panel
+      if ((userResult as any)?.role === "admin" || (user as any)?.role === "admin") {
+        navigate("/admin");
+      }
       setShowAuthModal(false);
     } catch (e: any) {
       toast({
@@ -130,7 +141,7 @@ const Header = () => {
         { name: "Our Mission", href: "/about#our-mission", icon: Target },
         { name: "SecurePay", href: "/secure-pay", icon: ShieldCheck },
         { name: "Watchlist", href: "/watchlist", icon: Star },
-        ...((user as any)?.role === "admin" ? [{ name: "Manage Data", href: "/manage-data", icon: LayoutGrid }] : []),
+        ...((user as any)?.role === "admin" ? [{ name: "Admin Panel", href: "/admin", icon: LayoutGrid }] : []),
       ]
     },
     {
@@ -244,6 +255,16 @@ const Header = () => {
                     <p className="text-sm font-bold text-[#1b2533]">{user.name || user.email}</p>
                     <p className="text-xs text-gray-500">Signed in</p>
                   </div>
+                  {(user as any)?.role === "admin" && (
+                    <Link 
+                      to="/admin" 
+                      className="flex items-center gap-2 bg-[#60E677]/10 hover:bg-[#60E677]/20 text-[#2F884D] px-3 sm:px-4 py-2 rounded-xl border border-[#60E677]/20 transition-all group shadow-sm active:scale-95"
+                      title="Admin Panel"
+                    >
+                      <LayoutGrid className="w-5 h-5 sm:w-4 sm:h-4 group-hover:rotate-90 transition-transform duration-300" />
+                      <span className="hidden sm:inline text-sm font-black tracking-tight">Admin Panel</span>
+                    </Link>
+                  )}
                   <button
                     onClick={() => logout()}
                     className="p-2 text-[#1b2533] hover:bg-red-50 rounded-[8px] transition-all"
