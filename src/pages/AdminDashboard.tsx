@@ -5,18 +5,20 @@ import {
   Database, FileText, Star, MessageSquare, 
   ChevronLeft, LayoutGrid, Home, LogOut,
   Settings, Bell, Search, User, Menu,
-  Clock, RefreshCcw
+  Clock, RefreshCcw, ShieldCheck
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { getNotifications } from "@/lib/api";
 
-// Tabs
 import ManageDataTab from "./admin/ManageDataTab";
 import BlogManagementTab from "./admin/BlogManagementTab";
 import ReviewManagementTab from "./admin/ReviewManagementTab";
 import QueriesManagementTab from "./admin/QueriesManagementTab";
+import ModerationTab from "./admin/ModerationTab";
+
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
@@ -40,6 +42,14 @@ const AdminDashboard = () => {
     },
     refetchInterval: 30000, // Refresh every 30 seconds
   });
+
+  const { data: notifData } = useQuery({
+    queryKey: ["admin-notifications"],
+    queryFn: () => getNotifications(100),
+    refetchInterval: 30000,
+  });
+  const unreadNotifications = notifData?.unreadCount || 0;
+
 
   const totalPending = (stats?.pendingQuotes || 0) + 
                        (stats?.pendingInspections || 0) + 
@@ -79,7 +89,28 @@ const AdminDashboard = () => {
     { id: "blogs", label: "Blog Management", icon: FileText },
     { id: "reviews", label: "Reviews Management", icon: Star },
     { id: "queries", label: "User Queries", icon: MessageSquare },
+    { id: "moderation", label: "Moderation", icon: ShieldCheck },
   ];
+
+  const getUnreadForTab = (tabId: string) => {
+    if (!notifData?.unreadByType) return 0;
+    const ub = notifData.unreadByType;
+    
+    switch(tabId) {
+      case 'queries':
+        return (ub.INQUIRY || 0) + (ub.RESERVATION || 0) + (ub.INSPECTION || 0) + 
+               (ub.FIND_REQUEST || 0) + (ub.SUBSCRIPTION || 0) + (ub.SHIPPING_QUOTE || 0);
+      case 'moderation':
+        return (ub.COMMENT || 0) + (ub.QA || 0);
+      case 'blogs':
+        return 0; // Blogs themselves don't have unread items yet
+      case 'reviews':
+        return (ub.REVIEW || 0);
+      default:
+        return 0;
+    }
+  };
+
 
   return (
     <div className="flex h-screen bg-[#F4F7F6] overflow-hidden font-sans">
@@ -114,37 +145,47 @@ const AdminDashboard = () => {
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto mt-4 scrollbar-hide">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                navigate(`/admin/${item.id}`);
-                if (window.innerWidth < 768) setIsMobileOpen(false);
-              }}
-              className={cn(
-                "w-full flex items-center gap-4 p-4 rounded-2xl transition-all group relative",
-                activeTab === item.id 
-                  ? "bg-[#1D4D3A] text-[#60E677] shadow-lg shadow-black/10" 
-                  : "hover:bg-white/5 text-white/70 hover:text-white"
-              )}
-            >
-              <item.icon className={cn(
-                "w-5 h-5 flex-shrink-0 transition-transform group-active:scale-90",
-                activeTab === item.id ? "text-[#60E677]" : "text-white/40 group-hover:text-white"
-              )} />
-              {isSidebarOpen && (
-                <span className="font-bold text-sm tracking-wide">{item.label}</span>
-              )}
-              {item.id === "queries" && totalPending > 0 && isSidebarOpen && (
-                <span className="ml-auto bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
-                  {totalPending}
-                </span>
-              )}
-              {activeTab === item.id && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#60E677] rounded-r-full" />
-              )}
-            </button>
-          ))}
+          {menuItems.map((item) => {
+            const unread = getUnreadForTab(item.id);
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  navigate(`/admin/${item.id}`);
+                  if (window.innerWidth < 768) setIsMobileOpen(false);
+                }}
+                className={cn(
+                  "w-full flex items-center gap-4 p-4 rounded-2xl transition-all group relative",
+                  activeTab === item.id 
+                    ? "bg-[#1D4D3A] text-[#60E677] shadow-lg shadow-black/10" 
+                    : "hover:bg-white/5 text-white/70 hover:text-white"
+                )}
+              >
+                <div className="relative">
+                  <item.icon className={cn(
+                    "w-5 h-5 flex-shrink-0 transition-transform group-active:scale-90",
+                    activeTab === item.id ? "text-[#60E677]" : "text-white/40 group-hover:text-white"
+                  )} />
+                  {unread > 0 && !isSidebarOpen && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] font-black w-4 h-4 flex items-center justify-center rounded-full border border-[#0A2E1F] shadow-sm animate-in zoom-in duration-300">
+                      {unread > 9 ? "9+" : unread}
+                    </span>
+                  )}
+                </div>
+                {isSidebarOpen && (
+                  <span className="font-bold text-sm tracking-wide">{item.label}</span>
+                )}
+                {unread > 0 && isSidebarOpen && (
+                  <span className="ml-auto bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+                    {unread > 99 ? "99+" : unread}
+                  </span>
+                )}
+                {activeTab === item.id && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#60E677] rounded-r-full" />
+                )}
+              </button>
+            );
+          })}
         </nav>
 
         {/* Bottom Actions */}
@@ -214,9 +255,14 @@ const AdminDashboard = () => {
                        <span>User Queries</span>
                        <span className={totalPending > 0 ? "text-red-500" : ""}>{totalPending}</span>
                     </div>
+                    <div className="flex justify-between text-xs font-bold text-[#0A2E1F]">
+                       <span>Unread Notifications</span>
+                       <span className={unreadNotifications > 0 ? "text-red-500" : ""}>{unreadNotifications}</span>
+                    </div>
                  </div>
               </div>
             </button>
+
             <div className="hidden sm:block w-px h-8 bg-gray-100 mx-1 md:mx-2" />
             <Button 
               variant="ghost" 
@@ -234,10 +280,12 @@ const AdminDashboard = () => {
           <div className="max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
             {activeTab === "data" && <ManageDataTab />}
             {activeTab === "blogs" && <BlogManagementTab />}
-            {activeTab === "reviews" && <ReviewManagementTab />}
-            {activeTab === "queries" && <QueriesManagementTab initialView={subtab} />}
+            {activeTab === "reviews" && <ReviewManagementTab notifications={notifData?.notifications} />}
+            {activeTab === "queries" && <QueriesManagementTab initialView={subtab} unreadByType={notifData?.unreadByType} notifications={notifData?.notifications} />}
+            {activeTab === "moderation" && <ModerationTab notifications={notifData?.notifications} />}
 
             {/* Global Refresh Button */}
+
             <div className="fixed bottom-8 right-8 z-50">
               <Button
                 onClick={() => {

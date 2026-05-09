@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getVehicleInspection, submitInspectionReport } from "@/lib/api";
+import { getVehicleInspection, submitInspectionReport, formatUrl } from "@/lib/api";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -91,12 +92,13 @@ const AdminInspection = () => {
                   <span className="font-bold text-emerald-900">Inspection Fee Proof Received</span>
                 </div>
                 <a 
-                  href={inspection.paymentProofUrl} 
+                  href={formatUrl(inspection.paymentProofUrl)} 
                   target="_blank" 
                   className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-emerald-700 transition-colors"
                 >
                   View Receipt
                 </a>
+
               </div>
             )}
 
@@ -108,8 +110,9 @@ const AdminInspection = () => {
                 <h3 className="text-xl font-bold text-emerald-900">Report Already Sent</h3>
                 <p className="text-emerald-700">The report has been uploaded and delivered to the customer.</p>
                 <div className="bg-white p-4 rounded-xl border border-emerald-200 inline-block font-mono text-xs text-emerald-800 break-all max-w-full">
-                  {inspection.reportUrl}
+                  {formatUrl(inspection.reportUrl)}
                 </div>
+
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">

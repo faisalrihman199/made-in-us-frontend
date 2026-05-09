@@ -36,9 +36,11 @@ const CompletePayment = () => {
     phone: '',
     email: '',
     make: '',
+    model: '',
     year: '2022',
     price: '20000',
     vin: ''
+
   });
 
   const invoiceRef = React.useRef<HTMLDivElement>(null);
@@ -258,6 +260,19 @@ const CompletePayment = () => {
                   />
                 </div>
 
+                <div className="space-y-1.5 md:col-span-1">
+                  <label className="text-[13px] font-semibold text-slate-600 ml-1">Model</label>
+                  <input 
+                    type="text" 
+                    name="model"
+                    placeholder="Model"
+                    value={formData.model}
+                    onChange={handleInputChange}
+                    className="w-full h-11 px-4 rounded-lg border border-slate-200 bg-slate-50/50 focus:border-[#107050] focus:ring-4 focus:ring-[#107050]/5 transition-all outline-none text-base font-medium"
+                  />
+                </div>
+
+
                 <div className="space-y-1.5">
                   <label className="text-[13px] font-semibold text-slate-600 ml-1">Year</label>
                   <div className="relative">
@@ -287,7 +302,7 @@ const CompletePayment = () => {
                     />
                   </div>
                 </div>
-                <div className="space-y-1.5">
+                <div className="space-y-1.5 md:col-span-2">
                   <label className="text-[13px] font-semibold text-slate-600 ml-1">VIN / Serial Number</label>
                   <input 
                     type="text" 
@@ -298,6 +313,7 @@ const CompletePayment = () => {
                     className="w-full h-11 px-4 rounded-lg border border-slate-200 bg-slate-50/50 focus:border-[#107050] focus:ring-4 focus:ring-[#107050]/5 transition-all outline-none text-base font-medium"
                   />
                 </div>
+
               </div>
             </div>
 
@@ -358,7 +374,8 @@ const CompletePayment = () => {
               }}
               vehicleInfo={{
                 make: formData.make || 'Vehicle Make',
-                model: '', // Optional in image
+                model: formData.model || 'Vehicle Model',
+
                 year: formData.year,
                 vin: formData.vin || 'VIN not provided',
                 price: priceNum

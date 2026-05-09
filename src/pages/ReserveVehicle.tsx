@@ -11,21 +11,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { 
-  Check, 
-  ShieldCheck, 
-  Clock, 
-  CreditCard, 
-  Landmark, 
-  FileText, 
-  HandCoins, 
-  Car, 
-  Calendar, 
+import {
+  Check,
+  ShieldCheck,
+  Clock,
+  CreditCard,
+  Landmark,
+  FileText,
+  HandCoins,
+  Car,
+  Calendar,
   Info,
   Lock,
   CheckCircle2,
-  CalendarDays
+  CalendarDays,
+  Headset,
+  PhoneCall,
+  Handshake,
+  UserCheck,
+  Loader2
 } from "lucide-react";
+
+
 import { submitVehicleReservation, getPaymentDetails } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -61,14 +68,17 @@ const ReserveVehicle = () => {
     expiry: "",
     cvc: "",
     name: "",
+    email: "",
+    phone: "",
   });
+
 
   useEffect(() => {
     getPaymentDetails().then(setPaymentDetails).catch(console.error);
   }, []);
 
-  const total = (selectedServices.inspection ? INSPECTION_PRICE : 0) + 
-                (selectedServices.reservation ? RESERVATION_PRICE : 0);
+  const total = (selectedServices.inspection ? INSPECTION_PRICE : 0) +
+    (selectedServices.reservation ? RESERVATION_PRICE : 0);
 
   const toggleService = (service: "inspection" | "reservation") => {
     setSelectedServices(prev => ({
@@ -113,13 +123,14 @@ const ReserveVehicle = () => {
       const dataToSend = {
         firstName: cardDetails.name.split(" ")[0] || "User",
         lastName: cardDetails.name.split(" ").slice(1).join(" ") || "Reserved",
-        email: "user@example.com", 
-        phone: "",
+        email: cardDetails.email || "user@example.com",
+        phone: cardDetails.phone || "",
         vehicleMake: vehicleInfo.make,
         vehicleModel: vehicleInfo.model,
         vehicleYear: vehicleInfo.year,
         notes: `Services: ${selectedServices.inspection ? "Inspection " : ""}${selectedServices.reservation ? "Reservation" : ""}. VIN: ${vehicleInfo.vin}.`,
       };
+
       // @ts-ignore
       await submitVehicleReservation(dataToSend, paymentProof || new File([], "dummy.txt"));
       navigate("/confirmation");
@@ -163,15 +174,13 @@ const ReserveVehicle = () => {
           <h2 className="text-[19px] font-bold mb-6">Choose the service(s) you would like to pay for</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             {/* Inspection Card */}
-            <div 
+            <div
               onClick={() => toggleService("inspection")}
-              className={`relative p-8 rounded-xl border-2 transition-all cursor-pointer bg-white ${
-                selectedServices.inspection ? "border-[#2f884d]" : "border-gray-100 hover:border-gray-200"
-              }`}
+              className={`relative p-8 rounded-xl border-2 transition-all cursor-pointer bg-white ${selectedServices.inspection ? "border-[#2f884d]" : "border-gray-100 hover:border-gray-200"
+                }`}
             >
-              <div className={`absolute top-4 left-4 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
-                selectedServices.inspection ? "bg-[#2f884d] border-[#2f884d]" : "border-gray-200"
-              }`}>
+              <div className={`absolute top-4 left-4 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${selectedServices.inspection ? "bg-[#2f884d] border-[#2f884d]" : "border-gray-200"
+                }`}>
                 {selectedServices.inspection && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
               </div>
               <div className="flex flex-col items-center text-center gap-4 mt-2">
@@ -185,15 +194,13 @@ const ReserveVehicle = () => {
             </div>
 
             {/* Reservation Card */}
-            <div 
+            <div
               onClick={() => toggleService("reservation")}
-              className={`relative p-8 rounded-xl border-2 transition-all cursor-pointer bg-white ${
-                selectedServices.reservation ? "border-[#2f884d]" : "border-gray-100 hover:border-gray-200"
-              }`}
+              className={`relative p-8 rounded-xl border-2 transition-all cursor-pointer bg-white ${selectedServices.reservation ? "border-[#2f884d]" : "border-gray-100 hover:border-gray-200"
+                }`}
             >
-              <div className={`absolute top-4 left-4 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${
-                selectedServices.reservation ? "bg-[#2f884d] border-[#2f884d]" : "border-gray-200"
-              }`}>
+              <div className={`absolute top-4 left-4 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors ${selectedServices.reservation ? "bg-[#2f884d] border-[#2f884d]" : "border-gray-200"
+                }`}>
                 {selectedServices.reservation && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
               </div>
               <div className="flex flex-col items-center text-center gap-4 mt-2">
@@ -206,7 +213,7 @@ const ReserveVehicle = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Separator with Info */}
           <div className="relative flex items-center justify-center py-4">
             <div className="absolute w-full h-[1px] bg-gray-100" />
@@ -224,44 +231,37 @@ const ReserveVehicle = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div className="space-y-2">
                 <Label className="text-[13px] font-bold">Make (Brand)</Label>
-                <Select onValueChange={(val) => handleVehicleChange("make", val)}>
-                  <SelectTrigger className="h-12 rounded-lg border-gray-100">
-                    <SelectValue placeholder="Select make" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {makes.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Input 
+                  placeholder="Enter make (e.g. Ford)" 
+                  className="h-12 rounded-lg border-gray-100"
+                  onChange={(e) => handleVehicleChange("make", e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label className="text-[13px] font-bold">Year</Label>
-                <Select onValueChange={(val) => handleVehicleChange("year", val)}>
-                  <SelectTrigger className="h-12 rounded-lg border-gray-100">
-                    <SelectValue placeholder="Select year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {years.map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Input 
+                  placeholder="Enter year (e.g. 2024)" 
+                  type="number"
+                  className="h-12 rounded-lg border-gray-100"
+                  onChange={(e) => handleVehicleChange("year", e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label className="text-[13px] font-bold">Model</Label>
-                <Select onValueChange={(val) => handleVehicleChange("model", val)}>
-                  <SelectTrigger className="h-12 rounded-lg border-gray-100">
-                    <SelectValue placeholder="Select model" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Default">Select model</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input 
+                  placeholder="Enter model (e.g. Mustang)" 
+                  className="h-12 rounded-lg border-gray-100"
+                  onChange={(e) => handleVehicleChange("model", e.target.value)}
+                />
               </div>
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label className="text-[13px] font-bold">VIN (Serial Number)</Label>
                 <div className="relative">
-                  <Input 
-                    placeholder="Enter VIN (17 characters)" 
+                  <Input
+                    placeholder="Enter VIN (17 characters)"
                     className="h-12 pr-10 rounded-lg border-gray-100"
                     onChange={(e) => handleVehicleChange("vin", e.target.value)}
                   />
@@ -270,8 +270,8 @@ const ReserveVehicle = () => {
               </div>
               <div className="space-y-2">
                 <Label className="text-[13px] font-bold">License Plate (Optional)</Label>
-                <Input 
-                  placeholder="Enter license plate" 
+                <Input
+                  placeholder="Enter license plate"
                   className="h-12 rounded-lg border-gray-100"
                   onChange={(e) => handleVehicleChange("licensePlate", e.target.value)}
                 />
@@ -284,16 +284,14 @@ const ReserveVehicle = () => {
         <section className="mb-10">
           <h2 className="text-[19px] font-bold mb-6">Choose your payment method</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div 
+            <div
               onClick={() => setPaymentMethod("card")}
-              className={`p-8 rounded-xl border-2 transition-all cursor-pointer bg-white flex flex-col gap-4 ${
-                paymentMethod === "card" ? "border-[#2f884d]" : "border-gray-100 hover:border-gray-200"
-              }`}
+              className={`p-8 rounded-xl border-2 transition-all cursor-pointer bg-white flex flex-col gap-4 ${paymentMethod === "card" ? "border-[#2f884d]" : "border-gray-100 hover:border-gray-200"
+                }`}
             >
               <div className="flex justify-between items-start">
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                  paymentMethod === "card" ? "border-[#2f884d]" : "border-gray-200"
-                }`}>
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${paymentMethod === "card" ? "border-[#2f884d]" : "border-gray-200"
+                  }`}>
                   {paymentMethod === "card" && <div className="w-3 h-3 rounded-full bg-[#2f884d]" />}
                 </div>
                 <CreditCard className={`w-10 h-10 ${paymentMethod === "card" ? "text-[#1b2533]" : "text-gray-300"}`} strokeWidth={1.5} />
@@ -321,16 +319,14 @@ const ReserveVehicle = () => {
               </div>
             </div>
 
-            <div 
+            <div
               onClick={() => setPaymentMethod("transfer")}
-              className={`p-8 rounded-xl border-2 transition-all cursor-pointer bg-white flex flex-col gap-4 ${
-                paymentMethod === "transfer" ? "border-[#2f884d]" : "border-gray-100 hover:border-gray-200"
-              }`}
+              className={`p-8 rounded-xl border-2 transition-all cursor-pointer bg-white flex flex-col gap-4 ${paymentMethod === "transfer" ? "border-[#2f884d]" : "border-gray-100 hover:border-gray-200"
+                }`}
             >
               <div className="flex justify-between items-start">
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                  paymentMethod === "transfer" ? "border-[#2f884d]" : "border-gray-200"
-                }`}>
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${paymentMethod === "transfer" ? "border-[#2f884d]" : "border-gray-200"
+                  }`}>
                   {paymentMethod === "transfer" && <div className="w-3 h-3 rounded-full bg-[#2f884d]" />}
                 </div>
                 <Landmark className={`w-10 h-10 ${paymentMethod === "transfer" ? "text-[#1b2533]" : "text-gray-300"}`} strokeWidth={1.5} />
@@ -356,14 +352,14 @@ const ReserveVehicle = () => {
                       <Lock className="w-3.5 h-3.5" /> Secured by Stripe
                     </div>
                   </div>
-                  
+
                   <div className="space-y-5">
                     <div className="space-y-2">
                       <Label className="text-[13px] font-bold">Card information</Label>
                       <div className="relative">
-                        <Input 
-                          placeholder="Card number" 
-                          className="h-12 pr-24 rounded-lg border-gray-100" 
+                        <Input
+                          placeholder="Card number"
+                          className="h-12 pr-24 rounded-lg border-gray-100"
                         />
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1.5">
                           <span className="text-[8px] font-black italic text-blue-800 opacity-50">VISA</span>
@@ -375,7 +371,7 @@ const ReserveVehicle = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label className="text-[13px] font-bold">Expiration date</Label>
@@ -392,17 +388,40 @@ const ReserveVehicle = () => {
 
                     <div className="space-y-2">
                       <Label className="text-[13px] font-bold">Name on card</Label>
-                      <Input placeholder="Full name" className="h-12 rounded-lg border-gray-100" />
+                      <Input name="name" placeholder="Full name" className="h-12 rounded-lg border-gray-100" onChange={handleCardChange} />
                     </div>
 
-                    <Button 
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-[13px] font-bold">Email Address</Label>
+                        <Input name="email" placeholder="email@example.com" className="h-12 rounded-lg border-gray-100" onChange={handleCardChange} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[13px] font-bold">Phone Number</Label>
+                        <Input name="phone" placeholder="+1 (555) 000-0000" className="h-12 rounded-lg border-gray-100" onChange={handleCardChange} />
+                      </div>
+                    </div>
+
+
+                    <Button
                       onClick={handleSubmit}
                       disabled={isSubmitting}
                       className="w-full h-14 bg-[#215a36] hover:bg-[#1a4a2c] text-white rounded-lg font-bold text-lg flex items-center justify-center gap-3 shadow-lg shadow-green-900/10 transition-all active:scale-[0.99]"
                     >
-                      <Lock className="w-5 h-5" /> Pay ${total.toLocaleString()}
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          Processing Payment...
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="w-5 h-5" />
+                          Pay ${total.toLocaleString()}
+                        </>
+                      )}
                     </Button>
-                    
+
+
                     <div className="flex items-center justify-center gap-2 text-[12px] text-gray-400 font-bold">
                       <ShieldCheck className="w-4 h-4 text-[#2f884d]" /> Your payment is 100% secure. No card information is stored.
                     </div>
@@ -431,20 +450,45 @@ const ReserveVehicle = () => {
                       </div>
                     </div>
                   )}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                    <div className="space-y-2">
+                      <Label className="text-[13px] font-bold">Full Name</Label>
+                      <Input name="name" placeholder="John Doe" className="h-12 rounded-lg border-gray-100" onChange={handleCardChange} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[13px] font-bold">Email Address</Label>
+                      <Input name="email" placeholder="email@example.com" className="h-12 rounded-lg border-gray-100" onChange={handleCardChange} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[13px] font-bold">Phone Number</Label>
+                      <Input name="phone" placeholder="+1 (555) 000-0000" className="h-12 rounded-lg border-gray-100" onChange={handleCardChange} />
+                    </div>
+                  </div>
+
                   <div className="space-y-3 pt-4">
                     <Label className="text-[13px] font-bold">Upload Transfer Proof</Label>
-                    <Input 
+                    <Input
                       type="file"
                       onChange={(e) => setPaymentProof(e.target.files?.[0] || null)}
                       className="h-14 bg-white border-gray-100 rounded-lg py-3.5 cursor-pointer"
                     />
                   </div>
-                  <Button 
+
+                  <Button
                     onClick={handleSubmit}
-                    className="w-full h-14 bg-[#2f884d] hover:bg-[#25733f] text-white rounded-lg font-bold text-lg"
+                    disabled={isSubmitting}
+                    className="w-full h-14 bg-[#2f884d] hover:bg-[#25733f] text-white rounded-lg font-bold text-lg flex items-center justify-center gap-2"
                   >
-                    Submit Reservation Request
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit Reservation Request"
+                    )}
                   </Button>
+
                 </div>
               )}
             </section>
@@ -493,41 +537,92 @@ const ReserveVehicle = () => {
           </div>
         </div>
 
-        {/* Bottom Section: What you receive */}
-        <section className="bg-white border border-gray-100 rounded-xl p-8 shadow-sm flex flex-col md:flex-row items-center gap-8">
-          <div className="w-16 h-16 bg-[#2f884d] rounded-2xl flex items-center justify-center text-white flex-shrink-0">
-            <FileText className="w-8 h-8" />
-          </div>
-          <div className="flex-1">
-            <h4 className="font-bold text-[17px] mb-2">What you will receive</h4>
-            <p className="text-[14px] text-gray-500 font-medium leading-relaxed max-w-[480px]">
-              A detailed inspection report including the vehicle condition, HD photos, and all important information for your purchase.
-            </p>
-          </div>
-          <div className="flex gap-4">
-            <div className="w-24 h-32 rounded-lg border border-gray-100 overflow-hidden shadow-sm">
-              <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=200" className="w-full h-full object-cover" />
+        {/* Section: Process Explanation (Redesigned from Image 2) */}
+        <section className="bg-white border-2 border-[#2f884d] rounded-[32px] p-8 md:p-12 shadow-sm relative overflow-hidden">
+          {/* Decorative background elements */}
+
+
+          {/* Top Illustration Area */}
+          <div className="flex flex-col items-center justify-center mb-8 relative">
+            <div className="relative">
+              {/* Agent Avatar Circle */}
+              <div className="w-32 h-32 rounded-full border-2 border-gray-100 flex items-center justify-center bg-gray-50/50 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[#2f884d]/5" />
+                <Headset className="w-16 h-16 text-[#2f884d]" strokeWidth={1.5} />
+              </div>
+              {/* Overlapping Shield */}
+              <div className="absolute bottom-2 -right-4 w-12 h-14 bg-white rounded-xl shadow-lg border border-gray-50 flex items-center justify-center">
+                <ShieldCheck className="w-8 h-8 text-[#2f884d]" />
+              </div>
+
             </div>
-            <div className="w-24 h-32 rounded-lg border border-gray-100 p-2 shadow-sm flex flex-col gap-1.5">
-              <div className="h-2 w-full bg-gray-100 rounded" />
-              <div className="h-2 w-3/4 bg-gray-100 rounded" />
-              <div className="mt-4 h-1.5 w-full bg-gray-50 rounded" />
-              <div className="h-1.5 w-full bg-gray-50 rounded" />
-              <div className="h-1.5 w-full bg-gray-50 rounded" />
-              <div className="mt-auto h-4 w-full bg-[#f0f9f3] rounded flex items-center justify-center">
-                <CheckCircle2 className="w-2.5 h-2.5 text-[#2f884d]" />
+          </div>
+
+          {/* Title Area */}
+          <div className="flex items-center gap-6 mb-8">
+            <div className="flex-1 h-[2px] bg-gray-100 hidden sm:block" />
+            <h3 className="text-center text-2xl md:text-3xl font-black text-[#1b2d1d] tracking-tight">
+              Thank you for your reservation request!
+            </h3>
+            <div className="flex-1 h-[2px] bg-gray-100 hidden sm:block" />
+          </div>
+
+          {/* Procedural Explanation Grid */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+            {/* Left Icon */}
+            <div className="hidden lg:flex w-20 h-20 rounded-full border-2 border-gray-100 items-center justify-center text-gray-400">
+              <PhoneCall className="w-10 h-10" strokeWidth={1} />
+            </div>
+
+            <div className="flex-1 text-center max-w-[600px] space-y-4">
+              <div className="w-2 h-2 bg-[#2f884d] rounded-full mx-auto" />
+              <p className="text-lg md:text-xl font-bold text-[#1b2d1d] leading-relaxed">
+                One of our agents will contact you during the day,
+                and we will contact the seller to proceed with
+                the vehicle reservation <span className="text-[#2f884d]">and confirm your order</span> at the same time.
+              </p>
+            </div>
+
+            {/* Right Icon */}
+            <div className="hidden lg:flex w-20 h-20 rounded-full border-2 border-gray-100 items-center justify-center text-gray-400">
+              <Handshake className="w-10 h-10" strokeWidth={1} />
+            </div>
+          </div>
+
+          {/* Footer Highlights */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50/50 p-4 rounded-[24px] border border-gray-100">
+            <div className="flex items-center gap-4 p-4">
+              <div className="w-12 h-12 rounded-full bg-[#2f884d] flex items-center justify-center text-white shadow-lg shadow-[#2f884d]/20 shrink-0">
+                <Clock className="w-6 h-6" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[13px] font-black text-[#2f884d] leading-none mb-1">We'll contact you</span>
+                <span className="text-[12px] text-gray-500 font-bold">during the day</span>
               </div>
             </div>
-            <div className="w-24 h-32 rounded-lg border border-gray-100 p-2 shadow-sm flex flex-col gap-1.5">
-              <div className="h-2 w-3/4 bg-gray-100 rounded" />
-              <div className="h-2 w-1/2 bg-gray-100 rounded" />
-              <div className="mt-4 h-1.5 w-full bg-gray-50 rounded" />
-              <div className="h-1.5 w-full bg-gray-50 rounded" />
-              <div className="h-1.5 w-full bg-gray-50 rounded" />
-              <div className="h-1.5 w-full bg-gray-50 rounded" />
+
+            <div className="flex items-center gap-4 p-4 border-y md:border-y-0 md:border-x border-gray-200/50">
+              <div className="w-12 h-12 rounded-full bg-[#2f884d] flex items-center justify-center text-white shadow-lg shadow-[#2f884d]/20 shrink-0">
+                <UserCheck className="w-6 h-6" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[13px] font-black text-[#2f884d] leading-none mb-1">We will contact</span>
+                <span className="text-[12px] text-gray-500 font-bold">the seller</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 p-4">
+              <div className="w-12 h-12 rounded-full bg-[#2f884d] flex items-center justify-center text-white shadow-lg shadow-[#2f884d]/20 shrink-0">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[13px] font-black text-[#2f884d] leading-none mb-1">We will confirm</span>
+                <span className="text-[12px] text-gray-500 font-bold">your order at the same time</span>
+              </div>
             </div>
           </div>
         </section>
+
       </main>
 
       <Footer />

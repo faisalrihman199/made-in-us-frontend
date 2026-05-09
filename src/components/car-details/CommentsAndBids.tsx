@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
-import { ChevronUp, ChevronDown, Flag, ArrowDown, X } from 'lucide-react';
+import { 
+  ChevronUp, ChevronDown, Flag, ArrowDown, X,
+  Edit2, Trash, Save
+} from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchCarComments, addCarComment, voteComment, type CommentResponse } from "@/lib/api";
+import { fetchCarComments, addCarComment, voteComment, type CommentResponse, updateModerationItem, deleteModerationItem } from "@/lib/api";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+
+
+
 
 export interface CommentItem {
   id: string;
@@ -34,6 +41,11 @@ const VehicleComments: React.FC<VehicleCommentsProps> = ({ carId, carModel = "Ve
   const [newComment, setNewComment] = useState('');
   const [replyToId, setReplyToId] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState("");
+
 
   const { data: commentsResponse, isLoading } = useQuery({
     queryKey: ["car-comments", carId],
@@ -82,6 +94,28 @@ const VehicleComments: React.FC<VehicleCommentsProps> = ({ carId, carModel = "Ve
       toast.error("Failed to post comment. Are you logged in?");
     }
   });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ type, id, content }: { type: string, id: string, content: string }) => 
+      updateModerationItem(type, id, content),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["car-comments", carId] });
+      toast.success("Comment updated");
+      setEditingId(null);
+    },
+    onError: () => toast.error("Failed to update comment")
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: ({ type, id }: { type: string, id: string }) => 
+      deleteModerationItem(type, id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["car-comments", carId] });
+      toast.success("Comment deleted");
+    },
+    onError: () => toast.error("Failed to delete comment")
+  });
+
 
   const handleVote = (id: string, increment: boolean) => {
     voteMutation.mutate({ id, direction: increment ? "up" : "down" });
@@ -188,7 +222,31 @@ const VehicleComments: React.FC<VehicleCommentsProps> = ({ carId, carModel = "Ve
                   )}
                   <span className="text-green-600">↑{item.user.score}</span>
                   <span className="text-gray-500 text-sm">{item.timeAgo}</span>
+                  {isAdmin && editingId !== item.id && (
+                    <div className="flex gap-1 ml-auto">
+                      <button 
+                        onClick={() => {
+                          setEditingId(item.id);
+                          setEditContent(item.content);
+                        }}
+                        className="p-1 text-gray-300 hover:text-blue-500 transition-colors"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                      </button>
+                      <button 
+                        onClick={() => {
+                          if (confirm("Delete this comment?")) {
+                            deleteMutation.mutate({ type: 'comment', id: item.id });
+                          }
+                        }}
+                        className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <Trash className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
                 </div>
+
 
                 {/* Content */}
                 {item.isReply && item.replyTo && (
@@ -196,9 +254,38 @@ const VehicleComments: React.FC<VehicleCommentsProps> = ({ carId, carModel = "Ve
                     Re: {item.replyTo}
                   </div>
                 )}
-                <p className="text-gray-900 mb-3 leading-relaxed">{item.content}</p>
+                {editingId === item.id ? (
+                  <div className="space-y-2 mb-3">
+                    <textarea 
+                      className="w-full p-2 text-sm border rounded-lg focus:ring-2 focus:ring-green-500 outline-none min-h-[80px]"
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      autoFocus
+                    />
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        onClick={() => updateMutation.mutate({ type: 'comment', id: item.id, content: editContent })}
+                        className="bg-green-600 hover:bg-green-700 h-8 text-[10px] font-bold"
+                      >
+                        <Save className="w-3 h-3 mr-1" /> Save
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => setEditingId(null)}
+                        className="h-8 text-[10px] font-bold"
+                      >
+                        <X className="w-3 h-3 mr-1" /> Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-gray-900 mb-3 leading-relaxed">{item.content}</p>
+                )}
                 
                 {/* Actions */}
+
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1">
                     <button 
@@ -230,7 +317,31 @@ const VehicleComments: React.FC<VehicleCommentsProps> = ({ carId, carModel = "Ve
                     <Flag className="w-3 h-3" />
                     Flag as inappropriate
                   </button>
+                  {isAdmin && editingId !== item.id && (
+                    <div className="flex items-center gap-2 ml-auto">
+                      <button 
+                        onClick={() => {
+                          setEditingId(item.id);
+                          setEditContent(item.content);
+                        }}
+                        className="p-1 text-gray-400 hover:text-blue-500 transition-colors"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button 
+                        onClick={() => {
+                          if (confirm("Are you sure you want to delete this comment?")) {
+                            deleteMutation.mutate({ type: 'comment', id: item.id });
+                          }
+                        }}
+                        className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <Trash className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
                 </div>
+
 
                 {/* Nested Replies */}
                 {item.replies && item.replies.length > 0 && (

@@ -79,6 +79,7 @@ const RequestDetailsModal = ({ isOpen, onOpenChange, listingId, listingUrl, vehi
         countryCode: '+1',
         country: ''
       });
+
     } catch (error) {
       console.error(error);
       toast.error("Failed to send request. Please try again.");

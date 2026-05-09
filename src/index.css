@@ -174,3 +174,12 @@ body {
     @apply bg-background text-foreground;
   }
 }
+@keyframes glow-green {
+  0% { box-shadow: 0 0 5px rgba(96, 230, 119, 0.2), 0 0 10px rgba(96, 230, 119, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(96, 230, 119, 0.6), 0 0 30px rgba(96, 230, 119, 0.4); }
+  100% { box-shadow: 0 0 5px rgba(96, 230, 119, 0.2), 0 0 10px rgba(96, 230, 119, 0.2); }
+}
+
+.animate-glow-green {
+  animation: glow-green 3s infinite ease-in-out;
+}

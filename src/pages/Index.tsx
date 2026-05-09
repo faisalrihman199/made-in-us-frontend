@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import Header from "@/components/Header";
 import VehicleSearch from "@/components/VehicleSearch";
 import VehicleCard from "@/components/AuctionCard";
@@ -70,17 +70,33 @@ const Index = () => {
   // Pass the unfiltered/broad set into VehicleSearch so it can build dropdown options.
   const allVehicles = allVehiclesForFilters.length > 0 ? allVehiclesForFilters : visibleVehicles;
 
-  useEffect(() => {
-    const onScroll = () => {
-      if (carsQuery.isFetchingNextPage) return;
-      if (!carsQuery.hasNextPage) return;
-      if (window.innerHeight + window.scrollY < document.documentElement.scrollHeight - 1000) return;
-      void carsQuery.fetchNextPage();
-    };
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [carsQuery]);
+  useEffect(() => {
+    if (carsQuery.isFetchingNextPage || !carsQuery.hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          void carsQuery.fetchNextPage();
+        }
+      },
+      { 
+        threshold: 0.1,
+        // Trigger when the sentinel is within 600px of the viewport (approx 1-2 rows)
+        rootMargin: '0px 0px 600px 0px' 
+      }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    observerRef.current = observer;
+    return () => observer.disconnect();
+  }, [carsQuery.hasNextPage, carsQuery.isFetchingNextPage, carsQuery.fetchNextPage]);
+
 
   const VehicleSkeleton = () => (
     <div className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 animate-pulse h-full">
@@ -120,7 +136,10 @@ const Index = () => {
             {visibleVehicles.map((vehicle, index) => (
               <VehicleCard key={index} {...vehicle} />
             ))}
+            {/* Sentinel for infinite scroll */}
+            <div ref={loadMoreRef} className="h-4 w-full" />
           </div>
+
         ) : (
           <div className="flex justify-center items-center py-16">
             <div className="text-center">

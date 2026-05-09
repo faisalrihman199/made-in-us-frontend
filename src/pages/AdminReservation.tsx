@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getVehicleReservation, confirmVehicleReservation } from "@/lib/api";
+import { getVehicleReservation, confirmVehicleReservation, formatUrl, ensureRelative } from "@/lib/api";
+
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,9 +34,11 @@ const AdminReservation = () => {
 
     setIsSubmitting(true);
     try {
-      await confirmVehicleReservation(id, vehicleUrl);
+      const relativeUrl = ensureRelative(vehicleUrl);
+      await confirmVehicleReservation(id, relativeUrl);
       toast.success("Reservation confirmed and user notified!");
-      setReservation((prev: any) => ({ ...prev, status: "RESERVED", reservedVehicleUrl: vehicleUrl }));
+      setReservation((prev: any) => ({ ...prev, status: "RESERVED", reservedVehicleUrl: relativeUrl }));
+
     } catch (error) {
       toast.error("Failed to confirm reservation");
     } finally {
@@ -89,12 +93,13 @@ const AdminReservation = () => {
                   <span className="font-bold text-emerald-900">Deposit Proof Received</span>
                 </div>
                 <a 
-                  href={reservation.paymentProofUrl} 
+                  href={formatUrl(reservation.paymentProofUrl)} 
                   target="_blank" 
                   className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-emerald-700 transition-colors"
                 >
                   View Receipt
                 </a>
+
               </div>
             )}
 

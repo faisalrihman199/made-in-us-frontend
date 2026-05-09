@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,8 @@ type Message = {
 };
 
 export default function Chatbot() {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith('/admin');
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', role: 'model', text: "Hello! I am Cassandra, your Made-in-US virtual assistant. I'm here to help you find the perfect American car. What are you looking for today?" }
@@ -27,6 +30,10 @@ export default function Chatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isOpen]);
+
+  if (isAdminPage) return null;
+
+
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -74,12 +81,12 @@ export default function Chatbot() {
       <motion.button
         initial={{ scale: 0 }}
         animate={{ scale: isOpen ? 0 : 1 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-[#0A2E1F] text-[#60E677] rounded-full shadow-2xl flex items-center justify-center z-50 border-2 border-[#1a4a35] focus:outline-none"
+        className="fixed bottom-6 right-6 w-16 h-16 bg-[#0A2E1F] text-[#60E677] rounded-full shadow-2xl flex items-center justify-center z-50 border-2 border-[#60E677]/40 focus:outline-none animate-glow-green"
       >
-        <MessageSquare className="w-6 h-6" />
+        <Bot className="w-8 h-8 drop-shadow-[0_0_8px_rgba(96,230,119,0.8)]" />
       </motion.button>
 
       {/* Chat Window */}
@@ -90,57 +97,57 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-6 right-6 w-[350px] sm:w-[400px] h-[500px] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden z-50 border border-gray-100"
+            className="fixed bottom-6 right-6 w-[350px] sm:w-[400px] h-[600px] bg-white rounded-[32px] shadow-2xl flex flex-col overflow-hidden z-50 border border-gray-100"
           >
             {/* Header */}
-            <div className="bg-[#0A2E1F] p-4 flex items-center justify-between text-white shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#1a4a35] flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-[#60E677]" />
+            <div className="bg-[#0A2E1F] p-5 flex items-center justify-between text-white shrink-0">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#1a4a35] flex items-center justify-center border border-[#60E677]/30 shadow-inner">
+                  <Bot className="w-7 h-7 text-[#60E677] drop-shadow-[0_0_5px_rgba(96,230,119,0.5)]" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm">Cassandra</h3>
-                  <p className="text-[#60E677] text-xs font-medium flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#60E677] inline-block animate-pulse"></span>
-                    Online
+                  <h3 className="font-black text-base tracking-tight">Cassandra</h3>
+                  <p className="text-[#60E677] text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#60E677] inline-block animate-pulse shadow-[0_0_8px_#60E677]"></span>
+                    AI Assistant
                   </p>
                 </div>
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
+                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-all active:scale-90"
               >
-                <X className="w-5 h-5 text-gray-300 hover:text-white" />
+                <X className="w-6 h-6 text-gray-400 hover:text-white" />
               </button>
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 scrollbar-thin scrollbar-thumb-gray-200">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/30 scrollbar-thin scrollbar-thumb-gray-200">
               {messages.map((msg) => (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   key={msg.id} 
                   className={cn(
-                    "flex max-w-[85%] gap-2",
+                    "flex max-w-[85%] gap-3",
                     msg.role === 'user' ? "ml-auto flex-row-reverse" : "mr-auto"
                   )}
                 >
                   <div className={cn(
-                    "w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-1",
-                    msg.role === 'user' ? "bg-gray-200" : "bg-[#0A2E1F]"
+                    "w-9 h-9 rounded-full flex items-center justify-center shrink-0 mt-1 shadow-sm",
+                    msg.role === 'user' ? "bg-white border border-gray-100" : "bg-[#0A2E1F] border border-[#60E677]/20"
                   )}>
                     {msg.role === 'user' ? (
-                      <User className="w-3.5 h-3.5 text-gray-600" />
+                      <User className="w-5 h-5 text-gray-400" />
                     ) : (
-                      <Bot className="w-3.5 h-3.5 text-[#60E677]" />
+                      <Bot className="w-5 h-5 text-[#60E677] drop-shadow-[0_0_3px_rgba(96,230,119,0.4)]" />
                     )}
                   </div>
                   <div className={cn(
-                    "px-4 py-2.5 rounded-2xl text-[13px] sm:text-sm leading-relaxed",
+                    "px-5 py-3.5 rounded-[22px] text-sm leading-relaxed font-medium",
                     msg.role === 'user' 
-                      ? "bg-[#0A2E1F] text-white rounded-tr-sm" 
-                      : "bg-white border border-gray-100 shadow-sm text-gray-800 rounded-tl-sm"
+                      ? "bg-[#0A2E1F] text-white rounded-tr-none shadow-lg shadow-black/5" 
+                      : "bg-white border border-gray-100 shadow-sm text-gray-800 rounded-tl-none"
                   )}>
                     {msg.text}
                   </div>
@@ -151,15 +158,15 @@ export default function Chatbot() {
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex max-w-[85%] gap-2 mr-auto"
+                  className="flex max-w-[85%] gap-3 mr-auto"
                 >
-                  <div className="w-6 h-6 rounded-full bg-[#0A2E1F] flex items-center justify-center shrink-0 mt-1">
-                    <Bot className="w-3.5 h-3.5 text-[#60E677]" />
+                  <div className="w-9 h-9 rounded-full bg-[#0A2E1F] border border-[#60E677]/20 flex items-center justify-center shrink-0 mt-1">
+                    <Bot className="w-5 h-5 text-[#60E677] animate-pulse" />
                   </div>
-                  <div className="px-4 py-3 rounded-2xl bg-white border border-gray-100 shadow-sm rounded-tl-sm flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                    <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                    <span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                  <div className="px-5 py-4 rounded-[22px] bg-white border border-gray-100 shadow-sm rounded-tl-none flex items-center gap-2">
+                    <span className="w-2 h-2 bg-[#60E677]/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                    <span className="w-2 h-2 bg-[#60E677]/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                    <span className="w-2 h-2 bg-[#60E677] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
                   </div>
                 </motion.div>
               )}
@@ -167,24 +174,25 @@ export default function Chatbot() {
             </div>
 
             {/* Input Area */}
-            <div className="p-3 bg-white border-t border-gray-100 shrink-0">
-              <div className="relative flex items-center">
+            <div className="p-5 bg-white border-t border-gray-100 shrink-0">
+              <div className="relative flex items-center gap-2">
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Type your message..."
-                  className="pr-12 h-11 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:border-[#60E677] focus:ring-1 focus:ring-[#60E677]/50"
+                  placeholder="Ask Cassandra anything..."
+                  className="pr-12 h-12 rounded-2xl bg-gray-50 border-transparent focus:bg-white focus:border-[#60E677] focus:ring-4 focus:ring-[#60E677]/10 transition-all font-medium text-sm"
                 />
                 <Button 
                   onClick={handleSend}
                   disabled={isLoading || !input.trim()}
                   size="icon"
-                  className="absolute right-1 w-9 h-9 rounded-lg bg-[#0A2E1F] hover:bg-[#1a4a35] text-white disabled:opacity-50"
+                  className="absolute right-1 w-10 h-10 rounded-xl bg-[#0A2E1F] hover:bg-[#1a4a35] text-white shadow-lg shadow-[#0A2E1F]/10 disabled:opacity-50 transition-all"
                 >
-                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                 </Button>
               </div>
+              <p className="text-[10px] text-center text-gray-400 mt-3 font-bold uppercase tracking-widest opacity-50">Powered by Cassandra AI</p>
             </div>
           </motion.div>
         )}

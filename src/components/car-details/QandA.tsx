@@ -9,6 +9,10 @@ import { fetchCarQA, addCarQuestion, voteQuestion, type QuestionResponse } from 
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import { updateModerationItem, deleteModerationItem } from "@/lib/api";
+import { Edit2, Trash, Save, X } from "lucide-react";
+
 
 export interface QAItem {
   id: string;
@@ -43,6 +47,13 @@ const QandA: React.FC<QandAProps> = ({ carId, carModel = "Vehicle" }) => {
   const [showQAModal, setShowQAModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showViewAllModal, setShowViewAllModal] = useState(false);
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState("");
+
+
 
   const { data: qaResponse, isLoading } = useQuery({
     queryKey: ["car-qa", carId],
@@ -87,12 +98,36 @@ const QandA: React.FC<QandAProps> = ({ carId, carModel = "Vehicle" }) => {
     mutationFn: (content: string) => addCarQuestion(carId!, content),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["car-qa", carId] });
-      navigate("/confirmation");
+      toast.success("Question submitted! It will appear after admin approval.");
+      setShowAddModal(false);
     },
+
     onError: () => {
       toast.error("Failed to post question. Are you logged in?");
     }
   });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ type, id, content }: { type: string, id: string, content: string }) => 
+      updateModerationItem(type, id, content),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["car-qa", carId] });
+      toast.success("Content updated");
+      setEditingId(null);
+    },
+    onError: () => toast.error("Failed to update content")
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: ({ type, id }: { type: string, id: string }) => 
+      deleteModerationItem(type, id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["car-qa", carId] });
+      toast.success("Content deleted");
+    },
+    onError: () => toast.error("Failed to delete content")
+  });
+
 
   const handleVote = (id: string, increment: boolean) => {
     voteMutation.mutate({ id, direction: increment ? "up" : "down" });
@@ -165,11 +200,64 @@ const QandA: React.FC<QandAProps> = ({ carId, carModel = "Vehicle" }) => {
                       <span className="text-gray-500 text-sm">{qa.timeAgo}</span>
                     </div>
                   </div>
+                  {isAdmin && editingId !== qa.id && (
+                    <div className="flex gap-1 ml-auto">
+                      <button 
+                        onClick={() => {
+                          setEditingId(qa.id);
+                          setEditContent(qa.question);
+                        }}
+                        className="p-1 text-gray-300 hover:text-blue-500 transition-colors"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                      </button>
+                      <button 
+                        onClick={() => {
+                          if (confirm("Delete this question?")) {
+                            deleteMutation.mutate({ type: 'question', id: qa.id });
+                          }
+                        }}
+                        className="p-1 text-gray-300 hover:text-red-500 transition-colors"
+                      >
+                        <Trash className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <p className="text-sm font-medium mb-2">
-                  <span className="font-semibold">Q:</span> {qa.question}
-                </p>
+
+                {editingId === qa.id ? (
+                  <div className="space-y-2">
+                    <textarea 
+                      className="w-full p-2 text-sm border rounded-lg focus:ring-2 focus:ring-green-500 outline-none min-h-[80px]"
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      autoFocus
+                    />
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        onClick={() => updateMutation.mutate({ type: 'question', id: qa.id, content: editContent })}
+                        className="bg-green-600 hover:bg-green-700 h-8 text-[10px] font-bold"
+                      >
+                        <Save className="w-3 h-3 mr-1" /> Save
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => setEditingId(null)}
+                        className="h-8 text-[10px] font-bold"
+                      >
+                        <X className="w-3 h-3 mr-1" /> Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm font-medium mb-2">
+                    <span className="font-semibold">Q:</span> {qa.question}
+                  </p>
+                )}
               </div>
+
 
               {/* Answer */}
               {qa.hasAnswer && qa.answer && qa.answeredBy ? (
@@ -193,10 +281,72 @@ const QandA: React.FC<QandAProps> = ({ carId, carModel = "Vehicle" }) => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-700">
-                    <span className="font-semibold">A:</span> {qa.answer.length > 80 ? `${qa.answer.substring(0, 80)}...` : qa.answer}
-                  </p>
+                  {editingAnswerId === qaResponse?.items.find(q => q.id === qa.id)?.answers[0]?.id ? (
+                    <div className="space-y-2">
+                      <textarea 
+                        className="w-full p-2 text-sm border rounded-lg focus:ring-2 focus:ring-green-500 outline-none min-h-[60px]"
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                        autoFocus
+                      />
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          onClick={() => updateMutation.mutate({ 
+                            type: 'answer', 
+                            id: editingAnswerId, 
+                            content: editContent 
+                          })}
+                          className="bg-green-600 hover:bg-green-700 h-7 text-[9px] font-bold"
+                        >
+                          Save
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => setEditingAnswerId(null)}
+                          className="h-7 text-[9px] font-bold"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="relative group">
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">A:</span> {qa.answer.length > 80 ? `${qa.answer.substring(0, 80)}...` : qa.answer}
+                      </p>
+                      {isAdmin && (
+                        <div className="absolute right-0 top-0 hidden group-hover:flex gap-1">
+                          <button 
+                            onClick={() => {
+                              const ans = qaResponse?.items.find(q => q.id === qa.id)?.answers[0];
+                              if (ans) {
+                                setEditingAnswerId(ans.id);
+                                setEditContent(ans.content);
+                              }
+                            }}
+                            className="p-1 text-gray-400 hover:text-blue-500"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+                          <button 
+                            onClick={() => {
+                              const ans = qaResponse?.items.find(q => q.id === qa.id)?.answers[0];
+                              if (ans && confirm("Delete this answer?")) {
+                                deleteMutation.mutate({ type: 'answer', id: ans.id });
+                              }
+                            }}
+                            className="p-1 text-gray-400 hover:text-red-500"
+                          >
+                            <Trash className="w-3 h-3" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
+
               ) : (
                 <div className="mb-4 p-3 bg-gray-50 rounded text-center">
                   <p className="text-sm text-gray-600">No answer yet</p>
@@ -220,15 +370,42 @@ const QandA: React.FC<QandAProps> = ({ carId, carModel = "Vehicle" }) => {
                     <ChevronDown className="w-4 h-4" />
                   </button>
                 </div>
-                {qa.hasAnswer && qa.answer && (
-                  <button 
-                    onClick={() => handleViewAnswer(qa)}
-                    className="text-green-600 hover:text-green-700 text-sm font-medium"
-                  >
-                    View answer
-                  </button>
-                )}
+                <div className="flex items-center gap-2">
+
+                  {isAdmin && editingId !== qa.id && (
+                    <>
+                      <button 
+                        onClick={() => {
+                          setEditingId(qa.id);
+                          setEditContent(qa.question);
+                        }}
+                        className="p-1 text-gray-400 hover:text-blue-500 transition-colors"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button 
+                        onClick={() => {
+                          if (confirm("Are you sure you want to delete this question?")) {
+                            deleteMutation.mutate({ type: 'question', id: qa.id });
+                          }
+                        }}
+                        className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <Trash className="w-3.5 h-3.5" />
+                      </button>
+                    </>
+                  )}
+                  {qa.hasAnswer && qa.answer && (
+                    <button 
+                      onClick={() => handleViewAnswer(qa)}
+                      className="text-green-600 hover:text-green-700 text-sm font-medium"
+                    >
+                      View answer
+                    </button>
+                  )}
+                </div>
               </div>
+
             </div>
           ))}
         </div>

@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import CarDetails from "./pages/CarDetails";
 import About from "./pages/About";
+import Blog from "./pages/Blog";
 import SecurePay from "./pages/SecurePay";
 import Membership from "./pages/Membership";
 import Cookies from "./pages/Cookies";
@@ -52,6 +53,7 @@ const AppContent = () => (
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/about" element={<About />} />
+      <Route path="/blog" element={<Blog />} />
       <Route path="/cars/:id/:slug" element={<CarDetails />} />
       <Route path="/secure-pay" element={<SecurePay />} />
       <Route path="/complete-payment" element={<CompletePayment />} />

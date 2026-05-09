@@ -18,10 +18,26 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+import { markNotificationsByTypeAsRead, markNotificationsByLinkAsRead } from "@/lib/api";
+
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
-export default function ReviewManagementTab() {
+export default function ReviewManagementTab({ notifications = [] }: { notifications?: any[] }) {
   const queryClient = useQueryClient();
+  
+  React.useEffect(() => {
+    markNotificationsByTypeAsRead("REVIEW").then(() => {
+      queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
+    });
+  }, []);
+
+  const { mutate: markLinkRead } = useMutation({
+    mutationFn: markNotificationsByLinkAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
+    }
+  });
+
   const [isEditing, setIsEditing] = useState(false);
   const [currentReview, setCurrentReview] = useState<any>(null);
   const [bulkFile, setBulkFile] = useState<File | null>(null);
@@ -703,71 +719,81 @@ export default function ReviewManagementTab() {
                     <p className="text-[#0A2E1F] font-black">No testimonials found</p>
                   </div>
                 )}
-                {reviews?.map((review: any) => (
-                  <div key={review.id} className="group p-4 md:p-6 border border-gray-50 rounded-2xl md:rounded-[28px] bg-white hover:border-[#60E677]/30 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all">
-                    <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-                      <div className="flex items-start gap-4 md:gap-5 w-full">
-                        <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 flex-shrink-0 overflow-hidden">
-                          {review.authorImageUrl ? (
-                            <img src={review.authorImageUrl} alt={review.authorName} className="w-full h-full object-cover" />
-                          ) : (
-                            <User className="w-6 h-6 md:w-7 md:h-7 text-gray-300" />
-                          )}
+                {reviews?.map((review: any) => {
+                  const hasUnread = notifications.some(n => !n.isRead && n.link?.includes(review.id));
+                  return (
+                    <div key={review.id} className={cn("group p-4 md:p-6 border border-gray-50 rounded-2xl md:rounded-[28px] bg-white hover:border-[#60E677]/30 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all relative", hasUnread && "ring-1 ring-red-100")}>
+                      {hasUnread && (
+                        <div className="absolute top-4 right-4 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm z-10 animate-pulse" />
+                      )}
+                      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                        <div className="flex items-start gap-4 md:gap-5 w-full">
+                          <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 flex-shrink-0 overflow-hidden relative">
+                            {review.authorImageUrl ? (
+                              <img src={review.authorImageUrl} alt={review.authorName} className="w-full h-full object-cover" />
+                            ) : (
+                              <User className="w-6 h-6 md:w-7 md:h-7 text-gray-300" />
+                            )}
+                            {hasUnread && (
+                              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm" />
+                            )}
+                          </div>
+                          <div className="flex flex-col w-full">
+                            <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+                              <h3 className="font-black text-[#0A2E1F] text-sm md:text-base tracking-tight">{review.authorName}</h3>
+                              <div className={cn(
+                                "px-2 py-0.5 rounded-md text-[7px] md:text-[8px] font-black uppercase tracking-wider",
+                                review.isApproved ? "bg-green-50 text-green-600" : "bg-orange-50 text-orange-600"
+                              )}>
+                                {review.isApproved ? "Public" : "Hidden"}
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-1.5 md:gap-2 text-[9px] md:text-[10px] font-bold text-gray-400 mt-0.5">
+                              <div className="flex items-center gap-1">
+                                <MapPin className="w-2.5 h-2.5" />
+                                <span className="truncate max-w-[120px] sm:max-w-none">{review.city}, {review.country} ({review.language})</span>
+                              </div>
+                              <span className="mx-0.5 md:mx-1">•</span>
+                              <div className="flex items-center gap-1">
+                                <Car className="w-2.5 h-2.5" />
+                                <span className="truncate max-w-[150px] sm:max-w-none">{review.vehicle}</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-0.5 mt-1.5">
+                              {Array.from({ length: 5 }).map((_, i) => (
+                                <Star 
+                                  key={i} 
+                                  className={cn(
+                                    "w-3 h-3", 
+                                    i < review.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-100 fill-gray-50"
+                                  )} 
+                                />
+                              ))}
+                            </div>
+                            <p className="text-gray-500 font-medium text-[11px] md:text-xs mt-2 leading-relaxed line-clamp-2 italic w-full border-l-2 border-gray-50 pl-3">
+                              "{review.content}"
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex flex-col w-full">
-                          <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-                            <h3 className="font-black text-[#0A2E1F] text-sm md:text-base tracking-tight">{review.authorName}</h3>
-                            <div className={cn(
-                              "px-2 py-0.5 rounded-md text-[7px] md:text-[8px] font-black uppercase tracking-wider",
-                              review.isApproved ? "bg-green-50 text-green-600" : "bg-orange-50 text-orange-600"
-                            )}>
-                              {review.isApproved ? "Public" : "Hidden"}
-                            </div>
-                          </div>
-                          <div className="flex flex-wrap items-center gap-1.5 md:gap-2 text-[9px] md:text-[10px] font-bold text-gray-400 mt-0.5">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="w-2.5 h-2.5" />
-                              <span className="truncate max-w-[120px] sm:max-w-none">{review.city}, {review.country} ({review.language})</span>
-                            </div>
-                            <span className="mx-0.5 md:mx-1">•</span>
-                            <div className="flex items-center gap-1">
-                              <Car className="w-2.5 h-2.5" />
-                              <span className="truncate max-w-[150px] sm:max-w-none">{review.vehicle}</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-0.5 mt-1.5">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className={cn(
-                                  "w-3 h-3", 
-                                  i < review.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-100 fill-gray-50"
-                                )} 
-                              />
-                            ))}
-                          </div>
-                          <p className="text-gray-500 font-medium text-[11px] md:text-xs mt-2 leading-relaxed line-clamp-2 italic w-full border-l-2 border-gray-50 pl-3">
-                            "{review.content}"
-                          </p>
+                        <div className="flex sm:flex-col gap-2 w-full sm:w-auto justify-end border-t sm:border-0 pt-3 sm:pt-0 border-gray-50">
+                          <Button variant="ghost" size="icon" onClick={() => { 
+                            setCurrentReview(review); 
+                            setImagePreview(review.authorImageUrl);
+                            setIsEditing(true); 
+                            markLinkRead(`/admin/reviews/${review.id}`); // Assuming this is the link structure
+                          }} className="w-10 h-10 md:w-10 md:h-10 rounded-lg md:rounded-xl text-gray-400 hover:text-[#0A2E1F] hover:bg-gray-50">
+                            <Edit className="w-4 h-4 md:w-4 md:h-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => {
+                            setConfirmDelete({ type: 'single', id: review.id });
+                          }} className="w-10 h-10 md:w-10 md:h-10 rounded-lg md:rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50">
+                            <Trash className="w-4 h-4 md:w-4 md:h-4" />
+                          </Button>
                         </div>
-                      </div>
-                      <div className="flex sm:flex-col gap-2 w-full sm:w-auto justify-end border-t sm:border-0 pt-3 sm:pt-0 border-gray-50">
-                        <Button variant="ghost" size="icon" onClick={() => { 
-                          setCurrentReview(review); 
-                          setImagePreview(review.authorImageUrl);
-                          setIsEditing(true); 
-                        }} className="w-10 h-10 md:w-10 md:h-10 rounded-lg md:rounded-xl text-gray-400 hover:text-[#0A2E1F] hover:bg-gray-50">
-                          <Edit className="w-4 h-4 md:w-4 md:h-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => {
-                          setConfirmDelete({ type: 'single', id: review.id });
-                        }} className="w-10 h-10 md:w-10 md:h-10 rounded-lg md:rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50">
-                          <Trash className="w-4 h-4 md:w-4 md:h-4" />
-                        </Button>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 

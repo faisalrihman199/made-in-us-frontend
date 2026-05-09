@@ -9,8 +9,10 @@ import {
   FileText, Truck, Search, Calendar, CreditCard, 
   MessageCircle, ChevronRight, User, ArrowUpRight, 
   Clock, Trash, Filter, Mail, Phone, MapPin, 
-  Car, ExternalLink, MoreHorizontal, X, ChevronDown
+  Car, ExternalLink, MoreHorizontal, X, ChevronDown, Check, Edit2, Save
 } from "lucide-react";
+
+
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import {
@@ -24,6 +26,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+import { markNotificationsByTypeAsRead, markNotificationsByLinkAsRead } from "@/lib/api";
+
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
 const fetcher = async (url: string) => {
@@ -34,24 +38,71 @@ const fetcher = async (url: string) => {
 
 type ViewMode = "dashboard" | "all-shipping" | "all-inspections" | "all-reservations" | "all-find" | "all-subscriptions" | "all-inquiries";
 
-export default function QueriesManagementTab({ initialView }: { initialView?: string }) {
+
+
+export default function QueriesManagementTab({ initialView, unreadByType = {}, notifications = [] }: { initialView?: string, unreadByType?: Record<string, number>, notifications?: any[] }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [viewMode, setViewMode] = useState<ViewMode>((initialView as ViewMode) || "dashboard");
   const [search, setSearch] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<{ id: string, type: string } | null>(null);
+  const [editingItem, setEditingItem] = useState<{ id: string, type: string, content: string } | null>(null);
+
 
   // Sync state with URL when initialView changes (e.g. browser back/forward)
   useEffect(() => {
     if (initialView && initialView !== viewMode) {
-      setViewMode(initialView as ViewMode);
+      const mode = initialView as ViewMode;
+      setViewMode(mode);
+      
+      const typeMap: Record<string, string> = {
+        "all-shipping": "SHIPPING_QUOTE",
+        "all-inspections": "INSPECTION",
+        "all-reservations": "RESERVATION",
+        "all-find": "FIND_REQUEST",
+        "all-subscriptions": "SUBSCRIPTION",
+        "all-inquiries": "INQUIRY"
+      };
+
+      if (typeMap[mode]) {
+        markTypeRead(typeMap[mode]);
+      }
     } else if (!initialView) {
       setViewMode("dashboard");
     }
-  }, [initialView, viewMode]);
+  }, [initialView]);
+
+  const { mutate: markTypeRead } = useMutation({
+    mutationFn: markNotificationsByTypeAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
+    }
+  });
+
+  const { mutate: markLinkRead } = useMutation({
+    mutationFn: markNotificationsByLinkAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
+    }
+  });
 
   const changeView = (mode: ViewMode) => {
     setViewMode(mode);
+    
+    // Mark notifications as read based on mode
+    const typeMap: Record<string, string> = {
+      "all-shipping": "SHIPPING_QUOTE",
+      "all-inspections": "INSPECTION",
+      "all-reservations": "RESERVATION",
+      "all-find": "FIND_REQUEST",
+      "all-subscriptions": "SUBSCRIPTION",
+      "all-inquiries": "INQUIRY"
+    };
+
+    if (typeMap[mode]) {
+      markTypeRead(typeMap[mode]);
+    }
+
     if (mode === "dashboard") {
       navigate("/admin/queries");
     } else {
@@ -70,6 +121,8 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
     queryFn: () => fetcher(`/api/inquiries?search=${search}`) 
   });
 
+
+
   const deleteMutation = useMutation({
     mutationFn: async ({ id, endpoint }: { id: string, endpoint: string }) => {
       const res = await fetch(`${API_BASE}/api/${endpoint}/${id}`, { method: "DELETE" });
@@ -83,10 +136,12 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
     onError: () => toast.error("Failed to delete")
   });
 
-  const QuerySection = ({ title, data, icon: Icon, getLink, color, mode }: any) => (
+
+
+  const QuerySection = ({ title, data, icon: Icon, getLink, color, mode, unreadCount = 0 }: any) => (
     <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl md:rounded-[32px] overflow-hidden bg-white hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
       <CardHeader className="p-6 md:p-8 pb-4 border-b border-gray-50 flex flex-row items-center justify-between space-y-0">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 relative">
           <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center border", color)}>
             <Icon className="w-6 h-6" />
           </div>
@@ -101,44 +156,50 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
       <CardContent className="p-4 md:p-8 pt-4 md:pt-6">
         {data && data.length > 0 ? (
           <div className="space-y-3">
-            {data.slice(0, 4).map((item: any) => (
-              <div key={item.id} className="group flex items-center justify-between p-4 border border-gray-50 rounded-2xl bg-gray-50/30 hover:bg-white hover:border-[#60E677]/30 transition-all">
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-gray-100 text-[#0A2E1F] font-black text-xs flex-shrink-0 group-hover:bg-[#60E677]/10 group-hover:border-[#60E677]/20 transition-all">
-                    {(item.firstName || item.name || item.fullName || 'U')[0]}
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-black text-sm text-[#0A2E1F] truncate group-hover:text-[#2F884D] transition-colors">
-                      {item.firstName || item.name || item.fullName} {item.lastName || ""}
-                    </span>
-                    <div className="flex items-center gap-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                      <Clock className="w-2.5 h-2.5" />
-                      <span>
-                        {new Date(item.createdAt).toLocaleDateString()} 
-                        <span className="ml-1 text-gray-300">
-                          {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
+            {data.slice(0, 4).map((item: any) => {
+              const hasUnread = notifications.some(n => !n.isRead && n.link?.includes(item.id));
+              return (
+                <div key={item.id} className="group flex items-center justify-between p-4 border border-gray-50 rounded-2xl bg-gray-50/30 hover:bg-white hover:border-[#60E677]/30 transition-all relative">
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-gray-100 text-[#0A2E1F] font-black text-xs flex-shrink-0 group-hover:bg-[#60E677]/10 group-hover:border-[#60E677]/20 transition-all relative">
+                      {(item.firstName || item.name || item.fullName || 'U')[0]}
+                      {hasUnread && (
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm" />
+                      )}
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-black text-sm text-[#0A2E1F] truncate group-hover:text-[#2F884D] transition-colors">
+                        {item.firstName || item.name || item.fullName} {item.lastName || ""}
                       </span>
+                      <div className="flex items-center gap-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                        <Clock className="w-2.5 h-2.5" />
+                        <span>
+                          {new Date(item.createdAt).toLocaleDateString()} 
+                          <span className="ml-1 text-gray-300">
+                            {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                {getLink ? (
-                  <Link to={getLink(item.id)}>
-                    <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl bg-white border border-gray-100 shadow-sm text-gray-400 hover:text-[#60E677] hover:border-[#60E677]/20 group-hover:scale-110 transition-all">
-                      <ArrowUpRight className="w-4 h-4" />
+                  {getLink ? (
+                    <Link to={getLink(item.id)} onClick={() => markLinkRead(getLink(item.id))}>
+                      <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl bg-white border border-gray-100 shadow-sm text-gray-400 hover:text-[#60E677] hover:border-[#60E677]/20 group-hover:scale-110 transition-all">
+                        <ArrowUpRight className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Button 
+                      variant="ghost" size="icon" 
+                      onClick={() => changeView(mode)}
+                      className="w-9 h-9 rounded-xl bg-white border border-gray-100 shadow-sm text-gray-400 hover:text-[#60E677] hover:border-[#60E677]/20 transition-all"
+                    >
+                      <ChevronRight className="w-4 h-4" />
                     </Button>
-                  </Link>
-                ) : (
-                  <Button 
-                    variant="ghost" size="icon" 
-                    onClick={() => changeView(mode)}
-                    className="w-9 h-9 rounded-xl bg-white border border-gray-100 shadow-sm text-gray-400 hover:text-[#60E677] hover:border-[#60E677]/20 transition-all"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              );
+            })}
             <Button 
               variant="ghost" 
               onClick={() => changeView(mode)}
@@ -160,9 +221,14 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
     const [expandedIds, setExpandedIds] = useState<string[]>([]);
 
     const toggleExpand = (id: string) => {
+      const isExpanding = !expandedIds.includes(id);
       setExpandedIds(prev => 
-        prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        isExpanding ? [...prev, id] : prev.filter(i => i !== id)
       );
+
+      if (isExpanding && actionLink) {
+        markLinkRead(actionLink(id));
+      }
     };
 
     return (
@@ -199,13 +265,21 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
 
         <div className="grid grid-cols-1 gap-4">
           {data && data.length > 0 ? (
-            data.map((item: any) => (
-              <Card key={item.id} className="border-none shadow-sm hover:shadow-md transition-all rounded-[2rem] overflow-hidden bg-white">
-                <div className="p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start">
-                  <div className="flex flex-1 gap-6 min-w-0">
-                    <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-[#0A2E1F] font-black text-xl flex-shrink-0">
-                      {(item.firstName || item.name || item.fullName || 'U')[0]}
-                    </div>
+            data.map((item: any) => {
+              const hasUnread = notifications.some(n => !n.isRead && n.link?.includes(item.id));
+              return (
+                <Card key={item.id} className={cn("border-none shadow-sm hover:shadow-md transition-all rounded-[2rem] overflow-hidden bg-white relative", hasUnread && "ring-1 ring-red-100")}>
+                  {hasUnread && (
+                    <div className="absolute top-6 right-6 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm z-10 animate-pulse" />
+                  )}
+                  <div className="p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start">
+                    <div className="flex flex-1 gap-6 min-w-0">
+                      <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-[#0A2E1F] font-black text-xl flex-shrink-0 relative">
+                        {(item.firstName || item.name || item.fullName || 'U')[0]}
+                        {hasUnread && (
+                          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm" />
+                        )}
+                      </div>
                     <div className="flex-1 min-w-0 space-y-4">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                         <div>
@@ -264,7 +338,7 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
                   </div>
                   <div className="flex flex-row md:flex-col gap-2 w-full md:w-auto">
                     {actionLink && (
-                      <Link to={actionLink(item.id)} className="flex-1 md:flex-none">
+                      <Link to={actionLink(item.id)} className="flex-1 md:flex-none" onClick={() => markLinkRead(actionLink(item.id))}>
                         <Button 
                           className="w-full h-11 rounded-xl bg-[#0A2E1F] hover:bg-[#1D4D3A] text-white font-bold"
                         >
@@ -290,7 +364,8 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
                   </div>
                 </div>
               </Card>
-            ))
+              );
+            })
           ) : (
             <div className="bg-white p-20 rounded-[3rem] text-center border border-dashed border-gray-200">
                <MessageCircle className="w-16 h-16 text-gray-100 mx-auto mb-4" />
@@ -301,6 +376,9 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
       </div>
     );
   };
+
+
+
 
   if (viewMode === "all-shipping") {
     return (
@@ -455,6 +533,7 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
         icon={MessageCircle}
         endpoint="inquiries"
         color="bg-indigo-50 text-indigo-600"
+        actionLink={(id: string) => `/admin/inquiry/${id}`}
         columns={(item: any) => (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
             <div className="p-3 bg-indigo-50/30 rounded-xl border border-indigo-100/50">
@@ -481,6 +560,7 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
           data={quotes} 
           icon={Truck} 
           mode="all-shipping"
+          unreadCount={unreadByType.SHIPPING_QUOTE || 0}
           color="bg-blue-50 text-blue-600 border-blue-100"
           getLink={(id: string) => `/admin/shipping-quote/${id}`} 
         />
@@ -489,6 +569,7 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
           data={inspections} 
           icon={Search} 
           mode="all-inspections"
+          unreadCount={unreadByType.INSPECTION || 0}
           color="bg-emerald-50 text-emerald-600 border-emerald-100"
           getLink={(id: string) => `/admin/inspection/${id}`} 
         />
@@ -497,6 +578,7 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
           data={reservations} 
           icon={Calendar} 
           mode="all-reservations"
+          unreadCount={unreadByType.RESERVATION || 0}
           color="bg-[#60E677]/10 text-[#2F884D] border-[#60E677]/20"
           getLink={(id: string) => `/admin/reservation/${id}`} 
         />
@@ -505,6 +587,7 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
           data={findRequests} 
           icon={FileText} 
           mode="all-find"
+          unreadCount={unreadByType.FIND_REQUEST || 0}
           color="bg-violet-50 text-violet-600 border-violet-100"
           getLink={(id: string) => `/admin/find-vehicle/${id}`} 
         />
@@ -513,6 +596,7 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
           data={subscriptions} 
           icon={CreditCard} 
           mode="all-subscriptions"
+          unreadCount={unreadByType.SUBSCRIPTION || 0}
           color="bg-amber-50 text-amber-600 border-amber-100"
           getLink={(id: string) => `/admin/subscription/${id}`} 
         />
@@ -521,9 +605,12 @@ export default function QueriesManagementTab({ initialView }: { initialView?: st
           data={inquiries} 
           icon={MessageCircle} 
           mode="all-inquiries"
+          unreadCount={unreadByType.INQUIRY || 0}
           color="bg-indigo-50 text-indigo-600 border-indigo-100"
+          getLink={(id: string) => `/admin/inquiry/${id}`} 
         />
       </div>
+
 
       <AlertDialog open={!!confirmDelete} onOpenChange={() => setConfirmDelete(null)}>
         <AlertDialogContent className="rounded-[2rem] border-none shadow-2xl">

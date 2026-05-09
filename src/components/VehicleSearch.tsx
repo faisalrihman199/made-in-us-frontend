@@ -58,10 +58,9 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
     return [...new Set(allVehicles.map((a) => a.model))].sort() as string[];
   }, [allVehicles, filters.brand]);
 
-  const bodyTypes = useMemo(() => uniqueSorted("bodyType"), [allVehicles]);
   const colors = useMemo(() => uniqueSorted("color"), [allVehicles]);
-  const engines = useMemo(() => uniqueSorted("engine"), [allVehicles]);
   const transmissions = useMemo(() => uniqueSorted("transmission"), [allVehicles]);
+
 
   const handleFilterClick = (key: string, value: any) => {
     onFilterChange({ ...filters, [key]: filters[key] === value ? null : value });
@@ -314,22 +313,6 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
                     <DropdownMenuSub>
-                      <DropdownMenuSubTrigger>Body type</DropdownMenuSubTrigger>
-                      <DropdownMenuSubContent className="max-h-[min(280px,60vh)] overflow-y-auto">
-                        <DropdownMenuItem
-                          onSelect={() => handleFilterClick("bodyType", null)}
-                        >
-                          All body types
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {bodyTypes.map((bt) => (
-                          <DropdownMenuItem key={bt} onSelect={() => handleFilterClick("bodyType", bt)}>
-                            {bt}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuSubContent>
-                    </DropdownMenuSub>
-                    <DropdownMenuSub>
                       <DropdownMenuSubTrigger>Color</DropdownMenuSubTrigger>
                       <DropdownMenuSubContent className="max-h-[min(280px,60vh)] overflow-y-auto">
                         <DropdownMenuItem onSelect={() => handleFilterClick("color", null)}>
@@ -343,22 +326,9 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                         ))}
                       </DropdownMenuSubContent>
                     </DropdownMenuSub>
-                    <DropdownMenuSub>
-                      <DropdownMenuSubTrigger>Engine</DropdownMenuSubTrigger>
-                      <DropdownMenuSubContent className="max-h-[min(280px,60vh)] overflow-y-auto">
-                        <DropdownMenuItem onSelect={() => handleFilterClick("engine", null)}>
-                          All engines
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {engines.map((e) => (
-                          <DropdownMenuItem key={e} onSelect={() => handleFilterClick("engine", e)}>
-                            {e}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuSubContent>
-                    </DropdownMenuSub>
                   </DropdownMenuContent>
                 </DropdownMenu>
+
               </div>
 
               <div className="flex items-center gap-2">
@@ -457,6 +427,7 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
               >
                 <div className="flex flex-col sm:flex-row gap-4 w-full flex-wrap">
                   <DropdownMenu>
+
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="outline"
@@ -478,53 +449,7 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="flex-1 bg-white border-none hover:bg-gray-50 text-[#475569] h-10 px-4 rounded-lg font-semibold justify-between shadow-sm min-w-[140px]"
-                      >
-                        {filters.bodyType || "Body type"} <ChevronDown className="h-4 w-4 opacity-50 shrink-0" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 max-h-[min(280px,60vh)] overflow-y-auto">
-                      <DropdownMenuItem onSelect={() => handleFilterClick("bodyType", null)}>
-                        All body types
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      {bodyTypes.map((bt) => (
-                        <DropdownMenuItem key={bt} onSelect={() => handleFilterClick("bodyType", bt)}>
-                          {bt}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="flex-1 bg-white border-none hover:bg-gray-50 text-[#475569] h-10 px-4 rounded-lg font-semibold justify-between shadow-sm min-w-[140px]"
-                      >
-                        {filters.engine || "Fuel / engine"}{" "}
-                        <ChevronDown className="h-4 w-4 opacity-50 shrink-0" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 max-h-[min(280px,60vh)] overflow-y-auto">
-                      <DropdownMenuItem onSelect={() => handleFilterClick("engine", null)}>
-                        All types
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      {engines.map((e) => (
-                        <DropdownMenuItem key={e} onSelect={() => handleFilterClick("engine", e)}>
-                          {e}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
                 </div>
-
                 <div className="w-full lg:w-auto mt-4 lg:mt-0">
                   <Button
                     type="button"
@@ -535,6 +460,7 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                   </Button>
                 </div>
               </div>
+
             </div>
           </div>
         </div>

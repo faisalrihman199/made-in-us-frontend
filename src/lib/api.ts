@@ -75,11 +75,42 @@ export type CarsQuery = {
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
+const getAuthHeaders = (extra: Record<string, string> = {}) => ({
+  headers: {
+    Accept: "application/json",
+    ...extra,
+  },
+  credentials: "include" as const,
+});
+
+
 function setIfDefined(params: URLSearchParams, key: string, value: unknown) {
   if (value === null || value === undefined) return;
   if (typeof value === "string" && value.trim() === "") return;
   params.set(key, String(value));
 }
+
+export const formatUrl = (url: string | null | undefined) => {
+  if (!url) return "";
+  if (url.startsWith("http")) return url;
+  // If it's an internal path (e.g. /cars or /blog), keep it relative for frontend routing
+  if (url.startsWith("/cars") || url.startsWith("/blog") || url.startsWith("/search")) return url;
+  // Otherwise, assume it's a backend asset (e.g. /uploads)
+  return `${API_BASE}${url}`;
+};
+
+export const ensureRelative = (url: string | null | undefined) => {
+  if (!url) return "";
+  try {
+    const u = new URL(url);
+    if (u.hostname === window.location.hostname || u.hostname === 'localhost') {
+      return u.pathname + u.search + u.hash;
+    }
+  } catch (e) {}
+  return url;
+};
+
+
 
 export async function fetchCars(q: CarsQuery): Promise<CarsResponse> {
   const params = new URLSearchParams();
@@ -231,6 +262,27 @@ export async function voteComment(id: string, direction: "up" | "down"): Promise
   if (!res.ok) throw new Error("Failed to vote");
   return res.json();
 }
+
+export async function updateModerationItem(type: string, id: string, content: string): Promise<{ success: boolean }> {
+  const res = await fetch(`${API_BASE}/api/moderation/${type}/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content }),
+    credentials: "include"
+  });
+  if (!res.ok) throw new Error("Failed to update content");
+  return res.json();
+}
+
+export async function deleteModerationItem(type: string, id: string): Promise<{ success: boolean }> {
+  const res = await fetch(`${API_BASE}/api/moderation/${type}/${id}`, {
+    method: "DELETE",
+    credentials: "include"
+  });
+  if (!res.ok) throw new Error("Failed to delete content");
+  return res.json();
+}
+
 
 export type InquiryData = {
   listingId?: string | null;
@@ -544,3 +596,70 @@ export async function fetchMyWatchlist(): Promise<CarsResponse> {
   if (!res.ok) throw new Error("Failed to fetch watchlist");
   return res.json();
 }
+
+// ==========================================
+// Notifications (Admin)
+// ==========================================
+export type NotificationItem = {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  link: string | null;
+  createdAt: string;
+};
+
+export async function getNotifications(limit = 50): Promise<{ notifications: NotificationItem[], unreadCount: number }> {
+  const res = await fetch(`${API_BASE}/api/notifications?limit=${limit}`, getAuthHeaders());
+  if (!res.ok) throw new Error("Failed to fetch notifications");
+  return res.json();
+}
+
+export async function markNotificationAsRead(id: string): Promise<NotificationItem> {
+  const res = await fetch(`${API_BASE}/api/notifications/${id}/read`, {
+    ...getAuthHeaders(),
+    method: "PATCH"
+  });
+  if (!res.ok) throw new Error("Failed to mark notification as read");
+  return res.json();
+}
+
+export async function markAllNotificationsAsRead(): Promise<{ success: boolean }> {
+  const res = await fetch(`${API_BASE}/api/notifications/read-all`, {
+    ...getAuthHeaders(),
+    method: "POST"
+  });
+  if (!res.ok) throw new Error("Failed to mark all notifications as read");
+  return res.json();
+}
+
+export async function markNotificationsByTypeAsRead(type: string): Promise<{ success: boolean }> {
+  const res = await fetch(`${API_BASE}/api/notifications/read-type/${type}`, {
+    ...getAuthHeaders(),
+    method: "POST"
+  });
+  if (!res.ok) throw new Error("Failed to mark notifications as read");
+  return res.json();
+}
+
+export async function markNotificationsByLinkAsRead(link: string): Promise<{ success: boolean }> {
+  const res = await fetch(`${API_BASE}/api/notifications/read-link`, {
+    ...getAuthHeaders(),
+    method: "POST",
+    headers: { ...getAuthHeaders().headers, "Content-Type": "application/json" },
+    body: JSON.stringify({ link })
+  });
+  if (!res.ok) throw new Error("Failed to mark notifications as read");
+  return res.json();
+}
+
+export async function deleteNotification(id: string): Promise<{ success: boolean }> {
+  const res = await fetch(`${API_BASE}/api/notifications/${id}`, {
+    ...getAuthHeaders(),
+    method: "DELETE"
+  });
+  if (!res.ok) throw new Error("Failed to delete notification");
+  return res.json();
+}
+

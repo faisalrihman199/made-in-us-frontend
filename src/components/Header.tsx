@@ -26,6 +26,9 @@ import { toast } from "@/hooks/use-toast";
 import { authService } from "@/services/authService";
 import { GoogleLogin } from "@react-oauth/google";
 import { LogOut } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getNotifications } from "@/lib/api";
+
 import { CurrencySwitcher } from "@/components/CurrencySwitcher";
 
 const Header = () => {
@@ -96,7 +99,17 @@ const Header = () => {
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
+  const isAdmin = (user as any)?.role === "admin";
+  const { data: notificationsData } = useQuery({
+    queryKey: ["admin-notifications"],
+    queryFn: () => getNotifications(1),
+    enabled: isAdmin,
+    refetchInterval: 30000,
+  });
+  const unreadCount = notificationsData?.unreadCount || 0;
+
   const handleGoogleSuccess = async (cred: any) => {
+
     const idToken = cred.credential;
     if (!idToken) {
       toast({ title: "Google login failed", description: "Missing token." });
@@ -138,12 +151,14 @@ const Header = () => {
       items: [
         { name: "How It Works", href: "/about#how-it-works", icon: PlayCircle },
         { name: "About", href: "/about", icon: Info },
+        { name: "Blog", href: "/blog", icon: BookOpen },
         { name: "Our Mission", href: "/about#our-mission", icon: Target },
         { name: "SecurePay", href: "/secure-pay", icon: ShieldCheck },
         { name: "Watchlist", href: "/watchlist", icon: Star },
         ...((user as any)?.role === "admin" ? [{ name: "Admin Panel", href: "/admin", icon: LayoutGrid }] : []),
       ]
     },
+
     {
       title: "Support & Guides",
       items: [
@@ -237,6 +252,8 @@ const Header = () => {
             </div>
 
             {/* Right Side */}
+
+
             <div className="flex items-center gap-3 md:gap-5">
               {/* Desktop Switchers */}
               <div className="hidden md:flex items-center gap-2">
@@ -255,16 +272,22 @@ const Header = () => {
                     <p className="text-sm font-bold text-[#1b2533]">{user.name || user.email}</p>
                     <p className="text-xs text-gray-500">Signed in</p>
                   </div>
-                  {(user as any)?.role === "admin" && (
+                  {isAdmin && (
                     <Link 
                       to="/admin" 
-                      className="flex items-center gap-2 bg-[#60E677]/10 hover:bg-[#60E677]/20 text-[#2F884D] px-3 sm:px-4 py-2 rounded-xl border border-[#60E677]/20 transition-all group shadow-sm active:scale-95"
+                      className="relative flex items-center gap-2 bg-[#60E677]/10 hover:bg-[#60E677]/20 text-[#2F884D] px-3 sm:px-4 py-2 rounded-xl border border-[#60E677]/20 transition-all group shadow-sm active:scale-95"
                       title="Admin Panel"
                     >
                       <LayoutGrid className="w-5 h-5 sm:w-4 sm:h-4 group-hover:rotate-90 transition-transform duration-300" />
                       <span className="hidden sm:inline text-sm font-black tracking-tight">Admin Panel</span>
+                      {unreadCount > 0 && (
+                        <div className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-white flex items-center justify-center min-w-[20px] shadow-sm">
+                          {unreadCount > 99 ? "99+" : unreadCount}
+                        </div>
+                      )}
                     </Link>
                   )}
+
                   <button
                     onClick={() => logout()}
                     className="p-2 text-[#1b2533] hover:bg-red-50 rounded-[8px] transition-all"

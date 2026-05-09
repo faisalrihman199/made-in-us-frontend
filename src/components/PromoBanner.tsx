@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Star, Truck, BarChart2, Smile, Users, Heart, ChevronLeft, ChevronRight, BadgeCheck, CheckCircle2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
+
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
@@ -11,30 +12,51 @@ const PromoBanner = () => {
   const [direction, setDirection] = useState(0); // 1 for right (next), -1 for left (prev)
   const [isPaused, setIsPaused] = useState(false);
 
-  const { data: result, isLoading } = useQuery({
-    queryKey: ["public-reviews"],
-    queryFn: async () => {
-      const res = await fetch(`${API_BASE}/api/reviews?isApproved=true&limit=5`);
+  const { 
+    data: infiniteData, 
+    isLoading, 
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage 
+  } = useInfiniteQuery({
+    queryKey: ["public-reviews-infinite"],
+    queryFn: async ({ pageParam = 1 }) => {
+      const res = await fetch(`${API_BASE}/api/reviews?isApproved=true&limit=10&page=${pageParam}`);
       if (!res.ok) throw new Error("Failed to fetch reviews");
       return res.json();
-    }
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => 
+      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
   });
+ 
+  const reviews = infiniteData?.pages.flatMap(page => page.reviews) || [];
 
-  const reviews = result?.reviews || [];
 
   useEffect(() => {
     if (!reviews.length || isPaused) return;
     const interval = setInterval(() => {
-      setDirection(1);
-      setCurrentReviewIndex((prev) => (prev + 1) % reviews.length);
+      nextReview();
     }, 5000);
     return () => clearInterval(interval);
-  }, [reviews.length, isPaused]);
+  }, [reviews.length, isPaused, currentReviewIndex]); // Added currentReviewIndex to dependency to handle next page fetch
+
 
   const nextReview = () => {
-    if (reviews.length) {
+    if (!reviews.length) return;
+    
+    const isLast = currentReviewIndex === reviews.length - 1;
+    if (isLast) {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      } else {
+        // Loop back to start if no more pages
+        setDirection(1);
+        setCurrentReviewIndex(0);
+      }
+    } else {
       setDirection(1);
-      setCurrentReviewIndex((prev) => (prev + 1) % reviews.length);
+      setCurrentReviewIndex((prev) => prev + 1);
     }
   };
 
@@ -44,6 +66,7 @@ const PromoBanner = () => {
       setCurrentReviewIndex((prev) => (prev - 1 + reviews.length) % reviews.length);
     }
   };
+
 
   // Mock avatars for the bottom section
   const mockAvatars = [
@@ -195,20 +218,35 @@ const PromoBanner = () => {
                   </div>
                   
                   {reviews.length > 1 && (
-                    <div className="flex gap-2.5">
-                      {reviews.map((_, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setCurrentReviewIndex(idx)}
-                          className={`h-2.5 rounded-full transition-all duration-500 ${
-                            idx === currentReviewIndex ? "w-8 bg-[#2E7D32]" : "w-2.5 bg-gray-200 hover:bg-gray-400"
-                          }`}
-                          aria-label={`Go to slide ${idx + 1}`}
-                        />
-                      ))}
+                    <div className="flex gap-2.5 items-center">
+                      {reviews.map((_, idx) => {
+                        // Only show 5 dots at most around the current index
+                        const isVisible = Math.abs(idx - currentReviewIndex) <= 2 || 
+                                         (currentReviewIndex < 2 && idx < 5) ||
+                                         (currentReviewIndex > reviews.length - 3 && idx > reviews.length - 6);
+                        
+                        if (!isVisible) return null;
+
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => setCurrentReviewIndex(idx)}
+                            className={`h-2.5 rounded-full transition-all duration-500 shrink-0 ${
+                              idx === currentReviewIndex ? "w-8 bg-[#2E7D32]" : "w-2.5 bg-gray-200 hover:bg-gray-400"
+                            }`}
+                            aria-label={`Go to slide ${idx + 1}`}
+                          />
+                        );
+                      })}
+                      {isFetchingNextPage && (
+                        <div className="w-2.5 h-2.5 rounded-full bg-gray-200 animate-pulse shrink-0" />
+                      )}
                     </div>
                   )}
                 </div>
+
+
+
               </div>
             ) : (
               <div className="text-center text-gray-500 py-10">No reviews available yet.</div>

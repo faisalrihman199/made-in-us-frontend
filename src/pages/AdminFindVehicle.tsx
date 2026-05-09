@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getVehicleFindRequest, respondVehicleFindRequest } from "@/lib/api";
+import { getVehicleFindRequest, respondVehicleFindRequest, ensureRelative } from "@/lib/api";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,9 +35,11 @@ const AdminFindVehicle = () => {
 
     setIsSubmitting(true);
     try {
-      await respondVehicleFindRequest(id, foundUrl, adminNote);
+      const relativeUrl = ensureRelative(foundUrl);
+      await respondVehicleFindRequest(id, relativeUrl, adminNote);
       toast.success("Response sent to customer!");
-      setRequest((prev: any) => ({ ...prev, status: "RESPONDED", foundVehicleUrl: foundUrl, adminNote }));
+      setRequest((prev: any) => ({ ...prev, status: "RESPONDED", foundVehicleUrl: relativeUrl, adminNote }));
+
     } catch (error) {
       toast.error("Failed to send response");
     } finally {

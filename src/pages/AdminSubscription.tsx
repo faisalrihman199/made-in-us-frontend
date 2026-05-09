@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getSubscription, updateSubscriptionStatus } from "@/lib/api";
+import { getSubscription, updateSubscriptionStatus, formatUrl } from "@/lib/api";
+
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -97,7 +98,7 @@ const AdminSubscription = () => {
                 {sub.paymentProofUrl && (
                   <div className="pt-2">
                     <a 
-                      href={sub.paymentProofUrl} 
+                      href={formatUrl(sub.paymentProofUrl)} 
                       target="_blank" 
                       className="inline-flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all shadow-md"
                     >
