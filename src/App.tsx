@@ -28,6 +28,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import { ScrollToTop } from "./components/ScrollToTop";
 import ShippingModal from "./components/car-details/ShippingModal";
 import CookiesBanner from "./components/CookiesBanner";
+import Chatbot from "./components/Chatbot";
 import { GlobalStateProvider, useGlobalState } from "./context/GlobalStateContext";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -40,6 +41,7 @@ const GlobalModals = () => {
     <>
       <ShippingModal isOpen={isShippingModalOpen} onClose={closeShippingModal} />
       <CookiesBanner forceShow={isCookiesBannerForced} onClose={closeCookiesBanner} />
+      <Chatbot />
     </>
   );
 };
