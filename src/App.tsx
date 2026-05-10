@@ -22,6 +22,7 @@ import AdminInspection from "./pages/AdminInspection";
 import AdminReservation from "./pages/AdminReservation";
 import AdminFindVehicle from "./pages/AdminFindVehicle";
 import AdminSubscription from "./pages/AdminSubscription";
+import AdminInquiry from "./pages/AdminInquiry";
 import Confirmation from "./pages/Confirmation";
 import PaymentResubmit from "./pages/PaymentResubmit";
 import Watchlist from "./pages/Watchlist";
@@ -70,6 +71,7 @@ const AppContent = () => (
       <Route path="/admin/reservation/:id" element={<AdminReservation />} />
       <Route path="/admin/find-vehicle/:id" element={<AdminFindVehicle />} />
       <Route path="/admin/subscription/:id" element={<AdminSubscription />} />
+      <Route path="/admin/inquiry/:id" element={<AdminInquiry />} />
       <Route path="/admin/:tab?/:subtab?" element={<AdminDashboard />} />
       <Route path="/confirmation" element={<Confirmation />} />
       <Route path="/resubmit-payment/:type/:id" element={<PaymentResubmit />} />

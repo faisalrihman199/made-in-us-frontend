@@ -312,6 +312,14 @@ export async function submitInquiry(data: InquiryData): Promise<{ ok: boolean; i
   return res.json();
 }
 
+export async function getInquiry(id: string): Promise<InquiryData & { id: string, createdAt: string, listing?: { id: string, url: string, details?: { title: string, firstImage: string, priceText: string } } }> {
+  const res = await fetch(`${API_BASE}/api/inquiries/${id}`, {
+    credentials: "include"
+  });
+  if (!res.ok) throw new Error("Failed to fetch inquiry");
+  return res.json();
+}
+
 export type ShippingQuoteData = {
   firstName: string;
   lastName: string;
