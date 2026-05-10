@@ -26,6 +26,7 @@ import Confirmation from "./pages/Confirmation";
 import PaymentResubmit from "./pages/PaymentResubmit";
 import Watchlist from "./pages/Watchlist";
 import AdminDashboard from "./pages/AdminDashboard";
+import BlogDetail from "./pages/BlogDetail";
 import { ScrollToTop } from "./components/ScrollToTop";
 import ShippingModal from "./components/car-details/ShippingModal";
 import CookiesBanner from "./components/CookiesBanner";
@@ -54,6 +55,7 @@ const AppContent = () => (
       <Route path="/" element={<Index />} />
       <Route path="/about" element={<About />} />
       <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:slug" element={<BlogDetail />} />
       <Route path="/cars/:id/:slug" element={<CarDetails />} />
       <Route path="/secure-pay" element={<SecurePay />} />
       <Route path="/complete-payment" element={<CompletePayment />} />

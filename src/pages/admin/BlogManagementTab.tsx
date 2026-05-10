@@ -55,14 +55,16 @@ export default function BlogManagementTab() {
     }
   });
 
-  const { data: blogs, isLoading } = useQuery({
+  const { data: blogsData, isLoading } = useQuery({
     queryKey: ["admin-blogs"],
     queryFn: async () => {
-      const res = await fetch(`${API_BASE}/api/blogs`);
+      const res = await fetch(`${API_BASE}/api/blogs?limit=1000`); // Fetch all for admin management
       if (!res.ok) throw new Error("Failed to fetch blogs");
       return res.json();
     }
   });
+
+  const blogs = blogsData?.data || [];
 
 
   React.useEffect(() => {
