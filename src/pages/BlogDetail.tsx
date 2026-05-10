@@ -195,7 +195,7 @@ export default function BlogDetail() {
     );
   }
 
-  const publishDate = new Date(blog.createdAt);
+  const publishDate = new Date(blog.publishedAt || blog.createdAt);
   const formattedDate = publishDate.toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',

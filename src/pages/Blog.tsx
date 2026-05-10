@@ -207,7 +207,7 @@ export default function Blog() {
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {blogs.map((blog: any) => {
-                  const date = new Date(blog.createdAt);
+                  const date = new Date(blog.publishedAt || blog.createdAt);
                   const month = date.toLocaleString('en-US', { month: 'short' }).toUpperCase();
                   const day = date.getDate().toString().padStart(2, '0');
                   const year = date.getFullYear();

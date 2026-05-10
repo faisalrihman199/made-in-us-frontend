@@ -14,6 +14,7 @@ const ManageDataTab = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [exportProgress, setExportProgress] = useState(0);
+  const [exportStatus, setExportStatus] = useState("");
   const [isExporting, setIsExporting] = useState(false);
   
   const [importFile, setImportFile] = useState<File | null>(null);
@@ -51,7 +52,8 @@ const ManageDataTab = () => {
 
   const handleExportData = async () => {
     setIsExporting(true);
-    setExportProgress(10);
+    setExportProgress(2);
+    setExportStatus("Preparing data...");
     try {
       let url = `${API_BASE}/api/data/export`;
       if (exportFilter === "custom") {
@@ -80,13 +82,15 @@ const ManageDataTab = () => {
       const reader = response.body?.getReader();
       
       let receivedRows = 0;
-      let chunks = [];
+      let chunks: Uint8Array[] = [];
       const decoder = new TextDecoder();
       
       if(reader) {
+        setExportStatus("Transferring records...");
         while(true) {
           const {done, value} = await reader.read();
           if (done) break;
+          
           chunks.push(value);
           
           if (totalRows > 0) {
@@ -94,16 +98,22 @@ const ManageDataTab = () => {
             const newLines = (text.match(/\n/g) || []).length;
             receivedRows += newLines;
             
-            const progress = (receivedRows / totalRows) * 100;
-            setExportProgress(Math.min(99, progress)); 
+            // Allocate 10-85% for transfer
+            const transferProgress = Math.min(100, (receivedRows / totalRows) * 100);
+            const overallProgress = 10 + (transferProgress * 0.75); // 10% to 85%
+            setExportProgress(overallProgress); 
           } else {
-            setExportProgress(prev => Math.min(prev + 1, 99));
+            setExportProgress(prev => Math.min(85, prev + 0.5));
           }
         }
       }
 
-      setExportProgress(100);
-      const blob = new Blob(chunks, { type: 'text/csv' });
+      setExportProgress(90);
+      setExportStatus("Building CSV file...");
+      const blob = new Blob(chunks as any[], { type: 'text/csv' });
+      
+      setExportProgress(95);
+      setExportStatus("Downloading to your device...");
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = downloadUrl;
@@ -113,13 +123,18 @@ const ManageDataTab = () => {
       document.body.removeChild(link);
       
       setExportProgress(100);
+      setExportStatus("Export Complete");
       toast.success("Export completed");
     } catch (error) {
       console.error(error);
       toast.error("Failed to export data");
+      setExportStatus("Failed");
     } finally {
       setIsExporting(false);
-      setTimeout(() => setExportProgress(0), 1000);
+      setTimeout(() => {
+        setExportProgress(0);
+        setExportStatus("");
+      }, 3000);
     }
   };
 
@@ -254,7 +269,7 @@ const ManageDataTab = () => {
             {exportProgress > 0 && (
               <div className="space-y-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
                 <div className="flex justify-between text-[11px] font-black text-gray-400 uppercase tracking-widest">
-                  <span>Preparing CSV...</span>
+                  <span>{exportStatus || "Preparing CSV..."}</span>
                   <span className="text-[#2F884D]">{Math.round(exportProgress)}%</span>
                 </div>
                 <div className="w-full bg-white rounded-full h-2.5 overflow-hidden border border-gray-100">

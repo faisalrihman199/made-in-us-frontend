@@ -79,13 +79,6 @@ const CheckIcon = () => (
 // Logo SVG
 const Logo = ({ dark = false }) => (
   <div className="flex flex-col items-start">
-    <div className="flex items-center gap-0.5 mb-0.5">
-      {/* Car arc */}
-      <svg viewBox="0 0 80 20" className="w-16 h-4" fill="none">
-        <path d="M5 15 Q40 2 75 15" stroke="#2f884d" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-        <path d="M12 15 L18 10 L62 10 L68 15" stroke="#2f884d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      </svg>
-    </div>
     <div className={`text-xl font-black tracking-tight ${dark ? "text-white" : "text-white"}`} style={{ fontFamily: "Arial Black, sans-serif", letterSpacing: "-0.5px" }}>
       MADE-IN-US<span className="text-[#2f884d]">.</span>COM
     </div>
@@ -260,7 +253,11 @@ const Confirmation = () => {
           <div className="max-w-7xl mx-auto px-8 py-12">
             <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-12">
               <div className="flex flex-col">
-                <Logo />
+                <img 
+                  src="/confirm-footer-logo.png" 
+                  alt="Made In US Logo" 
+                  className="h-20 w-auto object-contain"
+                />
                 <p className="mt-6 text-gray-500 text-sm max-w-sm leading-relaxed">
                   The premier destination for sourcing high-quality American vehicles and delivering them
                   to clients worldwide with complete transparency and professional care.

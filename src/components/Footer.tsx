@@ -114,7 +114,7 @@ const Footer = () => {
               {[
                 { Icon: Instagram, href: "https://www.instagram.com/madeinus_marketplace?igsh=MWc5cjY4NjBhMnI3cA%3D%3D&utm_source=qr" },
                 { Icon: TikTokIcon, href: "https://www.tiktok.com/@made.in.us.com?_r=1&_t=ZG-96CDba99RLN" },
-                { Icon: Facebook, href: "https://facebook.com" },
+                { Icon: Facebook, href: "https://www.facebook.com/share/17RTd98aJz/?mibextid=wwXIfr" },
                 { Icon: Youtube, href: "https://youtube.com" }
               ].map(({ Icon, href }, idx) => (
                 <a

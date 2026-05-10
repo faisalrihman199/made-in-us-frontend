@@ -249,11 +249,11 @@ const CompletePayment = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-1.5 md:col-span-1">
-                  <label className="text-[13px] font-semibold text-slate-600 ml-1">Make</label>
+                  <label className="text-[13px] font-semibold text-slate-600 ml-1">Brand</label>
                   <input 
                     type="text" 
                     name="make"
-                    placeholder="Make"
+                    placeholder="Brand"
                     value={formData.make}
                     onChange={handleInputChange}
                     className="w-full h-11 px-4 rounded-lg border border-slate-200 bg-slate-50/50 focus:border-[#107050] focus:ring-4 focus:ring-[#107050]/5 transition-all outline-none text-base font-medium"

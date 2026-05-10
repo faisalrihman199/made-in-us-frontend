@@ -223,6 +223,7 @@ export default function BlogManagementTab() {
                 imageUrl: formData.get("imageUrl"),
                 categoryId: formData.get("categoryId") || null,
                 isPublished: formData.get("isPublished") === "on",
+                publishedAt: formData.get("publishedAt") ? new Date(formData.get("publishedAt") as string).toISOString() : null,
               };
               saveMutation.mutate(data);
             }}
@@ -312,18 +313,29 @@ export default function BlogManagementTab() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Category</label>
-              <select 
-                name="categoryId" 
-                defaultValue={currentBlog?.categoryId || ""} 
-                className="w-full h-14 bg-gray-50/50 border border-gray-100 rounded-2xl font-bold text-[#0A2E1F] focus:ring-4 focus:ring-[#60E677]/5 px-4 appearance-none"
-              >
-                <option value="">Select a Category</option>
-                {categories?.map((cat: any) => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
-              </select>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Category</label>
+                <select 
+                  name="categoryId" 
+                  defaultValue={currentBlog?.categoryId || ""} 
+                  className="w-full h-14 bg-gray-50/50 border border-gray-100 rounded-2xl font-bold text-[#0A2E1F] focus:ring-4 focus:ring-[#60E677]/5 px-4 appearance-none"
+                >
+                  <option value="">Select a Category</option>
+                  {categories?.map((cat: any) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Publication Date</label>
+                <Input 
+                  type="date" 
+                  name="publishedAt" 
+                  defaultValue={currentBlog?.publishedAt ? new Date(currentBlog.publishedAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]} 
+                  className="h-14 bg-gray-50/50 border-gray-100 rounded-2xl font-bold focus:ring-4 focus:ring-[#60E677]/5" 
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -589,7 +601,10 @@ export default function BlogManagementTab() {
                     </div>
                     <div className="flex items-center gap-4 text-xs font-bold text-gray-400">
                       <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg"><User className="w-3.5 h-3.5" /> {blog.author || "Admin"}</div>
-                      <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg"><Check className="w-3.5 h-3.5" /> {new Date(blog.createdAt).toLocaleDateString()}</div>
+                      <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg">
+                        <Check className="w-3.5 h-3.5" /> 
+                        {new Date(blog.publishedAt || blog.createdAt).toLocaleDateString()}
+                      </div>
                     </div>
                   </div>
 

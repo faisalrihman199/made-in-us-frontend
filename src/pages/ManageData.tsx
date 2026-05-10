@@ -19,6 +19,7 @@ const ManageData = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [exportProgress, setExportProgress] = useState(0);
+  const [exportStatus, setExportStatus] = useState("");
   const [isExporting, setIsExporting] = useState(false);
   
   const [importFile, setImportFile] = useState<File | null>(null);
@@ -81,7 +82,8 @@ const ManageData = () => {
 
   const handleExportData = async () => {
     setIsExporting(true);
-    setExportProgress(10);
+    setExportProgress(2);
+    setExportStatus("Preparing data...");
     try {
       let url = `${API_BASE}/api/data/export`;
       if (exportFilter === "custom") {
@@ -110,28 +112,36 @@ const ManageData = () => {
       const reader = response.body?.getReader();
       
       let receivedRows = 0;
-      let chunks = [];
+      let chunks: Uint8Array[] = [];
       const decoder = new TextDecoder();
       
-      while(true) {
-        const {done, value} = await reader!.read();
-        if (done) break;
-        chunks.push(value);
-        
-        if (totalRows > 0) {
-          const text = decoder.decode(value, { stream: true });
-          const newLines = (text.match(/\n/g) || []).length;
-          receivedRows += newLines;
+      if (reader) {
+        setExportStatus("Transferring records...");
+        while(true) {
+          const {done, value} = await reader.read();
+          if (done) break;
+          chunks.push(value);
           
-          const progress = (receivedRows / totalRows) * 100;
-          setExportProgress(Math.min(99, progress)); 
-        } else {
-          setExportProgress(prev => Math.min(prev + 1, 99));
+          if (totalRows > 0) {
+            const text = decoder.decode(value, { stream: true });
+            const newLines = (text.match(/\n/g) || []).length;
+            receivedRows += newLines;
+            
+            const transferProgress = Math.min(100, (receivedRows / totalRows) * 100);
+            const overallProgress = 10 + (transferProgress * 0.75); // 10% to 85%
+            setExportProgress(overallProgress); 
+          } else {
+            setExportProgress(prev => Math.min(85, prev + 0.5));
+          }
         }
       }
 
-      setExportProgress(100);
-      const blob = new Blob(chunks, { type: 'text/csv' });
+      setExportProgress(90);
+      setExportStatus("Building file...");
+      const blob = new Blob(chunks as any[], { type: 'text/csv' });
+      
+      setExportProgress(95);
+      setExportStatus("Saving to disk...");
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = downloadUrl;
@@ -141,13 +151,18 @@ const ManageData = () => {
       document.body.removeChild(link);
       
       setExportProgress(100);
+      setExportStatus("Export Complete");
       toast.success("Export completed");
     } catch (error) {
       console.error(error);
       toast.error("Failed to export data");
+      setExportStatus("Failed");
     } finally {
       setIsExporting(false);
-      setTimeout(() => setExportProgress(0), 1000);
+      setTimeout(() => {
+        setExportProgress(0);
+        setExportStatus("");
+      }, 3000);
     }
   };
 
@@ -295,7 +310,7 @@ const ManageData = () => {
               {exportProgress > 0 && (
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs font-bold text-[#6A7870]">
-                    <span>Preparing & Downloading</span>
+                    <span>{exportStatus || "Preparing & Downloading"}</span>
                     <span>{Math.round(exportProgress)}%</span>
                   </div>
                   <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
