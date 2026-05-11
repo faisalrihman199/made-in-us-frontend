@@ -95,7 +95,7 @@ const CarDetails = () => {
         />
 
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-[9fr,3fr] gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-[9fr,3fr] lg:grid-cols-[1fr,380px] gap-8">
             <AuctionDetails car={car} />
             <div 
               ref={sidebarRef}

@@ -104,15 +104,13 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
     <div className="bg-[#f2f4f8] py-8">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-          <h2 className="text-[28px] font-bold text-[#1b2533] mb-6 tracking-tight">Search Vehicles</h2>
-
           <div className="relative flex items-center mb-5">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               type="text"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search by make, model, or keyword..."
+              placeholder="Search by make, model"
               className="w-full pl-12 pr-32 h-14 bg-white border border-gray-200 rounded-xl text-[15px] focus-visible:ring-1 focus-visible:ring-[#2f884d] transition-all"
             />
             <Button 

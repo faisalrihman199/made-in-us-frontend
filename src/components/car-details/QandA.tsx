@@ -143,7 +143,7 @@ const QandA: React.FC<QandAProps> = ({ carId, carModel = "Vehicle" }) => {
   };
 
   return (
-    <section className="mb-8 md:w-[70vw]" >
+    <section className="mb-8 w-full" >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-semibold">
           Vehicle Q&A ({qaData.length})

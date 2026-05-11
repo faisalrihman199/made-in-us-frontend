@@ -245,7 +245,7 @@ const Header = () => {
                   <img
                     src="/logo.png"
                     alt="MADE-IN-US.COM"
-                    className="h-auto w-[180px] md:w-[240px] lg:w-[280px] object-contain"
+                    className="h-auto w-[140px] sm:w-[180px] md:w-[200px] lg:w-[240px] xl:w-[280px] object-contain"
                   />
                 </Link>
               </div>
@@ -256,7 +256,7 @@ const Header = () => {
 
             <div className="flex items-center gap-3 md:gap-5">
               {/* Desktop Switchers */}
-              <div className="hidden md:flex items-center gap-2">
+              <div className="hidden xl:flex items-center gap-2">
                 <LanguageSwitcher
                   variant="light"
                   direction="down"
@@ -268,7 +268,7 @@ const Header = () => {
 
               {isAuthenticated && user ? (
                 <div className="flex items-center gap-3">
-                  <div className="hidden sm:flex flex-col items-end">
+                  <div className="hidden lg:flex flex-col items-end">
                     <p className="text-sm font-bold text-[#1b2533]">{user.name || user.email}</p>
                     <p className="text-xs text-gray-500">Signed in</p>
                   </div>
@@ -279,7 +279,7 @@ const Header = () => {
                       title="Admin Panel"
                     >
                       <LayoutGrid className="w-5 h-5 sm:w-4 sm:h-4 group-hover:rotate-90 transition-transform duration-300" />
-                      <span className="hidden sm:inline text-sm font-black tracking-tight">Admin Panel</span>
+                      <span className="hidden lg:inline text-sm font-black tracking-tight">Admin Panel</span>
                       {unreadCount > 0 && (
                         <div className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-white flex items-center justify-center min-w-[20px] shadow-sm">
                           {unreadCount > 99 ? "99+" : unreadCount}

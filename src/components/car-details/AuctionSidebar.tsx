@@ -111,7 +111,7 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
         <h2 className="text-[32px] sm:text-[36px] tracking-tight font-black text-[#0a2e1f] leading-none mb-1.5">
           {formattedPrice}
         </h2>
-        <p className="text-[#6A7870] text-[12px] sm:text-[13px] font-medium leading-tight">
+        <p className="text-[#6A7870] text-[12px] sm:text-[13px] font-medium leading-tight px-4">
           Available for export & U.S. delivery
         </p>
       </div>
@@ -157,27 +157,27 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
       </div>
 
       {/* Features Grid */}
-      <div className="grid grid-cols-3 gap-0.5 mb-7 border-t border-gray-50 pt-6">
-        <div className="flex flex-col items-center text-center px-0.5">
+      <div className="grid grid-cols-3 gap-1 mb-7 border-t border-gray-50 pt-6">
+        <div className="flex flex-col items-center text-center px-1">
           <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center mb-2">
             <ShieldCheck className="w-4 h-4 text-[#1b2533] opacity-70" />
           </div>
-          <h5 className="text-[10px] font-bold text-[#1b2533] leading-tight mb-0.5">Secure & Trusted</h5>
-          <p className="text-[9px] text-gray-400 font-medium leading-tight">Secure process end-to-end</p>
+          <h5 className="text-[10px] sm:text-[11px] font-extrabold text-[#1b2533] leading-tight mb-0.5 min-h-[24px] flex items-center justify-center">Secure & Trusted</h5>
+          <p className="text-[9px] text-gray-400 font-medium leading-tight hidden sm:block">Secure process end-to-end</p>
         </div>
-        <div className="flex flex-col items-center text-center border-x border-gray-50 px-0.5">
+        <div className="flex flex-col items-center text-center border-x border-gray-50 px-1">
           <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center mb-2">
             <Globe className="w-4 h-4 text-[#1b2533] opacity-70" />
           </div>
-          <h5 className="text-[10px] font-bold text-[#1b2533] leading-tight mb-0.5">Export & Delivery</h5>
-          <p className="text-[9px] text-gray-400 font-medium leading-tight">Handling all shipping</p>
+          <h5 className="text-[10px] sm:text-[11px] font-extrabold text-[#1b2533] leading-tight mb-0.5 min-h-[24px] flex items-center justify-center">Export & Delivery</h5>
+          <p className="text-[9px] text-gray-400 font-medium leading-tight hidden sm:block">Handling all shipping</p>
         </div>
-        <div className="flex flex-col items-center text-center px-0.5">
+        <div className="flex flex-col items-center text-center px-1">
           <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center mb-2">
             <Tag className="w-4 h-4 text-[#1b2533] opacity-70" />
           </div>
-          <h5 className="text-[10px] font-bold text-[#1b2533] leading-tight mb-0.5">Clear Pricing</h5>
-          <p className="text-[9px] text-gray-400 font-medium leading-tight">No hidden upfront fees</p>
+          <h5 className="text-[10px] sm:text-[11px] font-extrabold text-[#1b2533] leading-tight mb-0.5 min-h-[24px] flex items-center justify-center">Clear Pricing</h5>
+          <p className="text-[9px] text-gray-400 font-medium leading-tight hidden sm:block">No hidden upfront fees</p>
         </div>
       </div>
 
