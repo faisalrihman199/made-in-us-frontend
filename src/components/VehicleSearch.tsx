@@ -110,10 +110,10 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
               type="text"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search anything"
+              placeholder="Search"
               className="w-full pl-12 pr-32 h-14 bg-white border border-gray-200 rounded-xl text-[15px] focus-visible:ring-1 focus-visible:ring-[#2f884d] transition-all"
             />
-            <Button 
+            <Button
               onClick={() => onFilterChange({ ...filters, search: searchValue })}
               className="absolute right-1.5 top-1/2 transform -translate-y-1/2 bg-[#2f884d] hover:bg-[#25733f] text-white px-8 h-11 rounded-lg font-semibold shadow-sm transition-colors"
             >
@@ -193,8 +193,8 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     {models.map((model) => (
-                      <DropdownMenuItem 
-                        key={model} 
+                      <DropdownMenuItem
+                        key={model}
                         className="notranslate"
                         onSelect={() => handleFilterClick("model", model)}
                       >
