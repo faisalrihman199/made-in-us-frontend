@@ -29,7 +29,8 @@ import {
   PhoneCall,
   Handshake,
   UserCheck,
-  Loader2
+  Loader2,
+  Mail
 } from "lucide-react";
 
 
@@ -231,16 +232,16 @@ const ReserveVehicle = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div className="space-y-2">
                 <Label className="text-[13px] font-bold">Make (Brand)</Label>
-                <Input 
-                  placeholder="Enter make (e.g. Ford)" 
+                <Input
+                  placeholder="Enter make (e.g. Ford)"
                   className="h-12 rounded-lg border-gray-100"
                   onChange={(e) => handleVehicleChange("make", e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label className="text-[13px] font-bold">Year</Label>
-                <Input 
-                  placeholder="Enter year (e.g. 2024)" 
+                <Input
+                  placeholder="Enter year (e.g. 2024)"
                   type="number"
                   className="h-12 rounded-lg border-gray-100"
                   onChange={(e) => handleVehicleChange("year", e.target.value)}
@@ -248,8 +249,8 @@ const ReserveVehicle = () => {
               </div>
               <div className="space-y-2">
                 <Label className="text-[13px] font-bold">Model</Label>
-                <Input 
-                  placeholder="Enter model (e.g. Mustang)" 
+                <Input
+                  placeholder="Enter model (e.g. Mustang)"
                   className="h-12 rounded-lg border-gray-100"
                   onChange={(e) => handleVehicleChange("model", e.target.value)}
                 />
@@ -537,91 +538,318 @@ const ReserveVehicle = () => {
           </div>
         </div>
 
-        {/* Section: Process Explanation (Redesigned from Image 2) */}
-        <section className="bg-white border-2 border-[#2f884d] rounded-[32px] p-8 md:p-12 shadow-sm relative overflow-hidden">
-          {/* Decorative background elements */}
+        {/* Section: Process Explanation */}
+        {selectedServices.inspection ? (
+          <section className="bg-white rounded-[40px] p-8 md:p-16 shadow-sm relative overflow-hidden border border-gray-50">
 
+            <div className="relative z-10">
+              {/* ── Title ── */}
+              <div className="flex flex-col items-center mb-14">
+                <div className="flex items-center gap-5 mb-3">
+                  {/* left arrows */}
+                  <div className="flex items-center gap-1">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <path d="M14 4 L8 9 L14 14" stroke="#2f884d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <path d="M10 4 L4 9 L10 14" stroke="#2f884d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
 
-          {/* Top Illustration Area */}
-          <div className="flex flex-col items-center justify-center mb-8 relative">
-            <div className="relative">
-              {/* Agent Avatar Circle */}
-              <div className="w-32 h-32 rounded-full border-2 border-gray-100 flex items-center justify-center bg-gray-50/50 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[#2f884d]/5" />
-                <Headset className="w-16 h-16 text-[#2f884d]" strokeWidth={1.5} />
+                  <h3 className="text-3xl md:text-[42px] font-black text-[#0a1d2e] tracking-tight">
+                    What happens next?
+                  </h3>
+
+                  {/* right arrows */}
+                  <div className="flex items-center gap-1">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <path d="M8 4 L14 9 L8 14" stroke="#2f884d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <path d="M4 4 L10 9 L4 14" stroke="#2f884d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                </div>
+                <p className="text-[#6b7280] font-medium text-[17px]">
+                  Here's what to expect after you submit your inspection request.
+                </p>
               </div>
-              {/* Overlapping Shield */}
-              <div className="absolute bottom-2 -right-4 w-12 h-14 bg-white rounded-xl shadow-lg border border-gray-50 flex items-center justify-center">
-                <ShieldCheck className="w-8 h-8 text-[#2f884d]" />
+
+              {/* ── Two-column layout ── */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+
+                {/* LEFT: Steps */}
+                <div className="relative">
+                  {/* dashed connector line — positioned between icon centers */}
+                  <div
+                    className="absolute border-l-2 border-dashed border-gray-200"
+                    style={{ left: 44, top: 88, bottom: 88, width: 1 }}
+                  />
+
+                  {[
+                    {
+                      Icon: Mail,
+                      num: 1,
+                      title: "Confirmation Email",
+                      desc: "You will receive a confirmation email with your inspection request details.",
+                    },
+                    {
+                      Icon: Calendar,
+                      num: 2,
+                      title: "Inspector Assignment",
+                      desc: "We will assign a certified inspector and contact you to schedule the inspection.",
+                    },
+                    {
+                      Icon: FileText,
+                      num: 3,
+                      title: "Inspection Report",
+                      desc: "You will receive the complete inspection report once the inspection is completed.",
+                    },
+                  ].map(({ Icon, num, title, desc }) => (
+                    <div key={num} className="flex items-center gap-0 relative z-10 py-5">
+                      {/* Circle icon */}
+                      <div className="w-[88px] h-[88px] rounded-full bg-white border border-gray-150 shadow-md flex items-center justify-center shrink-0"
+                        style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.07)" }}>
+                        <Icon className="w-10 h-10 text-[#2f884d]" strokeWidth={1.4} />
+                      </div>
+
+                      {/* Number badge */}
+                      <div className="w-14 flex justify-center shrink-0">
+                        <div className="w-9 h-9 rounded-full bg-[#2f884d] text-white text-[15px] font-bold flex items-center justify-center shadow-sm">
+                          {num}
+                        </div>
+                      </div>
+
+                      {/* Text */}
+                      <div className="pl-1">
+                        <h4 className="font-bold text-[20px] text-[#0a1d2e] mb-1">{title}</h4>
+                        <p className="text-[#6b7280] text-[15px] leading-relaxed max-w-[280px]">{desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* RIGHT: Flat-design illustration */}
+                <div className="hidden lg:flex items-center justify-center">
+                  <svg viewBox="0 0 500 430" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-[460px]">
+
+                    {/* ── Background green circle ── */}
+                    <circle cx="295" cy="205" r="185" fill="#e9faf0" />
+
+                    {/* ── Building silhouettes (back) ── */}
+                    {/* Left cluster */}
+                    <rect x="68" y="105" width="28" height="135" rx="3" fill="#bbf7d0" opacity="0.7" />
+                    <rect x="50" y="125" width="22" height="115" rx="3" fill="#d1fae5" opacity="0.7" />
+                    <rect x="92" y="140" width="22" height="100" rx="3" fill="#d1fae5" opacity="0.7" />
+                    {/* windows */}
+                    <rect x="72" y="115" width="6" height="5" rx="1" fill="white" opacity="0.5" />
+                    <rect x="82" y="115" width="6" height="5" rx="1" fill="white" opacity="0.5" />
+                    <rect x="72" y="128" width="6" height="5" rx="1" fill="white" opacity="0.5" />
+                    <rect x="82" y="128" width="6" height="5" rx="1" fill="white" opacity="0.5" />
+
+                    {/* ── Trees ── */}
+                    {/* Left tree */}
+                    <ellipse cx="68" cy="268" rx="22" ry="26" fill="#4ade80" opacity="0.55" />
+                    <rect x="65" y="280" width="6" height="22" rx="2" fill="#86efac" />
+                    {/* Second tree */}
+                    <ellipse cx="118" cy="275" rx="18" ry="22" fill="#4ade80" opacity="0.45" />
+                    <rect x="115" y="285" width="6" height="18" rx="2" fill="#86efac" />
+                    {/* Right background tree */}
+                    <ellipse cx="455" cy="265" rx="20" ry="24" fill="#4ade80" opacity="0.35" />
+                    <rect x="452" y="275" width="6" height="20" rx="2" fill="#86efac" />
+
+                    {/* ── Clipboard body ── */}
+                    <rect x="218" y="38" width="210" height="258" rx="14" fill="white" stroke="#d1d5db" strokeWidth="5" />
+
+                    {/* Clipboard clip (top bar) */}
+                    <rect x="278" y="22" width="90" height="26" rx="10" fill="#2f884d" />
+                    {/* Clip circle */}
+                    <circle cx="323" cy="22" r="13" fill="#2f884d" />
+                    <circle cx="323" cy="22" r="7" fill="white" />
+
+                    {/* Checkbox rows */}
+                    {[85, 152, 218].map((y, i) => (
+                      <g key={i}>
+                        {/* checkbox square */}
+                        <rect x="238" y={y} width="32" height="32" rx="7" fill="#f0fdf4" />
+                        {/* checkmark */}
+                        <path
+                          d={`M ${245} ${y + 17} l 7 7 l 12 -14`}
+                          stroke="#2f884d"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        {/* text lines */}
+                        <rect x="283" y={y + 7} width="120" height="8" rx="4" fill="#e5e7eb" />
+                        <rect x="283" y={y + 20} width="80" height="6" rx="3" fill="#f3f4f6" />
+                      </g>
+                    ))}
+
+                    {/* ── Green sedan car ── */}
+
+                    {/* shadow */}
+                    <ellipse cx="255" cy="382" rx="135" ry="10" fill="#000" opacity="0.07" />
+
+                    {/* main body lower */}
+                    <path
+                      d="M100 340 C105 318 125 305 165 298 C210 290 285 288 340 293 C390 298 415 315 422 340 Z"
+                      fill="#2f884d"
+                    />
+                    {/* lower sill / door line */}
+                    <path
+                      d="M96 340 L96 362 Q98 368 105 370 L415 370 Q422 368 424 362 L424 340 Z"
+                      fill="#267a40"
+                    />
+
+                    {/* cabin / roof */}
+                    <path
+                      d="M168 298 C178 270 205 252 248 248 C285 245 325 247 355 260 C372 268 384 282 388 298 Z"
+                      fill="#2f884d"
+                    />
+
+                    {/* windshield (front) */}
+                    <path
+                      d="M293 296 C296 275 318 260 348 263 C364 265 376 276 380 296 Z"
+                      fill="#bfdbfe"
+                      opacity="0.75"
+                    />
+
+                    {/* side window */}
+                    <path
+                      d="M175 296 C180 274 204 257 245 255 C272 254 287 260 290 273 L290 296 Z"
+                      fill="#bfdbfe"
+                      opacity="0.75"
+                    />
+
+                    {/* window divider pillar */}
+                    <line x1="290" y1="255" x2="291" y2="297" stroke="#1f6b35" strokeWidth="4" />
+
+                    {/* door line */}
+                    <line x1="255" y1="298" x2="248" y2="370" stroke="#1f6b35" strokeWidth="2" opacity="0.4" />
+
+                    {/* front bumper / hood detail */}
+                    <rect x="400" y="330" width="25" height="12" rx="6" fill="#1f6b35" />
+                    {/* headlight */}
+                    <rect x="403" y="314" width="18" height="10" rx="5" fill="white" opacity="0.85" />
+
+                    {/* rear bumper */}
+                    <rect x="86" y="330" width="18" height="12" rx="6" fill="#1f6b35" />
+
+                    {/* door handle details */}
+                    <rect x="200" y="330" width="22" height="5" rx="2.5" fill="#1f6b35" opacity="0.5" />
+                    <rect x="310" y="330" width="22" height="5" rx="2.5" fill="#1f6b35" opacity="0.5" />
+
+                    {/* Wheels */}
+                    {/* rear */}
+                    <circle cx="163" cy="368" r="30" fill="#1f2937" />
+                    <circle cx="163" cy="368" r="19" fill="#4b5563" />
+                    <circle cx="163" cy="368" r="8" fill="#9ca3af" />
+                    <circle cx="163" cy="368" r="3" fill="#d1d5db" />
+                    {/* front */}
+                    <circle cx="378" cy="368" r="30" fill="#1f2937" />
+                    <circle cx="378" cy="368" r="19" fill="#4b5563" />
+                    <circle cx="378" cy="368" r="8" fill="#9ca3af" />
+                    <circle cx="378" cy="368" r="3" fill="#d1d5db" />
+
+                    {/* ground line */}
+                    <line x1="50" y1="398" x2="460" y2="398" stroke="#e5e7eb" strokeWidth="1.5" />
+                  </svg>
+                </div>
               </div>
 
+              {/* ── Footer helper bar ── */}
+              <div className="mt-12 bg-[#f0fdf4] rounded-2xl p-5 px-8 flex items-center gap-4 border border-[#dcfce7]">
+                <div className="w-8 h-8 rounded-lg bg-[#2f884d] flex items-center justify-center text-white shrink-0">
+                  <ShieldCheck className="w-5 h-5" strokeWidth={2.5} />
+                </div>
+                <p className="text-[#0a1d2e] text-[16px] font-medium">
+                  <span className="font-extrabold text-[#2f884d] mr-2">We're here to help!</span>
+                  <span className="text-gray-500">If you have any questions, please contact our support team.</span>
+                </p>
+              </div>
             </div>
-          </div>
-
-          {/* Title Area */}
-          <div className="flex items-center gap-6 mb-8">
-            <div className="flex-1 h-[2px] bg-gray-100 hidden sm:block" />
-            <h3 className="text-center text-2xl md:text-3xl font-black text-[#1b2d1d] tracking-tight">
-              Thank you for your reservation request!
-            </h3>
-            <div className="flex-1 h-[2px] bg-gray-100 hidden sm:block" />
-          </div>
-
-          {/* Procedural Explanation Grid */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
-            {/* Left Icon */}
-            <div className="hidden lg:flex w-20 h-20 rounded-full border-2 border-gray-100 items-center justify-center text-gray-400">
-              <PhoneCall className="w-10 h-10" strokeWidth={1} />
-            </div>
-
-            <div className="flex-1 text-center max-w-[600px] space-y-4">
-              <div className="w-2 h-2 bg-[#2f884d] rounded-full mx-auto" />
-              <p className="text-lg md:text-xl font-bold text-[#1b2d1d] leading-relaxed">
-                One of our agents will contact you during the day,
-                and we will contact the seller to proceed with
-                the vehicle reservation <span className="text-[#2f884d]">and confirm your order</span> at the same time.
-              </p>
-            </div>
-
-            {/* Right Icon */}
-            <div className="hidden lg:flex w-20 h-20 rounded-full border-2 border-gray-100 items-center justify-center text-gray-400">
-              <Handshake className="w-10 h-10" strokeWidth={1} />
-            </div>
-          </div>
-
-          {/* Footer Highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50/50 p-4 rounded-[24px] border border-gray-100">
-            <div className="flex items-center gap-4 p-4">
-              <div className="w-12 h-12 rounded-full bg-[#2f884d] flex items-center justify-center text-white shadow-lg shadow-[#2f884d]/20 shrink-0">
-                <Clock className="w-6 h-6" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[13px] font-black text-[#2f884d] leading-none mb-1">We'll contact you</span>
-                <span className="text-[12px] text-gray-500 font-bold">during the day</span>
+          </section>
+        ) : (
+          <section className="bg-white border-2 border-[#2f884d] rounded-[32px] p-8 md:p-12 shadow-sm relative overflow-hidden">
+            {/* Top Illustration Area */}
+            <div className="flex flex-col items-center justify-center mb-8 relative">
+              <div className="relative">
+                {/* Agent Avatar Circle */}
+                <div className="w-32 h-32 rounded-full border-2 border-gray-100 flex items-center justify-center bg-gray-50/50 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[#2f884d]/5" />
+                  <Headset className="w-16 h-16 text-[#2f884d]" strokeWidth={1.5} />
+                </div>
+                {/* Overlapping Shield */}
+                <div className="absolute bottom-2 -right-4 w-12 h-14 bg-white rounded-xl shadow-lg border border-gray-50 flex items-center justify-center">
+                  <ShieldCheck className="w-8 h-8 text-[#2f884d]" />
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 border-y md:border-y-0 md:border-x border-gray-200/50">
-              <div className="w-12 h-12 rounded-full bg-[#2f884d] flex items-center justify-center text-white shadow-lg shadow-[#2f884d]/20 shrink-0">
-                <UserCheck className="w-6 h-6" />
+            {/* Title Area */}
+            <div className="flex items-center gap-6 mb-8">
+              <div className="flex-1 h-[2px] bg-gray-100 hidden sm:block" />
+              <h3 className="text-center text-2xl md:text-3xl font-black text-[#1b2d1d] tracking-tight">
+                Thank you for your reservation request!
+              </h3>
+              <div className="flex-1 h-[2px] bg-gray-100 hidden sm:block" />
+            </div>
+
+            {/* Procedural Explanation Grid */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+              <div className="hidden lg:flex w-20 h-20 rounded-full border-2 border-gray-100 items-center justify-center text-gray-400">
+                <PhoneCall className="w-10 h-10" strokeWidth={1} />
               </div>
-              <div className="flex flex-col">
-                <span className="text-[13px] font-black text-[#2f884d] leading-none mb-1">We will contact</span>
-                <span className="text-[12px] text-gray-500 font-bold">the seller</span>
+
+              <div className="flex-1 text-center max-w-[600px] space-y-4">
+                <div className="w-2 h-2 bg-[#2f884d] rounded-full mx-auto" />
+                <p className="text-lg md:text-xl font-bold text-[#1b2d1d] leading-relaxed">
+                  One of our agents will contact you during the day,
+                  and we will contact the seller to proceed with
+                  the vehicle reservation <span className="text-[#2f884d]">and confirm your order</span> at the same time.
+                </p>
+              </div>
+
+              <div className="hidden lg:flex w-20 h-20 rounded-full border-2 border-gray-100 items-center justify-center text-gray-400">
+                <Handshake className="w-10 h-10" strokeWidth={1} />
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4">
-              <div className="w-12 h-12 rounded-full bg-[#2f884d] flex items-center justify-center text-white shadow-lg shadow-[#2f884d]/20 shrink-0">
-                <ShieldCheck className="w-6 h-6" />
+            {/* Footer Highlights */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50/50 p-4 rounded-[24px] border border-gray-100">
+              <div className="flex items-center gap-4 p-4">
+                <div className="w-12 h-12 rounded-full bg-[#2f884d] flex items-center justify-center text-white shadow-lg shadow-[#2f884d]/20 shrink-0">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[13px] font-black text-[#2f884d] leading-none mb-1">We'll contact you</span>
+                  <span className="text-[12px] text-gray-500 font-bold">during the day</span>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-[13px] font-black text-[#2f884d] leading-none mb-1">We will confirm</span>
-                <span className="text-[12px] text-gray-500 font-bold">your order at the same time</span>
+
+              <div className="flex items-center gap-4 p-4 border-y md:border-y-0 md:border-x border-gray-200/50">
+                <div className="w-12 h-12 rounded-full bg-[#2f884d] flex items-center justify-center text-white shadow-lg shadow-[#2f884d]/20 shrink-0">
+                  <UserCheck className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[13px] font-black text-[#2f884d] leading-none mb-1">We will contact</span>
+                  <span className="text-[12px] text-gray-500 font-bold">the seller</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4">
+                <div className="w-12 h-12 rounded-full bg-[#2f884d] flex items-center justify-center text-white shadow-lg shadow-[#2f884d]/20 shrink-0">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[13px] font-black text-[#2f884d] leading-none mb-1">We will confirm</span>
+                  <span className="text-[12px] text-gray-500 font-bold">your order at the same time</span>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
       </main>
 

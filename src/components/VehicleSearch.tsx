@@ -146,7 +146,10 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                       variant="outline"
                       className="bg-[#f8f9fc] border-none hover:bg-gray-100 text-[#475569] h-10 px-4 rounded-lg font-semibold"
                     >
-                      {filters.brand || "All Makes"} <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                      <span className={filters.brand ? "notranslate" : ""}>
+                        {filters.brand || "All Makes"}
+                      </span>{" "}
+                      <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56 max-h-[min(320px,70vh)] overflow-y-auto">
@@ -159,6 +162,7 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                     {makes.map((make) => (
                       <DropdownMenuItem
                         key={make}
+                        className="notranslate"
                         onSelect={() => {
                           if (filters.brand === make) {
                             onFilterChange({ ...filters, brand: null, model: null });
@@ -179,7 +183,10 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                       variant="outline"
                       className="bg-[#f8f9fc] border-none hover:bg-gray-100 text-[#475569] h-10 px-4 rounded-lg font-semibold"
                     >
-                      {filters.model || "All Models"} <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                      <span className={filters.model ? "notranslate" : ""}>
+                        {filters.model || "All Models"}
+                      </span>{" "}
+                      <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56 max-h-[min(320px,70vh)] overflow-y-auto">
@@ -188,7 +195,11 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     {models.map((model) => (
-                      <DropdownMenuItem key={model} onSelect={() => handleFilterClick("model", model)}>
+                      <DropdownMenuItem 
+                        key={model} 
+                        className="notranslate"
+                        onSelect={() => handleFilterClick("model", model)}
+                      >
                         {model}
                       </DropdownMenuItem>
                     ))}
