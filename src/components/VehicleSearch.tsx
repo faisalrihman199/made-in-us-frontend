@@ -110,7 +110,7 @@ const VehicleSearch = ({ filters, onFilterChange, allVehicles }: VehicleSearchPr
               type="text"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search by make, model"
+              placeholder="Search anything"
               className="w-full pl-12 pr-32 h-14 bg-white border border-gray-200 rounded-xl text-[15px] focus-visible:ring-1 focus-visible:ring-[#2f884d] transition-all"
             />
             <Button 
