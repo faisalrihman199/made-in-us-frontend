@@ -33,7 +33,7 @@ const getCategoryIcon = (name: string) => {
 export default function Blog() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [sortBy, setSortBy] = useState("newest");
+  const [sortBy, setSortBy] = useState("random");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9; // Show 9 per page for a nice 3x3 grid
 
@@ -166,7 +166,7 @@ export default function Blog() {
                 <div className="p-2.5 rounded-xl text-white" style={{ background: "#0A2E1F" }}>
                   <BookOpen className="w-5 h-5" />
                 </div>
-                <h2 className="font-black text-3xl" style={{ color: "#0A2E1F" }}>Latest Articles</h2>
+                <h2 className="font-black text-3xl" style={{ color: "#0A2E1F" }}>Articles</h2>
               </div>
               <p className="text-gray-400 font-bold text-xs uppercase tracking-widest ml-14">
                 Showing {blogs.length} of {totalBlogs} results
@@ -184,6 +184,7 @@ export default function Blog() {
                   className="bg-white border border-gray-200 rounded-lg pl-4 pr-8 py-2 font-bold focus:outline-none appearance-none cursor-pointer"
                   style={{ color: "#0A2E1F" }}
                 >
+                  <option value="random">Random</option>
                   <option value="newest">Newest</option>
                   <option value="oldest">Oldest</option>
                 </select>
