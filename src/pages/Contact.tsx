@@ -69,7 +69,7 @@ const Contact = () => {
   const locations = [
     {
       state: "Wyoming",
-      address: ["Made in US Marketplace LLC", "30 N Gould St Ste N", "Sheridan, WY 82801", "USA"],
+      address: [<span className="notranslate">Made in US Marketplace LLC</span>, "30 N Gould St Ste N", "Sheridan, WY 82801", "USA"],
       usPhone: "+1 (307) 210-7772",
       euPhone: "+1 863 266 1140",
       icon: (

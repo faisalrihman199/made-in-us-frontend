@@ -59,7 +59,7 @@ const InvoiceTemplate = forwardRef<HTMLDivElement, InvoiceTemplateProps>((props,
             <h3 className="font-bold uppercase text-[13px] tracking-wider text-[#0b2447]">From</h3>
           </div>
           <div className="p-4 space-y-1 text-sm">
-            <p className="font-bold text-[#0b2447]">MADE IN US MARKETPLACE LLC</p>
+            <p className="font-bold text-[#0b2447] notranslate">MADE IN US MARKETPLACE LLC</p>
             <p>30 N Gould St Ste N</p>
             <p>Sheridan, WY 82801 USA</p>
             <p className="pt-1">Email: contact@made-in-us.com</p>

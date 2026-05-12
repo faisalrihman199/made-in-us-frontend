@@ -440,7 +440,7 @@ const VehicleInspection = () => {
                           </div>
                           <div className="flex justify-between items-center border-b border-gray-200/50 pb-3">
                             <span className="text-sm text-gray-500 font-medium">Account Name</span>
-                            <span className="font-bold text-gray-900">{paymentDetails.bank.accountName}</span>
+                            <span className="font-bold text-gray-900 notranslate">{paymentDetails.bank.accountName}</span>
                           </div>
                           <div className="flex justify-between items-center border-b border-gray-200/50 pb-3">
                             <span className="text-sm text-gray-500 font-medium">Account Number</span>
