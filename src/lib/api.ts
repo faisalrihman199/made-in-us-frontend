@@ -92,6 +92,12 @@ function setIfDefined(params: URLSearchParams, key: string, value: unknown) {
 
 export const formatUrl = (url: string | null | undefined) => {
   if (!url) return "";
+  
+  // Specific placeholder from classiccars.com that we want to replace with our own
+  if (url === "https://photos.classiccars.com/cc-temp/static/listing-default-std.jpg") {
+    return "/coming-soon.png";
+  }
+
   if (url.startsWith("http")) return url;
   // If it's an internal path (e.g. /cars or /blog), keep it relative for frontend routing
   if (url.startsWith("/cars") || url.startsWith("/blog") || url.startsWith("/search")) return url;
