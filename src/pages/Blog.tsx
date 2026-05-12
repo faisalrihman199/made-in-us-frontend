@@ -104,7 +104,7 @@ export default function Blog() {
           {/* Heading */}
           <h1
             className="text-white font-black leading-none tracking-tight mb-4"
-            style={{ fontSize: "clamp(2.8rem, 5vw, 4.5rem)", maxWidth: 540 }}
+            style={{ fontSize: "clamp(2.8rem, 5vw, 4.5rem)", maxWidth: 800 }}
           >
             Made in <span style={{ color: "#60E677" }}>US</span> Blog
           </h1>
@@ -112,10 +112,9 @@ export default function Blog() {
           {/* Subtitle */}
           <p
             className="font-medium leading-relaxed mb-7"
-            style={{ color: "rgba(255,255,255,0.82)", fontSize: "1rem", maxWidth: 380 }}
+            style={{ color: "rgba(255,255,255,0.82)", fontSize: "1.1rem", maxWidth: 800 }}
           >
-            News, guides and tips about American classic cars,<br />
-            imports and the automotive world.
+            News, guides and tips about American classic cars, imports and the automotive world.
           </p>
 
           {featured && (

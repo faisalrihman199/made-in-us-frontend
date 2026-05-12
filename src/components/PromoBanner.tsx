@@ -83,7 +83,7 @@ const PromoBanner = () => {
         
         {/* CARD 1: Why Made in US? */}
         <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-[0_2px_10px_rgb(0,0,0,0.04)] border border-gray-100">
-          <h2 className="text-[28px] sm:text-[32px] font-bold tracking-tight mb-8">Why Made in US?</h2>
+          <h2 className="text-[28px] sm:text-[32px] font-bold tracking-tight mb-8">Why Choose Us?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-10 gap-x-8">
             {/* Stat 1 */}
             <div className="flex items-center gap-5">

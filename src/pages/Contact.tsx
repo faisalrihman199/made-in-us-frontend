@@ -317,17 +317,15 @@ const Contact = () => {
                      <line x1="18" y1="24" x2="22" y2="27" />
                   </svg>
                 </div>
-                <div className="space-y-1">
-                  <h4 className="text-white text-[22px] font-bold tracking-tight">Don't Miss Any Updates!</h4>
-                  <p className="text-white/90 text-[15px] font-medium leading-tight">
-                    Subscribe to our newsletter and get<br />
-                    the latest articles and tips straight to<br />
-                    your inbox.
+                <div className="space-y-1 flex-1">
+                  <h4 className="text-white text-[22px] font-bold tracking-tight leading-tight">Don't Miss Any Updates!</h4>
+                  <p className="text-white/90 text-[15px] font-medium leading-relaxed">
+                    Subscribe to our newsletter and get the latest articles and tips straight to your inbox.
                   </p>
                 </div>
               </div>
               
-              <div className="flex flex-col gap-3 w-full md:w-[380px]">
+              <div className="flex flex-col gap-3 w-full md:w-[300px] lg:w-[280px] xl:w-[350px] shrink-0">
                 <Input 
                   placeholder="Enter your email address..." 
                   className="bg-white border-none rounded-[10px] h-12 text-[#999] font-normal px-4 text-base"
