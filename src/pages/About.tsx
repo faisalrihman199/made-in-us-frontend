@@ -69,7 +69,7 @@ const About = () => {
             {[
               { step: "1", title: "Browse the Marketplace", desc: "Explore our selection of vehicles available across the United States. Each listing includes photos, detailed specifications, and vehicle history when available." },
               { step: "2", title: "Request Information", desc: "If a vehicle interests you, simply submit an inquiry through the platform. Our team will provide additional details, answer your questions, and confirm availability." },
-              { step: "3", title: "Price Negotiation", desc: "We negotiate directly with the seller to obtain the best possible price for you. When a price reduction is achieved, 20% of the negotiated savings is returned to the client, while the remaining portion covers the work performed and the operation of the platform." },
+              { step: "3", title: "Price Negotiation", desc: "We negotiate directly with the seller to obtain the best possible price for you. When a price reduction is achieved, 50% of the negotiated savings is returned to the client, while the remaining portion covers the work performed and the operation of the platform." },
               { step: "4", title: "Secure the Vehicle", desc: "Once you approve the deal, a $1,000 deposit may be required to reserve the vehicle and prevent it from being sold to another buyer." },
               { step: "5", title: "Payment", desc: "The remaining balance is paid via secure bank transfer. All transaction details and documentation are provided for your records." },
               { step: "6", title: "Transportation (National or Export)", desc: "We organize transportation from the seller's location either to your address within the United States or to the nearest export port." },
@@ -99,7 +99,7 @@ const About = () => {
             { q: "What is Made-in-US.com?", a: "Made-in-US.com is a marketplace that connects national and international buyers with sellers of authentic American vehicles. We help buyers find unique vehicles in the United States and assist with the purchase process." },
             { q: "Does Made-in-US.com sell the vehicles directly?", a: "No. Made-in-US.com is a marketplace. We connect buyers with sellers and assist throughout the process, including negotiation, logistics, and export." },
             { q: "How does the buying process work?", a: "Once you find a vehicle you like, contact us through the platform. We will review the vehicle, communicate with the seller, negotiate if possible, and guide you through the purchase and shipping process." },
-            { q: "Do you help negotiate the price?", a: "Yes. When possible, we negotiate directly with the seller to obtain the best possible price for the buyer. In this case, we return 20% of the negotiation to the client and keep the rest for the work performed." },
+            { q: "Do you help negotiate the price?", a: "Yes. When possible, we negotiate directly with the seller to obtain the best possible price for the buyer. In this case, we return 50% of the negotiation to the client and keep the rest for the work performed." },
             { q: "How does the payment process work?", a: "Made-in-US.com acts as a secure escrow service. The buyer sends payment to our company, which holds the funds during the transaction. Once the purchase is confirmed, we release the payment to the seller. Our escrow fee is $350. A 3.5% service fee is applied to the total vehicle price." },
             { q: "Are you responsible for the vehicle's condition?", a: "No. Vehicles are sold directly by the seller. Made-in-US.com does not guarantee the mechanical condition, history, or authenticity. Buyers are encouraged to request inspections." },
             { q: "What documents are required for export?", a: "To export a vehicle from the United States, several documents are required, including the Certificate of Title, Bill of Sale, and export declarations. Our team manages all administrative formalities to ensure a smooth export process." },
@@ -150,7 +150,7 @@ const About = () => {
             },
             { 
               t: "6. Negotiation and Fees", 
-              c: "When Made-in-US.com assists in price negotiation, we return 20% of the achieved savings to the client. The remaining 80% is retained by the Platform as a service fee. These terms are agreed upon at the start of the negotiation process." 
+              c: "When Made-in-US.com assists in price negotiation, we return 50% of the achieved savings to the client. The remaining 50% is retained by the Platform as a service fee. These terms are agreed upon at the start of the negotiation process." 
             },
             { 
               t: "7. Secure Escrow and Payment", 
