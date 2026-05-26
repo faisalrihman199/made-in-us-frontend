@@ -10,6 +10,8 @@ import CarDetails from "./pages/CarDetails";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
 import SecurePay from "./pages/SecurePay";
+import PaymentOptions from "./pages/PaymentOptions";
+import VehicleArrival from "./pages/VehicleArrival";
 import Membership from "./pages/Membership";
 import Cookies from "./pages/Cookies";
 import VehicleInspection from "./pages/VehicleInspection";
@@ -59,6 +61,8 @@ const AppContent = () => (
       <Route path="/blog/:slug" element={<BlogDetail />} />
       <Route path="/cars/:id/:slug" element={<CarDetails />} />
       <Route path="/secure-pay" element={<SecurePay />} />
+      <Route path="/payment-options" element={<PaymentOptions />} />
+      <Route path="/vehicle-arrival" element={<VehicleArrival />} />
       <Route path="/complete-payment" element={<CompletePayment />} />
       <Route path="/membership" element={<Membership />} />
       <Route path="/cookies" element={<Cookies />} />

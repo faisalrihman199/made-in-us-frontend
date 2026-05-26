@@ -677,3 +677,18 @@ export async function deleteNotification(id: string): Promise<{ success: boolean
   return res.json();
 }
 
+export type MakeModelTriple = {
+  make: string;
+  model: string;
+  bodyType: string;
+};
+
+export async function fetchMakesModels(): Promise<MakeModelTriple[]> {
+  const res = await fetch(`${API_BASE}/api/cars/makes-models`, {
+    headers: { Accept: "application/json" },
+    credentials: "include"
+  });
+  if (!res.ok) throw new Error("Failed to fetch makes and models");
+  return res.json();
+}
+

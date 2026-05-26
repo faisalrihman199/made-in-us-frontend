@@ -7,7 +7,7 @@ import {
   PlayCircle, Info, Truck, ShieldCheck,
   Target, HelpCircle, BookOpen, FileText,
   Cookie, ChevronRight, LayoutGrid,
-  UserPlus2Icon, Search, Car, ClipboardCheck, Star
+  UserPlus2Icon, Search, Car, ClipboardCheck, Star, CreditCard
 } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import {
@@ -171,6 +171,8 @@ const Header = () => {
     {
       title: "Services",
       items: [
+        { name: "Payment Options", href: "/payment-options", icon: CreditCard },
+        { name: "Vehicle Arrival & Import Process in Europe", href: "/vehicle-arrival", icon: Truck },
         { name: "Vehicle Inspection", href: "/vehicle-inspection", icon: ClipboardCheck },
         { name: "Reserve a Vehicle", href: "/reserve-vehicle", icon: ShieldCheck },
         { name: "Find Your Vehicle", href: "/find-vehicle", icon: Search },
@@ -193,11 +195,11 @@ const Header = () => {
 
   const renderMenuItem = (item: any) => {
     const content = (
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#2f884d] group-hover:border-[#2f884d]/20 transition-all shadow-sm">
+      <div className="flex items-center gap-4 flex-1 min-w-0 mr-2">
+        <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#2f884d] group-hover:border-[#2f884d]/20 transition-all shadow-sm shrink-0">
           <item.icon className="w-5 h-5" />
         </div>
-        <span className="font-bold text-[#1b2533] text-[15px] group-hover:text-[#2f884d] transition-colors">
+        <span className="font-bold text-[#1b2533] text-[14px] sm:text-[15px] group-hover:text-[#2f884d] transition-colors leading-tight flex-1 break-words">
           {item.name}
         </span>
       </div>
