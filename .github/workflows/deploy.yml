@@ -22,7 +22,7 @@ jobs:
           source: "dist/**"
           target: "/var/www/made-in-us.com"
           strip_components: 1
-          rm: true  # cleans the target directory before copying
+          rm: true  # clean the target directory before copying
 
       - name: Reload Nginx
         uses: appleboy/ssh-action@v1.0.3
