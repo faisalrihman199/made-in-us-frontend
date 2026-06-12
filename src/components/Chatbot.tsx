@@ -84,7 +84,7 @@ export default function Chatbot() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 w-16 h-16 bg-[#0A2E1F] text-[#60E677] rounded-full shadow-2xl flex items-center justify-center z-50 border-2 border-[#60E677]/40 focus:outline-none animate-glow-green"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-16 h-16 bg-[#0A2E1F] text-[#60E677] rounded-full shadow-2xl flex items-center justify-center z-[60] border-2 border-[#60E677]/40 focus:outline-none animate-glow-green"
       >
         <Bot className="w-8 h-8 drop-shadow-[0_0_8px_rgba(96,230,119,0.8)]" />
       </motion.button>
@@ -97,7 +97,7 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-6 right-6 w-[350px] sm:w-[400px] h-[600px] bg-white rounded-[32px] shadow-2xl flex flex-col overflow-hidden z-50 border border-gray-100"
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-[calc(100vw-32px)] sm:w-[400px] h-[600px] max-h-[calc(100vh-48px)] sm:max-h-[calc(100vh-120px)] bg-white rounded-[32px] shadow-2xl flex flex-col overflow-hidden z-[60] border border-gray-100"
           >
             {/* Header */}
             <div className="bg-[#0A2E1F] p-5 flex items-center justify-between text-white shrink-0">

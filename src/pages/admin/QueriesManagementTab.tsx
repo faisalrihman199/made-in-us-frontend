@@ -507,16 +507,24 @@ export default function QueriesManagementTab({ initialView, unreadByType = {}, n
         markLinkRead={markLinkRead}
         setConfirmDelete={setConfirmDelete}
         columns={(item: any) => (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
             <div className="p-3 bg-violet-50/30 rounded-xl border border-violet-100/50">
               <span className="text-[10px] font-black text-violet-400 uppercase tracking-wider block mb-1">Requested Vehicle</span>
               <span className="text-sm font-bold text-violet-900">{item.year} {item.make} ({item.title})</span>
             </div>
             <div className="p-3 bg-slate-50/30 rounded-xl border border-slate-100/50">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block mb-1">Seller Name</span>
+              <span className="text-sm font-bold text-slate-900 truncate block">{item.sellerName || "N/A"}</span>
+            </div>
+            <div className="p-3 bg-slate-50/30 rounded-xl border border-slate-100/50">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block mb-1">Listing URL</span>
-              <a href={item.listingUrl} target="_blank" rel="noreferrer" className="text-sm font-bold text-blue-500 truncate block hover:underline">
-                {item.listingUrl}
-              </a>
+              {item.listingUrl ? (
+                <a href={item.listingUrl} target="_blank" rel="noreferrer" className="text-sm font-bold text-blue-500 truncate block hover:underline">
+                  {item.listingUrl}
+                </a>
+              ) : (
+                <span className="text-sm text-gray-400 italic">N/A</span>
+              )}
             </div>
           </div>
         )}

@@ -64,7 +64,7 @@ const Header = () => {
     if (isSubmitting) return;
     try {
       setIsSubmitting(true);
-      
+
       if (authMode === "signup") {
         await authService.signup({ name, email, password, confirmPassword });
       } else {
@@ -75,15 +75,15 @@ const Header = () => {
         title: authMode === "signup" ? "Account created" : "Signed in",
         description: "You're all set."
       });
-      
+
       // Refresh auth state
       const userResult = await checkAuth();
-      
+
       // If user is admin, redirect to admin panel
       if ((userResult as any)?.role === "admin" || (user as any)?.role === "admin") {
         navigate("/admin");
       }
-      
+
       // Clear form fields
       setName("");
       setEmail("");
@@ -129,7 +129,7 @@ const Header = () => {
       }
       toast({ title: "Signed in", description: "Welcome back!" });
       const userResult = await checkAuth();
-      
+
       // If user is admin, redirect to admin panel
       if ((userResult as any)?.role === "admin" || (user as any)?.role === "admin") {
         navigate("/admin");
@@ -207,18 +207,18 @@ const Header = () => {
 
     if (item.onClick) {
       return (
-          <button
-            key={item.name}
-            type="button"
-            onClick={() => {
-              item.onClick();
-              setMenuOpen(false);
-            }}
-            className="group w-full flex items-center justify-between p-4 rounded-2xl hover:bg-[#f2f4f8] transition-all text-left cursor-pointer active:scale-[0.98]"
-          >
-            {content}
-            <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#2f884d] group-hover:translate-x-1 transition-all" />
-          </button>
+        <button
+          key={item.name}
+          type="button"
+          onClick={() => {
+            item.onClick();
+            setMenuOpen(false);
+          }}
+          className="group w-full flex items-center justify-between p-4 rounded-2xl hover:bg-[#f2f4f8] transition-all text-left cursor-pointer active:scale-[0.98]"
+        >
+          {content}
+          <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#2f884d] group-hover:translate-x-1 transition-all" />
+        </button>
       );
     }
 
@@ -241,22 +241,18 @@ const Header = () => {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
             {/* Logo Area */}
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <Link to="/" className="transition-transform hover:scale-105 duration-200">
-                  <img
-                    src="/logo.png"
-                    alt="MADE-IN-US.COM"
-                    className="h-auto w-[140px] sm:w-[180px] md:w-[200px] lg:w-[240px] xl:w-[280px] object-contain"
-                  />
-                </Link>
-              </div>
+            <div className="flex items-center flex-1 min-w-0 mr-4">
+              <Link to="/" className="transition-transform hover:scale-105 duration-200 block max-w-full">
+                <img
+                  src="/logo.png"
+                  alt="MADE-IN-US.COM"
+                  className="h-auto w-[180px] sm:w-[220px] md:w-[200px] lg:w-[240px] xl:w-[280px] max-w-full object-contain"
+                />
+              </Link>
             </div>
 
             {/* Right Side */}
-
-
-            <div className="flex items-center gap-3 md:gap-5">
+            <div className="flex items-center gap-3 md:gap-5 flex-shrink-0">
               {/* Desktop Switchers */}
               <div className="hidden xl:flex items-center gap-2">
                 <LanguageSwitcher
@@ -275,8 +271,8 @@ const Header = () => {
                     <p className="text-xs text-gray-500">Signed in</p>
                   </div>
                   {isAdmin && (
-                    <Link 
-                      to="/admin" 
+                    <Link
+                      to="/admin"
                       className="relative flex items-center gap-2 bg-[#60E677]/10 hover:bg-[#60E677]/20 text-[#2F884D] px-3 sm:px-4 py-2 rounded-xl border border-[#60E677]/20 transition-all group shadow-sm active:scale-95"
                       title="Admin Panel"
                     >

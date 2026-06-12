@@ -27,6 +27,7 @@ const FindVehicle = () => {
     mileage: "",
     color: "",
     listingUrl: "",
+    sellerName: "",
     name: "",
     email: "",
     phonePrefix: "+1",
@@ -123,37 +124,29 @@ const FindVehicle = () => {
                    <Input name="color" value={formData.color} onChange={handleInputChange} placeholder="e.g. Midnight Blue" className="h-11 pl-10 rounded-lg border-gray-200" />
                 </div>
               </div>
-              {/* 
-              <div className="space-y-1.5">
-                <Label className="text-[13px] font-medium text-gray-600 ml-1">Listing URL *</Label>
-                <Input name="listingUrl" value={formData.listingUrl} onChange={handleInputChange} placeholder="https://..." className="h-11 rounded-lg border-gray-200" required={false} />
-              </div>
-              */}
             </div>
           </section>
 
-          {/* Seller Information Section - Commented out as requested */}
-          {/* 
+          {/* Seller & Listing Information */}
           <section>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-[30px] h-[30px] rounded-[6px] bg-[#3a5a46] flex items-center justify-center shadow-sm">
                 <User className="w-[18px] h-[18px] text-white" strokeWidth={2.5} />
               </div>
-              <h2 className="text-[17px] font-medium text-gray-800">Seller Information *</h2>
+              <h2 className="text-[17px] font-medium text-gray-800">Seller & Listing Information</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4">
               <div className="space-y-1.5">
-                <Label className="text-[13px] font-medium text-gray-600 ml-1">Seller Name *</Label>
-                <Input placeholder="Enter seller name" className="h-11 rounded-lg border-gray-200" />
+                <Label className="text-[13px] font-medium text-gray-600 ml-1">Seller Name</Label>
+                <Input name="sellerName" value={formData.sellerName} onChange={handleInputChange} placeholder="Enter seller name (if known)" className="h-11 rounded-lg border-gray-200" />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-[13px] font-medium text-gray-600 ml-1">Seller Phone Number *</Label>
-                <Input placeholder="Enter seller phone number" className="h-11 rounded-lg border-gray-200" />
+                <Label className="text-[13px] font-medium text-gray-600 ml-1">Vehicle Listing URL / Link</Label>
+                <Input name="listingUrl" value={formData.listingUrl} onChange={handleInputChange} placeholder="e.g. https://www.autotrader.com/..." className="h-11 rounded-lg border-gray-200" />
               </div>
             </div>
           </section>
-          */}
 
           {/* Your Contact Information Section */}
           <section>

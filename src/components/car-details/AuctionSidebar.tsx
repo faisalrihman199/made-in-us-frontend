@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Check, Globe, User, Tag, Clock, ShieldCheck, ChevronRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Check, Globe, User, Tag, Clock, ShieldCheck, ChevronRight, Handshake } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -52,6 +52,17 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
     countryCode: '+1',
     country: ''
   });
+
+  React.useEffect(() => {
+    if (isCallModalOpen || isEmailModalOpen || isAvailabilityModalOpen) {
+      const select = document.querySelector<HTMLSelectElement>('.goog-te-combo');
+      if (select && select.value && select.value !== 'en') {
+        setTimeout(() => {
+          select.dispatchEvent(new Event('change'));
+        }, 100);
+      }
+    }
+  }, [isCallModalOpen, isEmailModalOpen, isAvailabilityModalOpen]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
@@ -118,16 +129,16 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
 
       {/* Main Buttons Section */}
       <div className="space-y-3 mb-7">
-        {/* Check Availability Button */}
+        {/* Make an Offer Button */}
         <button 
           type="button"
           onClick={() => setIsAvailabilityModalOpen(true)}
           className="w-full h-[54px] bg-gradient-to-r from-[#1a4d2e] via-[#2d6a3e] to-[#40916c] hover:opacity-95 transition-all text-white border-0 rounded-[16px] flex items-center px-4 gap-3 shadow-lg shadow-green-900/5 cursor-pointer active:scale-[0.98] group"
         >
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
+            <Handshake className="w-4.5 h-4.5 text-white" />
           </div>
-          <span className="text-[14px] sm:text-[15px] font-bold tracking-tight flex-1 text-left whitespace-nowrap">Check Availability</span>
+          <span className="text-[14px] sm:text-[15px] font-bold tracking-tight flex-1 text-left whitespace-nowrap">Make an Offer</span>
           <ChevronRight className="w-4 h-4 opacity-70 group-hover:translate-x-1 transition-transform shrink-0" />
         </button>
 
@@ -206,17 +217,17 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
         </div>
       </div>
 
-      {/* Check Availability Modal */}
+      {/* Make an Offer Modal */}
       <Dialog open={isAvailabilityModalOpen} onOpenChange={setIsAvailabilityModalOpen}>
         <DialogContent className="sm:max-w-[450px] p-0 overflow-y-auto max-h-[calc(100vh-4rem)] rounded-3xl border-none shadow-2xl bg-white scrollbar-hide">
           <div className="p-8 space-y-5">
             <DialogHeader className="space-y-2 text-center">
               <DialogTitle className="text-2xl font-bold tracking-tight text-gray-900 flex items-center justify-center gap-2">
-                <Check className="w-5 h-5 text-[#2f884d]" />
-                Check Availability
+                <Handshake className="w-5 h-5 text-[#2f884d]" />
+                Make an Offer
               </DialogTitle>
               <DialogDescription className="text-gray-500">
-                Please provide your contact information to check if this vehicle is still available.
+                Please provide your contact information and your offer, and we will negotiate the best deal for you.
               </DialogDescription>
             </DialogHeader>
 
@@ -287,12 +298,12 @@ const AuctionSidebar = ({ car }: AuctionSidebarProps) => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="avail-message" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Message</Label>
+              <Label htmlFor="avail-message" className="text-[11px] font-bold text-gray-400 uppercase tracking-wider ml-1">Message / Offer Details</Label>
               <textarea 
                 id="avail-message" 
                 value={formData.message}
                 onChange={handleInputChange}
-                placeholder="I am interested in this vehicle..." 
+                placeholder="Enter your target offer price or questions here..." 
                 className="w-full min-h-[100px] p-4 bg-gray-50/50 border border-gray-100 rounded-xl font-medium text-sm focus:outline-none focus:ring-2 focus:ring-[#2f884d]/20 resize-none"
               />
             </div>

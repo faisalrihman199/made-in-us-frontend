@@ -470,7 +470,8 @@ export type VehicleFindRequestData = {
   year: string;
   mileage?: string;
   color?: string;
-  listingUrl: string;
+  listingUrl?: string;
+  sellerName?: string;
   name: string;
   email: string;
   phone?: string;

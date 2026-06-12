@@ -75,9 +75,18 @@ const AdminFindVehicle = () => {
                 <div className="space-y-1">
                   <p className="text-lg font-bold text-slate-900">{request.title}</p>
                   <p className="text-slate-600">{request.make} ({request.year})</p>
-                  <a href={request.listingUrl} target="_blank" className="text-emerald-600 font-medium text-sm hover:underline block pt-1">
-                    Original Listing URL →
-                  </a>
+                  {request.sellerName && (
+                    <p className="text-slate-700 text-sm">
+                      <span className="font-semibold">Seller:</span> {request.sellerName}
+                    </p>
+                  )}
+                  {request.listingUrl ? (
+                    <a href={request.listingUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-600 font-medium text-sm hover:underline block pt-1">
+                      Original Listing URL →
+                    </a>
+                  ) : (
+                    <p className="text-slate-400 text-sm italic">No listing URL provided</p>
+                  )}
                 </div>
               </div>
               <div className="space-y-4">

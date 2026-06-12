@@ -41,6 +41,17 @@ const RequestCallModal = ({ isOpen, onOpenChange, listingId, listingUrl }: Reque
     country: ''
   });
 
+  React.useEffect(() => {
+    if (isOpen) {
+      const select = document.querySelector<HTMLSelectElement>('.goog-te-combo');
+      if (select && select.value && select.value !== 'en') {
+        setTimeout(() => {
+          select.dispatchEvent(new Event('change'));
+        }, 100);
+      }
+    }
+  }, [isOpen]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
